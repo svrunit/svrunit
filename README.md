@@ -1,3 +1,7 @@
+
+[<img src="https://raw.githubusercontent.com/wiki/boxblinkracer/svrunit/assets/logo.png">]()
+
+
 Welcome to SVRUnit - Your Server Testing Framework!
 
 ## Basic Concept

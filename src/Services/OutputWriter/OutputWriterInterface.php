@@ -7,33 +7,33 @@ interface OutputWriterInterface
 {
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeDebug($text);
+    public function debug(string $text): void;
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeSuccess($text);
+    public function info(string $text): void;
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeError($text);
+    public function warning(string $text): void;
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeInfo($text);
+    public function section(string $text): void;
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeWarning($text);
+    public function error(string $text): void;
+
+    /**
+     * @param string $text
+     */
+    public function success(string $text): void;
 
 }

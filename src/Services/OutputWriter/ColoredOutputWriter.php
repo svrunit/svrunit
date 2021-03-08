@@ -7,48 +7,51 @@ namespace SVRUnit\Services\OutputWriter;
 class ColoredOutputWriter implements OutputWriterInterface
 {
 
+
     /**
-     * @param $text
-     * @return mixed|void
+     * @param string $text
      */
-    public function writeDebug($text)
+    public function debug(string $text): void
     {
-        echo $text . PHP_EOL;
+        echo "\033[39m$text \033[0m\n";
     }
 
     /**
-     * @param $text
-     * @return mixed|void
+     * @param string $text
      */
-    public function writeSuccess($text)
+    public function info(string $text): void
+    {
+        echo "\033[97m$text \033[0m\n";
+    }
+
+    /**
+     * @param string $text
+     */
+    public function section(string $text): void
+    {
+        echo "\033[36m$text \033[0m\n";
+    }
+
+    /**
+     * @param string $text
+     */
+    public function warning(string $text): void
+    {
+        echo "\033[33m$text \033[0m\n";
+    }
+
+    /**
+     * @param string $text
+     */
+    public function success(string $text): void
     {
         echo "\e[1;0m \e[42m " . $text . "\e[1;0m \e[0m\n";
     }
 
     /**
-     * @param $text
-     * @return mixed
+     * @param string $text
      */
-    public function writeInfo($text)
-    {
-        echo "\e[1;0m \e[33m " . $text . "\e[1;0m \e[0m\n";
-    }
-
-    /**
-     * @param $text
-     * @return mixed|void
-     */
-    public function writeWarning($text)
-    {
-        echo "\e[1;0m \e[33m " . $text . "\e[1;0m \e[0m\n";
-    }
-
-
-    /**
-     * @param $text
-     * @return mixed|void
-     */
-    public function writeError($text)
+    public function error(string $text): void
     {
         echo "\e[1;0m \e[41m " . $text . "\e[1;0m \e[0m\n";
     }

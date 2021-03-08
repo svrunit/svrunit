@@ -3,6 +3,7 @@
 namespace SVRUnit\Components\Runner\Adapters\Docker;
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 
 
 class DockerContainerTestRunner implements TestRunnerInterface
@@ -13,16 +14,21 @@ class DockerContainerTestRunner implements TestRunnerInterface
      */
     private $containerName;
 
+    /**
+     * @var OutputWriterInterface
+     */
+    private $outWriter;
+
 
     /**
-     * DockerContainerTestRunner constructor.
      * @param string $containerName
+     * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(string $containerName)
+    public function __construct(string $containerName, OutputWriterInterface $outputWriter)
     {
         $this->containerName = $containerName;
+        $this->outWriter = $outputWriter;
     }
-
 
     /**
      *

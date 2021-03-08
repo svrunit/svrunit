@@ -4,6 +4,7 @@ namespace SVRUnit\Components\Runner;
 
 use SVRUnit\Components\Tests\TestInterface;
 use SVRUnit\Components\Tests\TestResult;
+use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 
 class TestSuiteRunner
 {
@@ -74,12 +75,12 @@ class TestSuiteRunner
 
     /**
      * @param TestRunnerInterface $runner
+     * @param OutputWriterInterface $outputWriter
+     * @param bool $debugMode
      */
-    public function testAll(TestRunnerInterface $runner)
+    public function testAll(TestRunnerInterface $runner, OutputWriterInterface $outputWriter, bool $debugMode)
     {
-        # setup runner
         $runner->setUp();
-
         sleep($this->setupTimeSeconds);
 
         $this->failedTests = array();

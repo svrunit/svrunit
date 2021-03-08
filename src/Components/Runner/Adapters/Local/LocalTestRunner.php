@@ -4,9 +4,25 @@ namespace SVRUnit\Components\Runner\Adapters\Local;
 
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 
 class LocalTestRunner implements TestRunnerInterface
 {
+
+    /**
+     * @var OutputWriterInterface
+     */
+    private $outputWriter;
+
+
+    /**
+     * @param OutputWriterInterface $outputWriter
+     */
+    public function __construct(OutputWriterInterface $outputWriter)
+    {
+        $this->outputWriter = $outputWriter;
+    }
+
 
     /**
      * @return mixed|void

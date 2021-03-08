@@ -4,6 +4,7 @@ namespace SVRUnit\Components\Runner\Adapters\Docker;
 
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 
 class DockerImageTestRunner implements TestRunnerInterface
 {
@@ -29,23 +30,23 @@ class DockerImageTestRunner implements TestRunnerInterface
     private $name;
 
     /**
-     * @var bool
+     * @var OutputWriterInterface
      */
-    private $debugMode;
+    private $outWriter;
 
 
     /**
      * @param string $dockerImage
      * @param array $envVariables
      * @param string $entryPoint
-     * @param bool $debugMode
+     * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, bool $debugMode)
+    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, OutputWriterInterface $outputWriter)
     {
         $this->dockerImage = $dockerImage;
         $this->envVariables = $envVariables;
         $this->entryPoint = $entryPoint;
-        $this->debugMode = $debugMode;
+        $this->outWriter = $outputWriter;
 
         $this->name = "svrunit_" . $this->getRandomName(4);
     }
@@ -70,9 +71,7 @@ class DockerImageTestRunner implements TestRunnerInterface
 
         $cmd = "docker run --rm " . $entrypoint . " " . $envCommands . " --name " . $this->name . " -d " . $this->dockerImage;
 
-        if ($this->debugMode) {
-            echo $cmd . PHP_EOL;
-        }
+        $this->outWriter->debug("Setup: " . $cmd);
 
         $output = shell_exec($cmd);
     }
@@ -83,6 +82,9 @@ class DockerImageTestRunner implements TestRunnerInterface
     public function tearDown(): void
     {
         $cmd = "docker rm -f " . $this->name;
+
+        $this->outWriter->debug("Teardown: " . $cmd);
+
         $output = shell_exec($cmd);
     }
 
@@ -93,8 +95,6 @@ class DockerImageTestRunner implements TestRunnerInterface
     public function runTest($command): string
     {
         $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
-
-        #  echo $cmd . PHP_EOL;
 
         $output = shell_exec($cmd);
 

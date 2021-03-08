@@ -53,12 +53,12 @@ class PhpModuleTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        # do not set the huge liste as output
+        # do not set the huge list as output
         $result->setOutput('');
 
-        if (!$this->stringContains($this->expected, $output)) {
-            $result->setSuccess(false);
-        }
+        $contains = $this->stringContains($this->expected, $output);
+
+        $result->setSuccess($contains);
 
         return $result;
     }

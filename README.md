@@ -21,7 +21,7 @@ Why not just testing all these different Xdebug versions of your Docker images!?
 SVRUnit is based on a `phar` file and thus requires PHP to be installed. But once that is done, just download the ZIP, extract the PHAR and you're ready to go.
 
 ```
-curl -O http://www.svrunit.com/downloads/svrunit.zip
+curl -O https://www.svrunit.com/downloads/svrunit.zip
 unzip -o svrunit.zip
 rm -f svrunit.zip
 ```

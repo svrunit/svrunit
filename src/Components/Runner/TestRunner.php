@@ -135,7 +135,8 @@ class TestRunner
                 $runner = new DockerImageTestRunner(
                     $suite->getDockerImage(),
                     $suite->getDockerEnvVariables(),
-                    $suite->getDockerEntrypoint()
+                    $suite->getDockerEntrypoint(),
+                    $this->debugMode
                 );
                 break;
 

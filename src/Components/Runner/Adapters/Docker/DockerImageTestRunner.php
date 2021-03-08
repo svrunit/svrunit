@@ -28,18 +28,24 @@ class DockerImageTestRunner implements TestRunnerInterface
      */
     private $name;
 
+    /**
+     * @var bool
+     */
+    private $debugMode;
+
 
     /**
-     * DockerImageTestRunner constructor.
      * @param string $dockerImage
      * @param array $envVariables
      * @param string $entryPoint
+     * @param bool $debugMode
      */
-    public function __construct(string $dockerImage, array $envVariables, string $entryPoint)
+    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, bool $debugMode)
     {
         $this->dockerImage = $dockerImage;
         $this->envVariables = $envVariables;
         $this->entryPoint = $entryPoint;
+        $this->debugMode = $debugMode;
 
         $this->name = "svrunit_" . $this->getRandomName(4);
     }
@@ -64,10 +70,11 @@ class DockerImageTestRunner implements TestRunnerInterface
 
         $cmd = "docker run --rm " . $entrypoint . " " . $envCommands . " --name " . $this->name . " -d " . $this->dockerImage;
 
-        # echo $cmd . PHP_EOL;
+        if ($this->debugMode) {
+            echo $cmd . PHP_EOL;
+        }
 
         $output = shell_exec($cmd);
-
     }
 
     /**

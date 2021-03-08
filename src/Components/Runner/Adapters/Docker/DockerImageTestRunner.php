@@ -71,6 +71,8 @@ class DockerImageTestRunner implements TestRunnerInterface
 
         $cmd = "docker run --rm " . $entrypoint . " " . $envCommands . " --name " . $this->name . " -d " . $this->dockerImage;
 
+        $cmd = str_replace('  ', '', $cmd);
+        
         $this->outWriter->debug("Setup: " . $cmd);
 
         $output = shell_exec($cmd);

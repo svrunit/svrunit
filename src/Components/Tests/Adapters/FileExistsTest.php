@@ -23,14 +23,21 @@ class FileExistsTest implements TestInterface
     private $file;
 
     /**
-     * FileExistsTest constructor.
+     * @var bool
+     */
+    private $expected;
+
+
+    /**
      * @param string $name
      * @param string $file
+     * @param bool $expected
      */
-    public function __construct(string $name, string $file)
+    public function __construct(string $name, string $file, bool $expected)
     {
         $this->name = $name;
         $this->file = $file;
+        $this->expected = $expected;
     }
 
 
@@ -54,11 +61,17 @@ class FileExistsTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        if ($this->stringContains('svrunit-file-exists', $output)) {
-            $result->setSuccess(true);
+        $isExisting = $this->stringContains('svrunit-file-exists', $output);
+
+        if ($this->expected) {
+            $result->setSuccess($isExisting);
+        } else {
+            $result->setSuccess(!$isExisting);
+        }
+
+        if ($isExisting) {
             $result->setOutput('file existing');
         } else {
-            $result->setSuccess(false);
             $result->setOutput('file not existing');
         }
 

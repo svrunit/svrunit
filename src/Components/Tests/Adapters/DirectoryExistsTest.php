@@ -21,16 +21,22 @@ class DirectoryExistsTest implements TestInterface
      */
     private $directory;
 
+    /**
+     * @var bool
+     */
+    private $expected;
+
 
     /**
-     * DirectoryExistsTest constructor.
      * @param string $name
      * @param string $directory
+     * @param bool $expected
      */
-    public function __construct(string $name, string $directory)
+    public function __construct(string $name, string $directory, bool $expected)
     {
         $this->name = $name;
         $this->directory = $directory;
+        $this->expected = $expected;
     }
 
 
@@ -54,11 +60,17 @@ class DirectoryExistsTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        if ($this->stringContains('yes', $output)) {
-            $result->setSuccess(true);
+        $isExisting = $this->stringContains('yes', $output);
+
+        if ($this->expected) {
+            $result->setSuccess($isExisting);
+        } else {
+            $result->setSuccess(!$isExisting);
+        }
+
+        if ($isExisting) {
             $result->setOutput('directory existing');
         } else {
-            $result->setSuccess(false);
             $result->setOutput('directory not existing');
         }
 

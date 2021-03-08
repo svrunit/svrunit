@@ -27,16 +27,23 @@ class FilePermissionTest implements TestInterface
     private $expected;
 
     /**
-     * FilePermissionTest constructor.
+     * @var string
+     */
+    private $notExpected;
+
+
+    /**
      * @param string $name
      * @param string $file
      * @param string $expected
+     * @param string $notExpected
      */
-    public function __construct(string $name, string $file, string $expected)
+    public function __construct(string $name, string $file, string $expected, string $notExpected)
     {
         $this->name = $name;
         $this->file = $file;
         $this->expected = $expected;
+        $this->notExpected = $notExpected;
     }
 
 
@@ -62,9 +69,13 @@ class FilePermissionTest implements TestInterface
 
         $result->setOutput($output);
 
-        if (!$this->stringContains($this->expected, $output)) {
-            $result->setSuccess(false);
+        if (!empty($this->expected)) {
+            $success = $this->stringContains($this->expected, $output);
+        } else {
+            $success = !$this->stringContains($this->notExpected, $output);
         }
+
+        $result->setSuccess($success);
 
         return $result;
     }

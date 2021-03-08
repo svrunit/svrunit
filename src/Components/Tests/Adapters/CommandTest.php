@@ -26,18 +26,24 @@ class CommandTest implements TestInterface
      */
     private $expected;
 
+    /**
+     * @var string
+     */
+    private $notExpected;
+
 
     /**
-     * CommandTest constructor.
      * @param string $name
      * @param string $command
      * @param string $expected
+     * @param string $notExpected
      */
-    public function __construct(string $name, string $command, string $expected)
+    public function __construct(string $name, string $command, string $expected, string $notExpected)
     {
         $this->name = $name;
         $this->command = $command;
         $this->expected = $expected;
+        $this->notExpected = $notExpected;
     }
 
 
@@ -60,9 +66,13 @@ class CommandTest implements TestInterface
 
         $output = $runner->runTest($this->command);
 
-        $containsText = $this->stringContains($this->expected, $output);
+        if (!empty($this->expected)) {
+            $success = $this->stringContains($this->expected, $output);
+        } else {
+            $success = !$this->stringContains($this->notExpected, $output);
+        }
 
-        $result->setSuccess($containsText);
+        $result->setSuccess($success);
         $result->setOutput($output);
 
         return $result;

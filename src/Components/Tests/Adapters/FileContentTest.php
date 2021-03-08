@@ -28,16 +28,22 @@ class FileContentTest implements TestInterface
     private $expected;
 
     /**
-     * FileContentTest constructor.
+     * @var string
+     */
+    private $notExpected;
+
+    /**
      * @param string $name
      * @param string $filename
      * @param string $expected
+     * @param string $notExpected
      */
-    public function __construct(string $name, string $filename, string $expected)
+    public function __construct(string $name, string $filename, string $expected, string $notExpected)
     {
         $this->name = $name;
         $this->filename = $filename;
         $this->expected = $expected;
+        $this->notExpected = $notExpected;
     }
 
 
@@ -62,9 +68,13 @@ class FileContentTest implements TestInterface
 
         $result->setOutput($output);
 
-        if (!$this->stringContains($this->expected, $output)) {
-            $result->setSuccess(false);
+        if (!empty($this->expected)) {
+            $success = $this->stringContains($this->expected, $output);
+        } else {
+            $success = !$this->stringContains($this->notExpected, $output);
         }
+
+        $result->setSuccess($success);
 
         return $result;
     }

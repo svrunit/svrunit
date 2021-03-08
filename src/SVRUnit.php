@@ -12,7 +12,7 @@ class SVRUnit
     /**
      *
      */
-    public const VERSION = "1.0";
+    public const VERSION = "0.9";
 
     /**
      * @var TestRunner

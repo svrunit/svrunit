@@ -53,10 +53,10 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_COMMANDS] as $command) {
                 $cmd = new CommandTest(
-                    (string)$command['name'],
-                    (string)$command['command'],
-                    (string)$command['expected'],
-                    (string)$command['not_expected']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('command', $command, ''),
+                    $this->getValue('expected', $command, ''),
+                    $this->getValue('not_expected', $command, '')
                 );
                 $tests[] = $cmd;
             }
@@ -67,9 +67,9 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_FILE_EXISTS] as $command) {
                 $cmd = new FileExistsTest(
-                    $command['name'],
-                    $command['file'],
-                    (bool)$command['expected']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('file', $command, ''),
+                    (bool)$this->getValue('expected', $command, '0')
                 );
                 $tests[] = $cmd;
             }
@@ -80,9 +80,9 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_DIRECTORY_EXISTS] as $command) {
                 $cmd = new DirectoryExistsTest(
-                    $command['name'],
-                    $command['directory'],
-                    (bool)$command['expected']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('directory', $command, ''),
+                    (bool)$this->getValue('expected', $command, '0')
                 );
                 $tests[] = $cmd;
             }
@@ -93,10 +93,10 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_PHP_INI] as $command) {
                 $cmd = new PhpIniTest(
-                    $command['name'],
-                    $command['setting'],
-                    (string)$command['value'],
-                    (string)$command['not_value']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('setting', $command, ''),
+                    $this->getValue('value', $command, ''),
+                    $this->getValue('not_value', $command, '')
                 );
                 $tests[] = $cmd;
             }
@@ -107,8 +107,8 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_PHP_MODULE] as $command) {
                 $cmd = new PhpModuleTest(
-                    $command['name'],
-                    $command['module']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('module', $command, '')
                 );
                 $tests[] = $cmd;
             }
@@ -119,10 +119,10 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_FILE_PERMISSION] as $command) {
                 $cmd = new FilePermissionTest(
-                    $command['name'],
-                    $command['file'],
-                    (string)$command['expected'],
-                    (string)$command['not_expected']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('file', $command, ''),
+                    $this->getValue('expected', $command, ''),
+                    $this->getValue('not_expected', $command, '')
                 );
                 $tests[] = $cmd;
             }
@@ -133,16 +133,31 @@ class YamlTestParser
             /** @var array $command */
             foreach ($parsed[self::TEST_KEY_FILE_CONTENT] as $command) {
                 $cmd = new FileContentTest(
-                    $command['name'],
-                    $command['file'],
-                    (string)$command['expected'],
-                    (string)$command['not_expected']
+                    $this->getValue('name', $command, ''),
+                    $this->getValue('file', $command, ''),
+                    $this->getValue('expected', $command, ''),
+                    $this->getValue('not_expected', $command, '')
                 );
                 $tests[] = $cmd;
             }
         }
 
         return $tests;
+    }
+
+    /**
+     * @param string $key
+     * @param array $struct
+     * @param string $default
+     * @return string
+     */
+    private function getValue(string $key, array $struct, string $default): string
+    {
+        if (!isset($struct[$key])) {
+            return $default;
+        }
+
+        return (string)$struct[$key];
     }
 
 }

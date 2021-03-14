@@ -1,6 +1,8 @@
 
 [<img src="https://raw.githubusercontent.com/wiki/boxblinkracer/svrunit/assets/logo.png">]()
 
+![ci_pipe](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg)
+
 
 Welcome to SVRUnit - Your Server Testing Framework!
 

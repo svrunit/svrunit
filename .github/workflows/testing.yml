@@ -1,12 +1,11 @@
-name: Tests
+name: CI Pipeline
 
-on:
-  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
 
-  install:
-    name: Test
+  unit_tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
 
@@ -16,6 +15,19 @@ jobs:
       - name: Install Dependencies
         run: make install -B
 
-      - name: Run Tests
+      - name: Run PHPUnit
         run: make test -B
 
+  analyzers:
+    name: Static Analyzers
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: make install -B
+
+      - name: Run PHPStan
+        run: make stan -B

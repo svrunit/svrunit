@@ -1,5 +1,5 @@
 
-[<img src="https://raw.githubusercontent.com/wiki/boxblinkracer/svrunit/assets/logo.png">]()
+[<img src="https://raw.githubusercontent.com/wiki/svrunit/svrunit/assets/logo.png">]()
 
 ![Build Status](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/svrunit/svrunit) ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/svrunit/svrunit/latest)
 
@@ -17,7 +17,7 @@ SVRUnit allows you to configure different test that you can run against your ser
 
 Why not just testing all these different Xdebug versions of your Docker images!?
 
-[<img src="https://raw.githubusercontent.com/wiki/boxblinkracer/svrunit/assets/test-result.png">]()
+[<img src="https://raw.githubusercontent.com/wiki/svrunit/svrunit/assets/test-result.png">]()
 
 ## Installation
 

@@ -2,6 +2,7 @@
 .DS_Store
 /build/svrunit.phar
 /.idea
+/.reports
 /.phpunit.result.cache
 /build
 /src/vendor

@@ -12,5 +12,7 @@ help:
 #------------------------------------------------------------------------------------------------
 
 build: ## Builds SVRUNIT and creates svrunit.phar
-	@docker exec -it build bash -c "cd /app && make build -B"
+	@docker exec -it dev bash -c "cd /app && make build -B"
 
+test: ## Tests SVRUNIT
+	@docker exec -it dev bash -c "cd /app && make install -B && make test -B"

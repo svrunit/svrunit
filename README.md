@@ -1,7 +1,8 @@
 
 [<img src="https://raw.githubusercontent.com/wiki/boxblinkracer/svrunit/assets/logo.png">]()
 
-![ci_pipe](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg)
+![Build Status](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/svrunit/svrunit) ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/svrunit/svrunit/latest)
+
 
 
 Welcome to SVRUnit - Your Server Testing Framework!

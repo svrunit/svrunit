@@ -3,7 +3,7 @@
 namespace SVRUnit\Components\Runner;
 
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
-use SVRUnit\Components\Runner\Adapters\Docker\DockerImageTestRunner;
+use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
 use SVRUnit\Components\Runner\Adapters\Local\LocalTestRunner;
 use SVRUnit\Components\Tests\TestInterface;
 use SVRUnit\Components\Tests\TestResultInterface;
@@ -11,6 +11,7 @@ use SVRUnit\Components\Tests\TestSuite;
 use SVRUnit\Services\ConfigParser\ConfigXmlParser;
 use SVRUnit\Services\ConfigParser\TestFileCollector;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
+use SVRUnit\Services\ShellRunner\ShellRunner;
 use SVRUnit\Services\TestParser\YamlTestParser;
 
 
@@ -134,10 +135,15 @@ class TestRunner
 
             case TestSuite::TYPE_DOCKER_IMAGE:
                 $this->outputWriter->info('Starting tests in new Docker image: ' . $suite->getDockerImage());
-                $runner = new DockerImageTestRunner(
+
+                $containerName = "svrunit_" . $this->getRandomName(4);
+
+                $runner = new DockerImageRunner(
                     $suite->getDockerImage(),
                     $suite->getDockerEnvVariables(),
                     $suite->getDockerEntrypoint(),
+                    $containerName,
+                    new ShellRunner(),
                     $this->outputWriter
                 );
                 break;
@@ -186,6 +192,23 @@ class TestRunner
         $this->outputWriter->error('FAILED ' . $tester->getFailedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS FAILED');
 
         return false;
+    }
+
+    /**
+     * @param $length
+     * @return string
+     */
+    private function getRandomName($length): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
     }
 
 }

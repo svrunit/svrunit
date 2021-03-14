@@ -3,10 +3,12 @@
 namespace SVRUnit\Components\Runner\Adapters\Docker;
 
 
+use _HumbugBox373c0874430e\Roave\Signature\Encoder\Sha1SumEncoder;
 use SVRUnit\Components\Runner\TestRunnerInterface;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
+use SVRUnit\Services\ShellRunner\ShellRunnerInterface;
 
-class DockerImageTestRunner implements TestRunnerInterface
+class DockerImageRunner implements TestRunnerInterface
 {
 
     /**
@@ -30,25 +32,33 @@ class DockerImageTestRunner implements TestRunnerInterface
     private $name;
 
     /**
+     * @var ShellRunnerInterface
+     */
+    private $shellRunner;
+
+    /**
      * @var OutputWriterInterface
      */
     private $outWriter;
 
 
     /**
+     * DockerImageTestRunner constructor.
      * @param string $dockerImage
      * @param array $envVariables
      * @param string $entryPoint
+     * @param string $containerName
+     * @param ShellRunnerInterface $shellRunner
      * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, OutputWriterInterface $outputWriter)
+    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, string $containerName, ShellRunnerInterface $shellRunner, OutputWriterInterface $outputWriter)
     {
         $this->dockerImage = $dockerImage;
         $this->envVariables = $envVariables;
         $this->entryPoint = $entryPoint;
+        $this->shellRunner = $shellRunner;
         $this->outWriter = $outputWriter;
-
-        $this->name = "svrunit_" . $this->getRandomName(4);
+        $this->name = $containerName;
     }
 
 
@@ -72,10 +82,11 @@ class DockerImageTestRunner implements TestRunnerInterface
         $cmd = "docker run --rm " . $entrypoint . " " . $envCommands . " --name " . $this->name . " -d " . $this->dockerImage;
 
         $cmd = str_replace('  ', ' ', $cmd);
+        $cmd = str_replace('  ', ' ', $cmd);
 
         $this->outWriter->debug("Setup: " . $cmd);
 
-        $output = shell_exec($cmd);
+        $output = $this->shellRunner->execute($cmd);
     }
 
     /**
@@ -87,7 +98,7 @@ class DockerImageTestRunner implements TestRunnerInterface
 
         $this->outWriter->debug("Teardown: " . $cmd);
 
-        $output = shell_exec($cmd);
+        $output = $this->shellRunner->execute($cmd);
     }
 
     /**
@@ -98,27 +109,9 @@ class DockerImageTestRunner implements TestRunnerInterface
     {
         $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
 
-        $output = shell_exec($cmd);
+        $output = $this->shellRunner->execute($cmd);
 
         return (string)$output;
-    }
-
-
-    /**
-     * @param $length
-     * @return string
-     */
-    private function getRandomName($length): string
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-
-        return $randomString;
     }
 
 }

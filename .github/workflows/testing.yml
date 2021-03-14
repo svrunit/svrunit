@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  install:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: make install -B
+
+      - name: Run Tests
+        run: make test -B
+

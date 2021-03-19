@@ -47,16 +47,17 @@ class TestRunner
 
     /**
      * @param bool $debugMode
+     * @return bool
      * @throws \Exception
      */
-    public function run(bool $debugMode): void
+    public function run(bool $debugMode): bool
     {
         $this->debugMode = $debugMode;
 
 
         if (!file_exists($this->configFile)) {
             $this->outputWriter->debug('no configuration file provided');
-            return;
+            return false;
         }
 
 
@@ -91,10 +92,10 @@ class TestRunner
         $this->outputWriter->debug($timeMS . ' ms');
 
         if ($errorsOccured) {
-            exit(1);
+            return false;
         }
 
-        exit(0);
+        return true;
     }
 
 

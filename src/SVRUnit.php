@@ -35,9 +35,15 @@ class SVRUnit
      * @param bool $debugMode
      * @throws \Exception
      */
-    public function run(bool $debugMode) : void
+    public function run(bool $debugMode): void
     {
-        $this->testRunner->run($debugMode);
+        $success = $this->testRunner->run($debugMode);
+
+        if ($success) {
+            exit(0);
+        } else {
+            exit(1);
+        }
     }
 
 }

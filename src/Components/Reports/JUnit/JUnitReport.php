@@ -1,9 +1,11 @@
 <?php
 
-namespace SVRUnit\Components\Reports;
+namespace SVRUnit\Components\Reports\JUnit;
 
 use DOMDocument;
+use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Tests\TestSuiteResultInterface;
+
 
 class JUnitReport implements ReportInterface
 {

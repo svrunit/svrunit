@@ -2,9 +2,8 @@
 
 namespace SVRUnit\Commands;
 
-use PHPUnit\Util\Log\JUnit;
-use SVRUnit\Components\Reports\JUnitReport;
-use SVRUnit\Components\Reports\NullReporter;
+use SVRUnit\Components\Reports\JUnit\JUnitReport;
+use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Runner\TestRunner;
 use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
 use SVRUnit\SVRUnit;
@@ -12,7 +11,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TestCommand extends Command
 {
@@ -57,12 +55,11 @@ class TestCommand extends Command
         }
 
         if ($reportJunit) {
+            $path = $this->getAbsolutePath('./.reports/report.xml');
             echo PHP_EOL;
-            echo "Report: JUnit XML" . PHP_EOL;
+            echo "Report: JUnit XML, " . $path . PHP_EOL;
 
-            $report = new JUnitReport(
-                $this->getAbsolutePath('./reports/report.xml')
-            );
+            $report = new JUnitReport($path);
         }
 
         $configAbsolutePath = $this->getAbsolutePath($configFile);

@@ -2,6 +2,7 @@
 
 namespace SVRUnit\Components\Runner;
 
+use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
@@ -110,7 +111,16 @@ class TestRunner
         $this->outputWriter->debug($timeMS . ' ms');
 
 
-        $this->report->generate($suiteResults);
+        if (!$this->report instanceof NullReporter) {
+
+            $this->outputWriter->debug('');
+            $this->outputWriter->debug('Building Test Report...');
+
+            $this->report->generate($suiteResults);
+
+            $this->outputWriter->debug('...done');
+        }
+
 
         if ($errorsOccured) {
             return false;

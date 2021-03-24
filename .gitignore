@@ -9,3 +9,4 @@
 /src/composer.lock
 /vendor
 /tests/playground/reports
+/tests/playground/.reports

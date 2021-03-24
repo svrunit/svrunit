@@ -1,6 +1,8 @@
 <?php
 
-namespace SVRUnit\Components\Reports;
+namespace SVRUnit\Components\Reports\Null;
+
+use SVRUnit\Components\Reports\ReportInterface;
 
 class NullReporter implements ReportInterface
 {

@@ -7,3 +7,4 @@
 /build
 /src/vendor
 /src/composer.lock
+/vendor

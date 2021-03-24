@@ -1,43 +1,25 @@
 <?php
 
+use SVRUnit\SVRUnit;
+use Symfony\Component\Console\Application;
+
 class AppManager
 {
 
     /**
      * @param array $arguments
+     * @throws Exception
      */
     public static function run(array $arguments)
     {
-        $cur_dir = explode('\\', getcwd());
-        $workingDir = $cur_dir[count($cur_dir) - 1];
+        $application = new Application('SVRUnit', SVRUnit::VERSION);
 
-        $config = new SVRUnit\Components\Launcher\Launcher($arguments);
-        $config->load();
+        $cmd = new \SVRUnit\Commands\TestCommand();
+        $application->add($cmd);
 
-        $options = $config->getOptions();
+        $application->setDefaultCommand($cmd->getName());
 
-        echo "SVRUnit Testing Framework, v" . \SVRUnit\SVRUnit::VERSION . PHP_EOL;
-        echo "Copyright (c) 2021 Christian Dangl" . PHP_EOL;
-        echo "www.svrunit.com" . PHP_EOL;
-        echo PHP_EOL;
-
-        if ($options->isShowVersion()) {
-            # we only show the version above
-            # so lets quit
-            return;
-        }
-
-        $configAbsolutePath = (!empty($options->getConfigurationFile())) ? $workingDir . '/' . $options->getConfigurationFile() : '';
-
-        echo "Configuration: " . $configAbsolutePath . PHP_EOL;
-        echo PHP_EOL;
-
-        $runner = new SVRUnit\SVRUnit($configAbsolutePath);
-
-        $runner->run(
-            $options->isDebugMode()
-        );
-
+        $application->run();
     }
 
 }

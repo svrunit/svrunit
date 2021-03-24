@@ -1,0 +1,15 @@
+<svrunit setupTime="0">
+
+    <testsuites>
+
+        <testsuite name="dockware/flex:latest 1" dockerImage="dockware/flex:latest" dockerEnv="">
+            <directory>./tests</directory>
+        </testsuite>
+
+        <testsuite name="dockware/flex:latest 2" dockerImage="dockware/flex:latest" dockerEnv="">
+            <directory>./tests</directory>
+        </testsuite>
+
+    </testsuites>
+
+</svrunit>

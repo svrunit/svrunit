@@ -12,6 +12,6 @@ class SVRUnit
     /**
      *
      */
-    public const VERSION = "1.1";
+    public const VERSION = "1.2";
 
 }

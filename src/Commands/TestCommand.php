@@ -2,6 +2,11 @@
 
 namespace SVRUnit\Commands;
 
+use PHPUnit\Util\Log\JUnit;
+use SVRUnit\Components\Reports\JUnitReport;
+use SVRUnit\Components\Reports\NullReporter;
+use SVRUnit\Components\Runner\TestRunner;
+use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
 use SVRUnit\SVRUnit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +26,8 @@ class TestCommand extends Command
             ->setName('test')
             ->setDescription('Starts the tests for the provided configuration file')
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, '', '')
-            ->addOption('debug', null, InputOption::VALUE_NONE, '');
+            ->addOption('debug', null, InputOption::VALUE_NONE, '')
+            ->addOption('report-junit', null, InputOption::VALUE_NONE, '');
 
         parent::configure();
     }
@@ -41,35 +47,57 @@ class TestCommand extends Command
 
         $configFile = (string)$input->getOption('configuration');
         $debug = ($input->getOption('debug') !== false);
+        $reportJunit = ($input->getOption('report-junit') !== false);
 
+        $report = new NullReporter();
 
         if ($debug) {
             echo PHP_EOL;
             echo "Debug Mode: active" . PHP_EOL;
         }
 
-        $configAbsolutePath = $this->getConfigFileAbsolutePath($configFile);
+        if ($reportJunit) {
+            echo PHP_EOL;
+            echo "Report: JUnit XML" . PHP_EOL;
+
+            $report = new JUnitReport(
+                $this->getAbsolutePath('./reports/report.xml')
+            );
+        }
+
+        $configAbsolutePath = $this->getAbsolutePath($configFile);
 
         echo "Configuration: " . $configAbsolutePath . PHP_EOL;
         echo PHP_EOL;
 
-        $runner = new SVRUnit($configAbsolutePath);
-        $runner->run($debug);
 
-        return 0;
+        $outputWriter = new ColoredOutputWriter();
+
+        $testRunner = new TestRunner($configAbsolutePath, $outputWriter, $report);
+        $success = $testRunner->run($debug);
+
+        if ($success) {
+            return 0;
+        }
+
+        return 1;
     }
 
+
     /**
+     * @param string $filename
      * @return string
      */
-    private function getConfigFileAbsolutePath(string $configFile): string
+    private function getAbsolutePath(string $filename): string
     {
+        if (empty($filename)) {
+            return '';
+        }
+
         $cur_dir = explode('\\', getcwd());
         $workingDir = $cur_dir[count($cur_dir) - 1];
 
-        $configAbsolutePath = (!empty($configFile)) ? $workingDir . '/' . $configFile : '';
-
-        return $configAbsolutePath;
+        return $workingDir . '/' . $filename;
     }
 
 }

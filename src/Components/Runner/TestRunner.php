@@ -2,12 +2,15 @@
 
 namespace SVRUnit\Components\Runner;
 
+use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
 use SVRUnit\Components\Runner\Adapters\Local\LocalTestRunner;
 use SVRUnit\Components\Tests\TestInterface;
 use SVRUnit\Components\Tests\TestResultInterface;
 use SVRUnit\Components\Tests\TestSuite;
+use SVRUnit\Components\Tests\TestSuiteResult;
+use SVRUnit\Components\Tests\TestSuiteResultInterface;
 use SVRUnit\Services\ConfigParser\ConfigXmlParser;
 use SVRUnit\Services\ConfigParser\TestFileCollector;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
@@ -33,16 +36,28 @@ class TestRunner
      */
     private $debugMode;
 
+    /**
+     * @var ReportInterface
+     */
+    private $report;
+
+    /**
+     * @var TestSuiteResultInterface[]
+     */
+    private $results;
+
 
     /**
      * TestRunner constructor.
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
+     * @param ReportInterface $report
      */
-    public function __construct(string $configFile, OutputWriterInterface $outputWriter)
+    public function __construct(string $configFile, OutputWriterInterface $outputWriter, ReportInterface $report)
     {
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
+        $this->report = $report;
     }
 
     /**
@@ -68,6 +83,7 @@ class TestRunner
 
         $errorsOccured = false;
 
+        $suiteResults = array();
 
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
@@ -75,13 +91,15 @@ class TestRunner
             $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
             $this->outputWriter->debug('');
 
-            $success = $this->runTestSuite($suite);
+            $result = $this->runTestSuite($suite);
 
-            if (!$success) {
+            if (!$result->hasErrors()) {
                 $errorsOccured = true;
             }
 
             $this->outputWriter->debug('');
+
+            $suiteResults[] = $result;
         }
 
         $endTime = microtime(true);
@@ -90,6 +108,9 @@ class TestRunner
         $this->outputWriter->debug('');
         $this->outputWriter->debug('Time: ');
         $this->outputWriter->debug($timeMS . ' ms');
+
+
+        $this->report->generate($suiteResults);
 
         if ($errorsOccured) {
             return false;
@@ -101,11 +122,10 @@ class TestRunner
 
     /**
      * @param TestSuite $suite
-     * @param int $setupTimeSeconds
-     * @return bool
+     * @return TestSuiteResultInterface
      * @throws \Exception
      */
-    private function runTestSuite(TestSuite $suite): bool
+    private function runTestSuite(TestSuite $suite): TestSuiteResultInterface
     {
         $parser = new YamlTestParser();
         $fileCollector = new TestFileCollector();
@@ -126,7 +146,7 @@ class TestRunner
 
         if (count($allSuiteTests) <= 0) {
             $this->outputWriter->warning('NO TESTS FOUND');
-            return false;
+            return new TestSuiteResult($suite, array());
         }
 
         /** @var TestRunnerInterface|null $runner */
@@ -176,23 +196,23 @@ class TestRunner
 
         if ($tester->getFailedTestsCount() <= 0) {
             $this->outputWriter->success('OK ' . $tester->getPassedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS PASSED');
-            return true;
-        }
+        } else {
 
-        /** @var TestResultInterface $result */
-        foreach ($tester->getFailedTests() as $result) {
-            $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
+            /** @var TestResultInterface $result */
+            foreach ($tester->getFailedTests() as $result) {
+                $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
 
-            if ($this->debugMode) {
-                $this->outputWriter->debug('Actual: ' . $result->getOutput());
-                $this->outputWriter->debug('Expected: ' . $result->getExpected());
+                if ($this->debugMode) {
+                    $this->outputWriter->debug('Actual: ' . $result->getOutput());
+                    $this->outputWriter->debug('Expected: ' . $result->getExpected());
+                }
             }
+
+            $this->outputWriter->debug('');
+            $this->outputWriter->error('FAILED ' . $tester->getFailedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS FAILED');
         }
 
-        $this->outputWriter->debug('');
-        $this->outputWriter->error('FAILED ' . $tester->getFailedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS FAILED');
-
-        return false;
+        return new TestSuiteResult($suite, $tester->getAllResults());
     }
 
     /**

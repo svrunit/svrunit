@@ -17,6 +17,7 @@
     "require": {
         "php": ">=7.2",
         "ext-simplexml": "*",
+        "ext-dom": "*",
         "symfony/yaml": "^4.0",
         "symfony/console": "*"
     },
@@ -35,7 +36,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SVRUnit\\Tests\\": "../tests"
+            "SVRUnit\\Tests\\": "../tests/phpunit"
         }
     }
 }

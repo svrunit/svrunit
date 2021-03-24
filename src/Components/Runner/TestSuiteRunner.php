@@ -74,6 +74,14 @@ class TestSuiteRunner
     }
 
     /**
+     * @return array
+     */
+    public function getAllResults()
+    {
+        return array_merge($this->failedTests, $this->passedTests);
+    }
+
+    /**
      * @param TestRunnerInterface $runner
      * @param OutputWriterInterface $outputWriter
      * @param bool $debugMode

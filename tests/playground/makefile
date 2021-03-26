@@ -14,3 +14,6 @@ help:
 test: ## Runs all tests
 	@php ../../build/svrunit.phar --configuration=svrunit.xml --report-junit --debug
 
+report: ## Shows the last report
+	@npm install -g junit-cli-report-viewer
+	@junit-cli-report-viewer .reports/report.xml

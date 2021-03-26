@@ -163,7 +163,7 @@ class TestRunner
                 $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
 
                 if ($this->debugMode) {
-                    $this->outputWriter->debug('Actual: ' . $result->getOutput());
+                    $this->outputWriter->debug('Actual: ' . $result->getActual());
                     $this->outputWriter->debug('Expected: ' . $result->getExpected());
                 }
             }

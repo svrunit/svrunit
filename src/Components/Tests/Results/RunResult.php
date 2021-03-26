@@ -63,4 +63,32 @@ class RunResult
         return false;
     }
 
+    /**
+     * @return int
+     */
+    public function getTestCount(): int
+    {
+        $count = 0;
+
+        foreach ($this->testSuiteResults as $suiteResult) {
+            $count .= count($suiteResult->getAllTestResults());
+        }
+
+        return $count;
+    }
+
+    /**
+     * @return int
+     */
+    public function getErrorCount(): int
+    {
+        $count = 0;
+
+        foreach ($this->testSuiteResults as $suiteResult) {
+            $count .= count($suiteResult->getFailedTests());
+        }
+
+        return $count;
+    }
+
 }

@@ -36,12 +36,12 @@ class JUnitReport implements ReportInterface
     {
         $content = '<?xml version="1.0" encoding="UTF-8"?>';
 
-        $content .= '<testsuites>';
+        $content .= '<testsuites name="SVRUnit Tests" tests="' . $report->getTestCount() . '" time="' . $report->getTestTime() . '" failures="' . $report->getErrorCount() . '">';
 
 
         foreach ($report->getTestSuiteResults() as $suite) {
 
-            $content .= '<testsuite name="' . $suite->getTestSuite()->getName() . '" tests="' . count($suite->getAllTestResults()) . '" time="' . $suite->getTestTime() . '" failures="0" errors="' . count($suite->getFailedTests()) . '">';
+            $content .= '<testsuite name="' . $suite->getTestSuite()->getName() . '" tests="' . count($suite->getAllTestResults()) . '" time="' . $suite->getTestTime() . '" skipped="0" failures="0" errors="' . count($suite->getFailedTests()) . '">';
 
             foreach ($suite->getAllTestResults() as $test) {
 

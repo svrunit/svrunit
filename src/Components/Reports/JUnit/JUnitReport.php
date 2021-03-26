@@ -4,7 +4,10 @@ namespace SVRUnit\Components\Reports\JUnit;
 
 use DOMDocument;
 use SVRUnit\Components\Reports\ReportInterface;
-use SVRUnit\Components\Tests\TestSuiteResultInterface;
+use SVRUnit\Components\Reports\TestResult;
+use SVRUnit\Components\Reports\TestSuiteResult;
+use SVRUnit\Components\Tests\Results\RunResult;
+use SVRUnit\Components\Tests\Results\SuiteResult;
 
 
 class JUnitReport implements ReportInterface
@@ -27,31 +30,28 @@ class JUnitReport implements ReportInterface
 
 
     /**
-     * @param TestSuiteResultInterface[] $suites
+     * @param RunResult $report
      */
-    public function generate(array $suites): void
+    public function generate(RunResult $report): void
     {
         $content = '<?xml version="1.0" encoding="UTF-8"?>';
 
         $content .= '<testsuites>';
 
-        foreach ($suites as $suite) {
 
-            $testCount = count($suite->getResults());
+        foreach ($report->getTestSuiteResults() as $suite) {
 
-            $content .= '<testsuite name="' . $suite->getName() . '" tests="' . $testCount . '">';
+            $content .= '<testsuite name="' . $suite->getTestSuite()->getName() . '" tests="' . count($suite->getAllTestResults()) . '" time="' . $suite->getTestTime() . '" failures="0" errors="0">';
 
-            foreach ($suite->getResults() as $testResult) {
+            foreach ($suite->getAllTestResults() as $test) {
 
-                $errorCount = ($testResult->isSuccess()) ? 0 : 1;
+                $content .= '<testcase name="' . $test->getTest()->getName() . '" assertions="' . $test->getAssertions() . '" time="' . $test->getTime() . '" errors="1">';
 
-                $content .= '<testcase name="' . $testResult->getTest()->getName() . '" assertions="1" errors="' . $errorCount . '">';
-
-                if (!$testResult->isSuccess()) {
-                    $content .= '<failure name="' . $testResult->getTest()->getName() . '" type="SVRunit_AssertionException">';
+                if (!$test->isSuccess()) {
+                    $content .= '<failure name="' . $test->getTest()->getName() . '" type="SVRunit_AssertionException">';
                     $content .= PHP_EOL;
-                    $content .= 'Expected: ' . $testResult->getExpected() . PHP_EOL;
-                    $content .= 'Actual: ' . $testResult->getOutput();
+                    $content .= 'Expected: ' . $test->getExpected() . PHP_EOL;
+                    $content .= 'Actual: ' . $test->getActual() . PHP_EOL;
                     $content .= '</failure>';
                 }
 

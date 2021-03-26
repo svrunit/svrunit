@@ -3,9 +3,8 @@
 namespace SVRUnit\Components\Tests\Adapters;
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResult;
-use SVRUnit\Components\Tests\TestResultInterface;
 
 
 class DirectoryExistsTest implements TestInterface
@@ -50,12 +49,10 @@ class DirectoryExistsTest implements TestInterface
 
     /**
      * @param TestRunnerInterface $runner
-     * @return TestResultInterface
+     * @return TestResult
      */
-    public function executeTest(TestRunnerInterface $runner): TestResultInterface
+    public function executeTest(TestRunnerInterface $runner): TestResult
     {
-        $result = new TestResult($this, 'exists');
-
         $command = '[ -d ' . $this->directory . ' ] && echo yes || echo no';
 
         $output = $runner->runTest($command);
@@ -63,18 +60,24 @@ class DirectoryExistsTest implements TestInterface
         $isExisting = $this->stringContains('yes', $output);
 
         if ($this->expected) {
-            $result->setSuccess($isExisting);
+            $isSuccess = $isExisting;
         } else {
-            $result->setSuccess(!$isExisting);
+            $isSuccess = !$isExisting;
         }
 
         if ($isExisting) {
-            $result->setOutput('directory existing');
+            $output = 'directory existing';
         } else {
-            $result->setOutput('directory not existing');
+            $output = 'directory not existing';
         }
 
-        return $result;
+        return new TestResult(
+            $this,
+            $isSuccess,
+            1,
+            $this->expected,
+            $output
+        );
     }
 
     /**

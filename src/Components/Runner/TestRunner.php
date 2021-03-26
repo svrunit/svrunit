@@ -4,18 +4,19 @@ namespace SVRUnit\Components\Runner;
 
 use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Reports\ReportInterface;
+use SVRUnit\Components\Reports\TestSuiteResult;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
 use SVRUnit\Components\Runner\Adapters\Local\LocalTestRunner;
-use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResultInterface;
+use SVRUnit\Components\Tests\Results\RunResult;
+use SVRUnit\Components\Tests\Results\SuiteResult;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestSuite;
-use SVRUnit\Components\Tests\TestSuiteResult;
-use SVRUnit\Components\Tests\TestSuiteResultInterface;
 use SVRUnit\Services\ConfigParser\ConfigXmlParser;
 use SVRUnit\Services\ConfigParser\TestFileCollector;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 use SVRUnit\Services\ShellRunner\ShellRunner;
+use SVRUnit\Services\Stopwatch\Stopwatch;
 use SVRUnit\Services\TestParser\YamlTestParser;
 
 
@@ -47,6 +48,11 @@ class TestRunner
      */
     private $results;
 
+    /**
+     * @var ConfigXmlParser
+     */
+    private $parserSuites;
+
 
     /**
      * TestRunner constructor.
@@ -59,7 +65,10 @@ class TestRunner
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
         $this->report = $report;
+
+        $this->parserSuites = new ConfigXmlParser();
     }
+
 
     /**
      * @param bool $debugMode
@@ -70,21 +79,17 @@ class TestRunner
     {
         $this->debugMode = $debugMode;
 
+        $runResult = new RunResult();
 
         if (!file_exists($this->configFile)) {
             $this->outputWriter->debug('no configuration file provided');
-            return false;
+            return $runResult->hasErrors();
         }
 
+        # first start by loading our
+        # list of test suites from our xml configuration file
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
 
-        $configXMLParser = new ConfigXmlParser();
-        $testSuites = $configXMLParser->loadTestSuites($this->configFile);
-
-        $startTime = microtime(true);
-
-        $errorsOccured = false;
-
-        $suiteResults = array();
 
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
@@ -94,58 +99,121 @@ class TestRunner
 
             $result = $this->runTestSuite($suite);
 
-            if (!$result->hasErrors()) {
-                $errorsOccured = true;
-            }
-
-            $this->outputWriter->debug('');
-
-            $suiteResults[] = $result;
+            $runResult->addSuiteResult($result);
         }
 
-        $endTime = microtime(true);
-        $timeMS = round(($endTime - $startTime) * 1000, 2);
 
         $this->outputWriter->debug('');
         $this->outputWriter->debug('Time: ');
-        $this->outputWriter->debug($timeMS . ' ms');
+        $this->outputWriter->debug($runResult->getTestTime() . ' ms');
 
 
         if (!$this->report instanceof NullReporter) {
 
             $this->outputWriter->debug('');
-            $this->outputWriter->debug('Building Test Report...');
+            $this->outputWriter->debug('.........building test report........');
 
-            $this->report->generate($suiteResults);
-
-            $this->outputWriter->debug('...done');
+            $this->report->generate($runResult);
         }
 
-
-        if ($errorsOccured) {
-            return false;
-        }
-
-        return true;
+        return !$runResult->hasErrors();
     }
 
 
     /**
      * @param TestSuite $suite
-     * @return TestSuiteResultInterface
+     * @return SuiteResult
      * @throws \Exception
      */
-    private function runTestSuite(TestSuite $suite): TestSuiteResultInterface
+    private function runTestSuite(TestSuite $suite): SuiteResult
+    {
+        $allSuiteTests = $this->loadTestsOfSuite($suite);
+
+        if (count($allSuiteTests) <= 0) {
+
+            $this->outputWriter->warning('NO TESTS FOUND');
+
+            return new SuiteResult($suite, array());
+        }
+
+        $this->outputWriter->debug('');
+
+
+        $runner = new TestSuiteRunner(
+            $suite,
+            $allSuiteTests,
+            $suite->getSetupTimeSeconds()
+        );
+
+
+        # execute our test suite
+        $runner->runTestSuite($this->buildTestRunner($suite));
+
+        # ...and grab the report data
+        $suiteReport = $runner->getResults();
+
+
+        $this->outputWriter->debug('');
+
+        /** @var TestResult $result */
+        foreach ($suiteReport->getAllTestResults() as $result) {
+
+            if (!$result->isSuccess()) {
+
+                $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
+
+                if ($this->debugMode) {
+                    $this->outputWriter->debug('Actual: ' . $result->getOutput());
+                    $this->outputWriter->debug('Expected: ' . $result->getExpected());
+                }
+            }
+        }
+
+        $this->outputWriter->debug('');
+
+        if ($suiteReport->hasErrors()) {
+
+            $this->outputWriter->error('FAILED ' . count($suiteReport->getFailedTests()) . '/' . count($suiteReport->getAllTestResults()) . ' TESTS FAILED');
+
+        } else {
+
+            $this->outputWriter->success('OK ' . count($suiteReport->getPassedTests()) . '/' . count($suiteReport->getAllTestResults()) . ' TESTS PASSED');
+        }
+
+        return $suiteReport;
+    }
+
+    /**
+     * @param $length
+     * @return string
+     */
+    private function getRandomName($length): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
+
+
+    /**
+     * @param TestSuite $suite
+     * @return array
+     */
+    private function loadTestsOfSuite(TestSuite $suite): array
     {
         $parser = new YamlTestParser();
         $fileCollector = new TestFileCollector();
         $allSuiteTests = array();
 
+
         /** @var array $testFiles */
-        $testFiles = $fileCollector->searchTestFiles(
-            dirname($this->configFile),
-            $suite->getTestFolders()
-        );
+        $testFiles = $fileCollector->searchTestFiles(dirname($this->configFile), $suite->getTestFolders());
 
 
         /** @var string $file */
@@ -154,12 +222,16 @@ class TestRunner
             $allSuiteTests = array_merge($newTests, $allSuiteTests);
         }
 
-        if (count($allSuiteTests) <= 0) {
-            $this->outputWriter->warning('NO TESTS FOUND');
-            return new TestSuiteResult($suite, array());
-        }
+        return $allSuiteTests;
+    }
 
-        /** @var TestRunnerInterface|null $runner */
+    /**
+     * @param TestSuite $suite
+     * @return TestRunnerInterface
+     * @throws \Exception
+     */
+    private function buildTestRunner(TestSuite $suite): TestRunnerInterface
+    {
         $runner = null;
 
         switch ($suite->getType()) {
@@ -198,48 +270,8 @@ class TestRunner
                 throw new \Exception('Undefined Runner Type');
         }
 
-
-        $tester = new TestSuiteRunner($allSuiteTests, $suite->getSetupTimeSeconds());
-        $tester->testAll($runner, $this->outputWriter, $this->debugMode);
-
-        $this->outputWriter->debug('');
-
-        if ($tester->getFailedTestsCount() <= 0) {
-            $this->outputWriter->success('OK ' . $tester->getPassedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS PASSED');
-        } else {
-
-            /** @var TestResultInterface $result */
-            foreach ($tester->getFailedTests() as $result) {
-                $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
-
-                if ($this->debugMode) {
-                    $this->outputWriter->debug('Actual: ' . $result->getOutput());
-                    $this->outputWriter->debug('Expected: ' . $result->getExpected());
-                }
-            }
-
-            $this->outputWriter->debug('');
-            $this->outputWriter->error('FAILED ' . $tester->getFailedTestsCount() . '/' . $tester->getAllTestsCount() . ' TESTS FAILED');
-        }
-
-        return new TestSuiteResult($suite, $tester->getAllResults());
+        return $runner;
     }
 
-    /**
-     * @param $length
-     * @return string
-     */
-    private function getRandomName($length): string
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-
-        return $randomString;
-    }
 
 }

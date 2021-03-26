@@ -12,6 +12,7 @@ help:
 #------------------------------------------------------------------------------------------------
 
 build: ## Builds SVRUNIT and creates svrunit.phar
+	@cd src && rm -rf composer.lock
 	@cd src && composer install --no-dev
 	@echo "===================================================================="
 	@echo "verifying if phar files can be created....phar.readonly has to be OFF"

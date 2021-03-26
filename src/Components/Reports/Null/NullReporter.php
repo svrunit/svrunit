@@ -3,14 +3,15 @@
 namespace SVRUnit\Components\Reports\Null;
 
 use SVRUnit\Components\Reports\ReportInterface;
+use SVRUnit\Components\Tests\Results\RunResult;
 
 class NullReporter implements ReportInterface
 {
 
     /**
-     * @param array $suites
+     * @param RunResult $result
      */
-    public function generate(array $suites): void
+    public function generate(RunResult $result): void
     {
 
     }

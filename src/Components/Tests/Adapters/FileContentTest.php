@@ -4,9 +4,8 @@ namespace SVRUnit\Components\Tests\Adapters;
 
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResult;
-use SVRUnit\Components\Tests\TestResultInterface;
 
 
 class FileContentTest implements TestInterface
@@ -58,15 +57,11 @@ class FileContentTest implements TestInterface
 
     /**
      * @param TestRunnerInterface $runner
-     * @return TestResultInterface
+     * @return TestResult
      */
-    public function executeTest(TestRunnerInterface $runner): TestResultInterface
+    public function executeTest(TestRunnerInterface $runner): TestResult
     {
-        $result = new TestResult($this, $this->expected);
-
         $output = $runner->runTest('cat ' . $this->filename);
-
-        $result->setOutput($output);
 
         if (!empty($this->expected)) {
             $success = $this->stringContains($this->expected, $output);
@@ -74,9 +69,13 @@ class FileContentTest implements TestInterface
             $success = !$this->stringContains($this->notExpected, $output);
         }
 
-        $result->setSuccess($success);
-
-        return $result;
+        return new TestResult(
+            $this,
+            $success,
+            1,
+            $this->expected,
+            $output
+        );
     }
 
     /**

@@ -3,15 +3,14 @@
 
 namespace SVRUnit\Components\Reports;
 
-
-use SVRUnit\Components\Tests\TestSuiteResultInterface;
+use SVRUnit\Components\Tests\Results\RunResult;
 
 interface ReportInterface
 {
 
     /**
-     * @param TestSuiteResultInterface[] $suites
+     * @param RunResult $result
      */
-    public function generate(array $suites): void;
+    public function generate(RunResult $result): void;
 
 }

@@ -4,9 +4,8 @@ namespace SVRUnit\Components\Tests\Adapters;
 
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResult;
-use SVRUnit\Components\Tests\TestResultInterface;
 
 
 class FileExistsTest implements TestInterface
@@ -51,12 +50,10 @@ class FileExistsTest implements TestInterface
 
     /**
      * @param TestRunnerInterface $runner
-     * @return TestResultInterface
+     * @return TestResult
      */
-    public function executeTest(TestRunnerInterface $runner): TestResultInterface
+    public function executeTest(TestRunnerInterface $runner): TestResult
     {
-        $result = new TestResult($this, 'exists');
-
         $command = '[ -f ' . $this->file . ' ] && echo svrunit-file-exists || echo svrunit-file-not-existing';
 
         $output = $runner->runTest($command);
@@ -64,18 +61,24 @@ class FileExistsTest implements TestInterface
         $isExisting = $this->stringContains('svrunit-file-exists', $output);
 
         if ($this->expected) {
-            $result->setSuccess($isExisting);
+            $success = $isExisting;
         } else {
-            $result->setSuccess(!$isExisting);
+            $success = !$isExisting;
         }
 
         if ($isExisting) {
-            $result->setOutput('file existing');
+            $output = 'file existing';
         } else {
-            $result->setOutput('file not existing');
+            $output = 'file not existing';
         }
 
-        return $result;
+        return new TestResult(
+            $this,
+            $success,
+            1,
+            $this->expected,
+            $output
+        );
     }
 
     /**

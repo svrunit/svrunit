@@ -2,112 +2,107 @@
 
 namespace SVRUnit\Components\Runner;
 
+use SVRUnit\Components\Tests\Results\SuiteResult;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResult;
-use SVRUnit\Services\OutputWriter\OutputWriterInterface;
+use SVRUnit\Components\Tests\TestSuite;
+use SVRUnit\Services\Stopwatch\Stopwatch;
+
 
 class TestSuiteRunner
 {
 
     /**
-     * @var array
+     * @var TestSuite
      */
-    private $tests = array();
+    private $suite;
 
     /**
      * @var array
      */
-    private $passedTests = array();
-
-    /**
-     * @var array
-     */
-    private $failedTests = array();
+    private $tests;
 
     /**
      * @var int
      */
     private $setupTimeSeconds;
 
+    /**
+     * @var TestResult[]
+     */
+    private $allResults;
 
     /**
-     * TestSuiteRunner constructor.
+     * @var Stopwatch
+     */
+    private $stopwatch;
+
+
+    /**
+     * @param TestSuite $suite
      * @param array $tests
      * @param int $setupTimeSeconds
      */
-    public function __construct(array $tests, int $setupTimeSeconds)
+    public function __construct(TestSuite $suite, array $tests, int $setupTimeSeconds)
     {
+        $this->suite = $suite;
         $this->tests = $tests;
         $this->setupTimeSeconds = $setupTimeSeconds;
+
+        $this->allResults = array();
+        $this->stopwatch = new Stopwatch();
     }
 
     /**
-     * @return int
+     * @return SuiteResult
      */
-    public function getAllTestsCount()
+    public function getResults(): SuiteResult
     {
-        return count($this->tests);
-    }
-
-    /**
-     * @return int
-     */
-    public function getPassedTestsCount()
-    {
-        return count($this->passedTests);
-    }
-
-    /**
-     * @return int
-     */
-    public function getFailedTestsCount()
-    {
-        return count($this->failedTests);
-    }
-
-    /**
-     * @return array
-     */
-    public function getFailedTests()
-    {
-        return $this->failedTests;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllResults()
-    {
-        return array_merge($this->failedTests, $this->passedTests);
+        return new SuiteResult($this->suite, $this->allResults);
     }
 
     /**
      * @param TestRunnerInterface $runner
-     * @param OutputWriterInterface $outputWriter
-     * @param bool $debugMode
      */
-    public function testAll(TestRunnerInterface $runner, OutputWriterInterface $outputWriter, bool $debugMode)
+    public function runTestSuite(TestRunnerInterface $runner)
     {
+        # first reset our previous results, if existing
+        $this->allResults = array();
+
+
+        # invoke the setup phase
         $runner->setUp();
+
+        # wait the configured bootup time for our test suite
         sleep($this->setupTimeSeconds);
 
-        $this->failedTests = array();
-        $this->passedTests = array();
 
         /** @var TestInterface $test */
         foreach ($this->tests as $test) {
 
+            # start our stopwatch
+            # before we run that test
+            $this->stopwatch->start();
+
+            # now execute our anonymize test
+            # ...whatever it is...
             /** @var TestResult $result */
             $result = $test->executeTest($runner);
 
-            if ($result->isSuccess()) {
-                $this->passedTests[] = $result;
-            } else {
-                $this->failedTests[] = $result;
-            }
+            # stop our timing, so we now how much
+            # time that test took
+            $this->stopwatch->stop();
+
+            # ...and finally set the time
+            # for our test run
+            $result->setTime($this->stopwatch->getMilliseconds());
+
+
+            $this->allResults[] = $result;
         }
 
-        # teardown runner
+        # last but not least,
+        # invoke the teardown function
         $runner->tearDown();
     }
 

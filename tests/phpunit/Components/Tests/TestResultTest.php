@@ -3,7 +3,7 @@
 namespace SVRUnit\Tests\Components\Tests;
 
 use PHPUnit\Framework\TestCase;
-use SVRUnit\Components\Tests\TestResult;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Tests\Fakes\FakeTest;
 
 class TestResultTest extends TestCase
@@ -15,8 +15,13 @@ class TestResultTest extends TestCase
      */
     public function testSuccessProperty()
     {
-        $r = new TestResult(new FakeTest(), '');
-        $r->setSuccess(true);
+        $r = new TestResult(
+            new FakeTest(),
+            true,
+            1,
+            '',
+            ''
+        );
 
         $this->assertEquals(true, $r->isSuccess());
     }

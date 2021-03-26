@@ -3,9 +3,8 @@
 namespace SVRUnit\Components\Tests\Adapters;
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
+use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
-use SVRUnit\Components\Tests\TestResult;
-use SVRUnit\Components\Tests\TestResultInterface;
 
 
 class PhpModuleTest implements TestInterface
@@ -43,24 +42,29 @@ class PhpModuleTest implements TestInterface
 
     /**
      * @param TestRunnerInterface $runner
-     * @return TestResultInterface
+     * @return TestResult
      */
-    public function executeTest(TestRunnerInterface $runner) : TestResultInterface
+    public function executeTest(TestRunnerInterface $runner): TestResult
     {
-        $result = new TestResult($this, $this->expected);
-
         $command = 'php -m';
 
         $output = $runner->runTest($command);
 
-        # do not set the huge list as output
-        $result->setOutput('');
+        $success = $this->stringContains($this->expected, $output);
 
-        $contains = $this->stringContains($this->expected, $output);
+        if ($success) {
+            $output = 'Module exists';
+        } else {
+            $output = 'Module does not exist';
+        }
 
-        $result->setSuccess($contains);
-
-        return $result;
+        return new TestResult(
+            $this,
+            $success,
+            1,
+            $this->expected,
+            $output
+        );
     }
 
     /**

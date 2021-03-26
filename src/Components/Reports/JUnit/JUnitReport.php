@@ -45,7 +45,7 @@ class JUnitReport implements ReportInterface
 
             foreach ($suite->getAllTestResults() as $test) {
 
-                $content .= '<testcase name="' . $test->getTest()->getName() . '" assertions="' . $test->getAssertions() . '" time="' . $test->getTime() . '" errors="1">';
+                $content .= '<testcase name="' . $test->getTest()->getName() . '" classname="svrunit" assertions="' . $test->getAssertions() . '" time="' . $test->getTime() . '" errors="1">';
 
                 if (!$test->isSuccess()) {
                     $content .= '<failure name="' . $test->getTest()->getName() . '" type="SVRunit_AssertionException">';

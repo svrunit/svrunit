@@ -98,6 +98,18 @@ class TestResult
     }
 
     /**
+     * @return int
+     */
+    public function getErrors(): int
+    {
+        if ($this->success) {
+            return 0;
+        }
+
+        return 1;
+    }
+
+    /**
      * @return mixed
      */
     public function getTime(): int

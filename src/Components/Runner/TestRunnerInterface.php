@@ -12,10 +12,10 @@ interface TestRunnerInterface
     public function setUp(): void;
 
     /**
-     * @param $command
+     * @param string $command
      * @return string
      */
-    public function runTest($command) : string;
+    public function runTest(string $command): string;
 
     /**
      *

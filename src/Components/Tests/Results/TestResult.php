@@ -34,7 +34,7 @@ class TestResult
     private $actual;
 
     /**
-     * @var
+     * @var int
      */
     private $time;
 
@@ -110,7 +110,7 @@ class TestResult
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getTime(): int
     {
@@ -118,12 +118,11 @@ class TestResult
     }
 
     /**
-     * @param mixed $time
+     * @param int $time
      */
     public function setTime(int $time): void
     {
         $this->time = $time;
     }
-
 
 }

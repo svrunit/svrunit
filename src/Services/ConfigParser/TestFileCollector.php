@@ -7,12 +7,11 @@ class TestFileCollector
 {
 
     /**
-     * @author Christian Dangl
-     * @param $configDirectory
+     * @param string $configDirectory
      * @param array $folders
      * @return array
      */
-    public function searchTestFiles($configDirectory, array $folders)
+    public function searchTestFiles(string $configDirectory, array $folders): array
     {
         $testFiles = [];
 
@@ -45,4 +44,5 @@ class TestFileCollector
 
         return $testFiles;
     }
+
 }

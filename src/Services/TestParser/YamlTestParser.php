@@ -10,6 +10,7 @@ use SVRUnit\Components\Tests\Adapters\FileExistsTest;
 use SVRUnit\Components\Tests\Adapters\FilePermissionTest;
 use SVRUnit\Components\Tests\Adapters\PhpIniTest;
 use SVRUnit\Components\Tests\Adapters\PhpModuleTest;
+use Symfony\Component\Yaml\Parser;
 
 class YamlTestParser
 {
@@ -24,12 +25,12 @@ class YamlTestParser
 
 
     /**
-     * @param $testsFile
+     * @param string $testsFile
      * @return array
      */
-    public function parse($testsFile)
+    public function parse(string $testsFile): array
     {
-        $parser = new \Symfony\Component\Yaml\Parser();
+        $parser = new Parser();
 
         $parsed = $parser->parse(file_get_contents($testsFile));
 
@@ -41,10 +42,10 @@ class YamlTestParser
 
 
     /**
-     * @param $parsed
+     * @param array $parsed
      * @return array
      */
-    private function parseTests($parsed)
+    private function parseTests(array $parsed): array
     {
         $tests = [];
 
@@ -151,7 +152,8 @@ class YamlTestParser
      * @param string $default
      * @return string
      */
-    private function getValue(string $key, array $struct, string $default): string
+    private
+    function getValue(string $key, array $struct, string $default): string
     {
         if (!isset($struct[$key])) {
             return $default;

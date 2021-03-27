@@ -25,24 +25,24 @@ class LocalTestRunner implements TestRunnerInterface
 
 
     /**
-     * @return mixed|void
+     *
      */
     public function setUp(): void
     {
     }
 
     /**
-     * @return mixed|void
+     *
      */
     public function tearDown(): void
     {
     }
 
     /**
-     * @param $command
+     * @param string $command
      * @return string
      */
-    function runTest($command): string
+    function runTest(string $command): string
     {
         $output = shell_exec($command . " 2>&1");
 

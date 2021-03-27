@@ -102,10 +102,10 @@ class DockerImageRunner implements TestRunnerInterface
     }
 
     /**
-     * @param $command
+     * @param string $command
      * @return string
      */
-    public function runTest($command): string
+    public function runTest(string $command): string
     {
         $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
 

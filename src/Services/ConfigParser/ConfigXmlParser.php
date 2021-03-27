@@ -10,7 +10,7 @@ class ConfigXmlParser
 {
 
     /**
-     * @param $configFile
+     * @param string $configFile
      * @return array
      */
     public function loadTestSuites(string $configFile): array

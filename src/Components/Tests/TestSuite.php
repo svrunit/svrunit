@@ -62,14 +62,17 @@ class TestSuite
 
 
     /**
-     * @param $folder
+     * @param string $folder
      */
-    public function addTestFolder($folder)
+    public function addTestFolder(string $folder): void
     {
         $this->testFolders[] = $folder;
     }
 
-    public function getType()
+    /**
+     * @return string
+     */
+    public function getType(): string
     {
         if (trim($this->dockerImage) !== '') {
             return self::TYPE_DOCKER_IMAGE;

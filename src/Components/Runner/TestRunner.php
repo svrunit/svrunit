@@ -4,7 +4,6 @@ namespace SVRUnit\Components\Runner;
 
 use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Reports\ReportInterface;
-use SVRUnit\Components\Reports\TestSuiteResult;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
 use SVRUnit\Components\Runner\Adapters\Local\LocalTestRunner;
@@ -16,7 +15,6 @@ use SVRUnit\Services\ConfigParser\ConfigXmlParser;
 use SVRUnit\Services\ConfigParser\TestFileCollector;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 use SVRUnit\Services\ShellRunner\ShellRunner;
-use SVRUnit\Services\Stopwatch\Stopwatch;
 use SVRUnit\Services\TestParser\YamlTestParser;
 
 
@@ -55,7 +53,6 @@ class TestRunner
 
 
     /**
-     * TestRunner constructor.
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
      * @param bool $stopOnErrors
@@ -196,10 +193,10 @@ class TestRunner
     }
 
     /**
-     * @param $length
+     * @param int $length
      * @return string
      */
-    private function getRandomName($length): string
+    private function getRandomName(int $length): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

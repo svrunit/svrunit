@@ -5,10 +5,14 @@ namespace SVRUnit\Components\Tests\Adapters;
 use SVRUnit\Components\Runner\TestRunnerInterface;
 use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestInterface;
+use SVRUnit\Traits\StringTrait;
 
 
 class PhpModuleTest implements TestInterface
 {
+
+    use StringTrait;
+
 
     /**
      * @var string
@@ -65,19 +69,6 @@ class PhpModuleTest implements TestInterface
             $this->expected,
             $output
         );
-    }
-
-    /**
-     * @param $expected
-     * @param $text
-     * @return bool
-     */
-    private function stringContains($expected, $text): bool
-    {
-        if (strpos($text, $expected) !== false) {
-            return true;
-        }
-        return false;
     }
 
 }

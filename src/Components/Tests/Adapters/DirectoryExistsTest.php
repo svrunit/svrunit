@@ -69,6 +69,12 @@ class DirectoryExistsTest implements TestInterface
             $isSuccess = !$isExisting;
         }
 
+        if ($this->expected) {
+            $expectedString = 'directory should exist';
+        } else {
+            $expectedString = 'directory should not exist';
+        }
+
         if ($isExisting) {
             $output = 'directory existing';
         } else {
@@ -79,7 +85,7 @@ class DirectoryExistsTest implements TestInterface
             $this,
             $isSuccess,
             1,
-            $this->expected,
+            $expectedString,
             $output
         );
     }

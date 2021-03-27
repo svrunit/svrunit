@@ -69,6 +69,12 @@ class FileExistsTest implements TestInterface
             $success = !$isExisting;
         }
 
+        if ($this->expected) {
+            $expectedString = 'file should exist';
+        } else {
+            $expectedString = 'file should not exist';
+        }
+
         if ($isExisting) {
             $output = 'file existing';
         } else {
@@ -79,7 +85,7 @@ class FileExistsTest implements TestInterface
             $this,
             $success,
             1,
-            $this->expected,
+            $expectedString,
             $output
         );
     }

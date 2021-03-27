@@ -4,6 +4,15 @@ All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 
+## [1.2.1] - 2021-03-27
+
+### Added
+- Added new option "--stop-on-error" to immediately stop if an error occurs.
+
+### Changed
+- Improved JUnit XML output with more data
+
+
 ## [1.2] - 2021-03-24
 
 ### Added

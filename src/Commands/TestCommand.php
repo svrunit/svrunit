@@ -2,6 +2,7 @@
 
 namespace SVRUnit\Commands;
 
+use SVRUnit\Components\Reports\Html\HtmlReport;
 use SVRUnit\Components\Reports\JUnit\JUnitReport;
 use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Runner\TestRunner;
@@ -27,7 +28,8 @@ class TestCommand extends Command
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, '', '')
             ->addOption('debug', null, InputOption::VALUE_NONE, '')
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, '')
-            ->addOption('report-junit', null, InputOption::VALUE_NONE, '');
+            ->addOption('report-junit', null, InputOption::VALUE_NONE, '')
+            ->addOption('report-html', null, InputOption::VALUE_NONE, '');
 
         parent::configure();
     }
@@ -51,6 +53,7 @@ class TestCommand extends Command
         $debug = ($input->getOption('debug') !== false);
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
+        $reportHtml = ($input->getOption('report-html') !== false);
 
         $report = new NullReporter();
 
@@ -70,6 +73,14 @@ class TestCommand extends Command
             echo "Report: JUnit XML, " . $path . PHP_EOL;
 
             $report = new JUnitReport($path);
+        }
+
+        if ($reportHtml) {
+            $path = $this->getAbsolutePath('./.reports/index.html');
+            echo PHP_EOL;
+            echo "Report: HTML, " . $path . PHP_EOL;
+
+            $report = new HtmlReport($path);
         }
 
         $configAbsolutePath = $this->getAbsolutePath($configFile);

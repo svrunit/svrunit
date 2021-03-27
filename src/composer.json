@@ -19,11 +19,13 @@
         "ext-simplexml": "*",
         "ext-dom": "*",
         "symfony/yaml": "^4.0",
-        "symfony/console": "*"
+        "symfony/console": "*",
+        "twig/twig": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5",
-        "phpstan/phpstan": "*"
+        "phpstan/phpstan": "*",
+        "friendsofphp/php-cs-fixer": "^2.18"
     },
     "config": {
         "optimize-autoloader": true,

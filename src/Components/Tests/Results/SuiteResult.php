@@ -79,7 +79,7 @@ class SuiteResult
      */
     public function getFailedTests(): array
     {
-        $failed = array();
+        $failed = [];
 
         foreach ($this->testResults as $result) {
 
@@ -96,7 +96,7 @@ class SuiteResult
      */
     public function getPassedTests(): array
     {
-        $passed = array();
+        $passed = [];
 
         foreach ($this->testResults as $result) {
 

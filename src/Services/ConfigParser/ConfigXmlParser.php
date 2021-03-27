@@ -18,7 +18,7 @@ class ConfigXmlParser
         $xmlString = file_get_contents($configFile);
         $xmlSettings = simplexml_load_string($xmlString);
 
-        $testSuites = array();
+        $testSuites = [];
 
         $setupTime = (string)$xmlSettings->attributes()->setupTime[0];
 
@@ -51,7 +51,7 @@ class ConfigXmlParser
 
             if ($suiteNode['dockerEnv'] !== null) {
                 $envs = (string)$suiteNode['dockerEnv'];
-                $envVariables = array();
+                $envVariables = [];
                 if (!empty($envs)) {
                     $envVariables = array_filter(explode(',', $envs));
                 }

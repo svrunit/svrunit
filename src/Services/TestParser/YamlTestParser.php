@@ -46,7 +46,7 @@ class YamlTestParser
      */
     private function parseTests($parsed)
     {
-        $tests = array();
+        $tests = [];
 
         if (array_key_exists(self::TEST_KEY_COMMANDS, $parsed)) {
 

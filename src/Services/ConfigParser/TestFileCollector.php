@@ -14,7 +14,7 @@ class TestFileCollector
      */
     public function searchTestFiles($configDirectory, array $folders)
     {
-        $testFiles = array();
+        $testFiles = [];
 
         /** @var string $folder */
         foreach ($folders as $folder) {

@@ -15,7 +15,7 @@ class RunResult
      */
     public function __construct()
     {
-        $this->testSuiteResults = array();
+        $this->testSuiteResults = [];
     }
 
     /**

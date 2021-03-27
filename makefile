@@ -11,24 +11,36 @@ help:
 
 #------------------------------------------------------------------------------------------------
 
-build: ## Builds SVRUNIT and creates svrunit.phar
-	@cd src && rm -rf composer.lock
+install: ## Installs all prod dependencies
 	@cd src && composer install --no-dev
+
+dev: ## Installs all dev dependencies
+	@cd src && composer install
+
+#------------------------------------------------------------------------------------------------
+
+csfix: ## Starts the PHP CS Fixer
+	@php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php --dry-run
+
+stan: ## Starts the PHPStan Analyser
+	@php ./src/vendor/bin/phpstan analyse -c ./.phpstan.neon
+
+test: ## Runs all tests
+	@php ./src/vendor/bin/phpunit --configuration=./phpunit.xml -v
+
+#------------------------------------------------------------------------------------------------
+
+pr: ## Runs and prepares everything for a pull request
+	@php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php
+	@make test -B
+	@make stan -B
+
+#------------------------------------------------------------------------------------------------
+
+build: ## Builds SVRUNIT and creates svrunit.phar
+	@make install -B
 	@echo "===================================================================="
 	@echo "verifying if phar files can be created....phar.readonly has to be OFF"
 	@php -i | grep phar.readonly
 	@php -i | grep "Loaded Configuration"
 	@php build.php
-
-#------------------------------------------------------------------------------------------------
-
-install: ## Installs all dev dependencies
-	@cd src && rm -rf composer.lock
-	@cd src && composer install
-
-stan: ## Starts the PHPStan Analyser
-	@php ./src/vendor/bin/phpstan analyse -c src/phpstan.neon
-
-test: ## Runs all tests
-	@php ./src/vendor/bin/phpunit --configuration=phpunit.xml -v
-

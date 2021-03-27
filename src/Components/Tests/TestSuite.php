@@ -38,7 +38,7 @@ class TestSuite
     /**
      * @var array
      */
-    private $testFolders = array();
+    private $testFolders = [];
 
     /**
      * @var int
@@ -55,7 +55,7 @@ class TestSuite
         $this->name = $name;
 
         $this->dockerEntrypoint = '';
-        $this->dockerEnvVariables = array();
+        $this->dockerEnvVariables = [];
 
         $this->setupTimeSeconds = 0;
     }

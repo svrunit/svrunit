@@ -49,7 +49,7 @@ class TestSuiteRunner
         $this->tests = $tests;
         $this->setupTimeSeconds = $setupTimeSeconds;
 
-        $this->allResults = array();
+        $this->allResults = [];
         $this->stopwatch = new Stopwatch();
     }
 
@@ -67,7 +67,7 @@ class TestSuiteRunner
     public function runTestSuite(TestRunnerInterface $runner)
     {
         # first reset our previous results, if existing
-        $this->allResults = array();
+        $this->allResults = [];
 
 
         # invoke the setup phase

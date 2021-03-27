@@ -133,7 +133,7 @@ class TestRunner
 
             $this->outputWriter->warning('NO TESTS FOUND');
 
-            return new SuiteResult($suite, array());
+            return new SuiteResult($suite, []);
         }
 
         $this->outputWriter->debug('');
@@ -209,7 +209,7 @@ class TestRunner
     {
         $parser = new YamlTestParser();
         $fileCollector = new TestFileCollector();
-        $allSuiteTests = array();
+        $allSuiteTests = [];
 
 
         /** @var array $testFiles */

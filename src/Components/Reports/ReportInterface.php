@@ -13,4 +13,9 @@ interface ReportInterface
      */
     public function generate(RunResult $result): void;
 
+    /**
+     *
+     */
+    public function clear(): void;
+
 }

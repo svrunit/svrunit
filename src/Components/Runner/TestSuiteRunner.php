@@ -37,17 +37,25 @@ class TestSuiteRunner
      */
     private $stopwatch;
 
+    /**
+     * @var bool
+     */
+    private $stopOnErrors;
+
 
     /**
+     * TestSuiteRunner constructor.
      * @param TestSuite $suite
      * @param array $tests
      * @param int $setupTimeSeconds
+     * @param bool $stopOnErrors
      */
-    public function __construct(TestSuite $suite, array $tests, int $setupTimeSeconds)
+    public function __construct(TestSuite $suite, array $tests, int $setupTimeSeconds, bool $stopOnErrors)
     {
         $this->suite = $suite;
         $this->tests = $tests;
         $this->setupTimeSeconds = $setupTimeSeconds;
+        $this->stopOnErrors = $stopOnErrors;
 
         $this->allResults = [];
         $this->stopwatch = new Stopwatch();
@@ -97,8 +105,13 @@ class TestSuiteRunner
             # for our test run
             $result->setTime($this->stopwatch->getMilliseconds());
 
-
             $this->allResults[] = $result;
+
+            # if we should stop on errors
+            # then quit our test run now
+            if (!$result->isSuccess() && $this->stopOnErrors) {
+                break;
+            }
         }
 
         # last but not least,

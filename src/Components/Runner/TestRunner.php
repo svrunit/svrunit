@@ -44,9 +44,9 @@ class TestRunner
     private $report;
 
     /**
-     * @var TestSuiteResultInterface[]
+     * @var bool
      */
-    private $results;
+    private $stopOnErrors;
 
     /**
      * @var ConfigXmlParser
@@ -58,13 +58,15 @@ class TestRunner
      * TestRunner constructor.
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
+     * @param bool $stopOnErrors
      * @param ReportInterface $report
      */
-    public function __construct(string $configFile, OutputWriterInterface $outputWriter, ReportInterface $report)
+    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, ReportInterface $report)
     {
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
         $this->report = $report;
+        $this->stopOnErrors = $stopOnErrors;
 
         $this->parserSuites = new ConfigXmlParser();
     }
@@ -72,18 +74,20 @@ class TestRunner
 
     /**
      * @param bool $debugMode
-     * @return bool
      * @throws \Exception
      */
-    public function run(bool $debugMode): bool
+    public function run(bool $debugMode)
     {
         $this->debugMode = $debugMode;
+
+        # always clear old reports
+        $this->report->clear();
+
 
         $runResult = new RunResult();
 
         if (!file_exists($this->configFile)) {
-            $this->outputWriter->debug('no configuration file provided');
-            return $runResult->hasErrors();
+            throw new \Exception('No configuration file provided!');
         }
 
         # first start by loading our
@@ -94,12 +98,17 @@ class TestRunner
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
 
-            $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
             $this->outputWriter->debug('');
+            $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
 
             $result = $this->runTestSuite($suite);
 
             $runResult->addSuiteResult($result);
+
+            if ($result->hasErrors() && $this->stopOnErrors) {
+                # also quit upcoming test suites
+                break;
+            }
         }
 
 
@@ -116,7 +125,9 @@ class TestRunner
             $this->report->generate($runResult);
         }
 
-        return !$runResult->hasErrors();
+        if ($runResult->hasErrors()) {
+            throw new \Exception('Tests have failed');
+        }
     }
 
 
@@ -142,7 +153,8 @@ class TestRunner
         $runner = new TestSuiteRunner(
             $suite,
             $allSuiteTests,
-            $suite->getSetupTimeSeconds()
+            $suite->getSetupTimeSeconds(),
+            $this->stopOnErrors
         );
 
 

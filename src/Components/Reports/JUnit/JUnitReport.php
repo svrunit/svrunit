@@ -79,4 +79,14 @@ class JUnitReport implements ReportInterface
         file_put_contents($this->filename, $out);
     }
 
+    /**
+     *
+     */
+    public function clear(): void
+    {
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
+        }
+    }
+
 }

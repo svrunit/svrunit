@@ -16,4 +16,11 @@ class NullReporter implements ReportInterface
 
     }
 
+    /**
+     *
+     */
+    public function clear(): void
+    {
+    }
+
 }

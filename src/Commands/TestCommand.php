@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TestCommand extends Command
 {
@@ -25,6 +26,7 @@ class TestCommand extends Command
             ->setDescription('Starts the tests for the provided configuration file')
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, '', '')
             ->addOption('debug', null, InputOption::VALUE_NONE, '')
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, '')
             ->addOption('report-junit', null, InputOption::VALUE_NONE, '');
 
         parent::configure();
@@ -38,6 +40,8 @@ class TestCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
         echo "SVRUnit Testing Framework, v" . SVRUnit::VERSION . PHP_EOL;
         echo "Copyright (c) 2021 Christian Dangl" . PHP_EOL;
         echo "www.svrunit.com" . PHP_EOL;
@@ -45,6 +49,7 @@ class TestCommand extends Command
 
         $configFile = (string)$input->getOption('configuration');
         $debug = ($input->getOption('debug') !== false);
+        $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
 
         $report = new NullReporter();
@@ -52,6 +57,11 @@ class TestCommand extends Command
         if ($debug) {
             echo PHP_EOL;
             echo "Debug Mode: active" . PHP_EOL;
+        }
+
+        if ($stopOnError) {
+            echo PHP_EOL;
+            echo "Stop on Errors: yes" . PHP_EOL;
         }
 
         if ($reportJunit) {
@@ -68,18 +78,30 @@ class TestCommand extends Command
         echo PHP_EOL;
 
 
-        $outputWriter = new ColoredOutputWriter();
+        $testRunner = new TestRunner(
+            $configAbsolutePath,
+            new ColoredOutputWriter(),
+            $stopOnError,
+            $report
+        );
 
-        $testRunner = new TestRunner($configAbsolutePath, $outputWriter, $report);
-        $success = $testRunner->run($debug);
+        try {
 
-        if ($success) {
+            $testRunner->run($debug);
+
+            $io->success("SVRUnit tests successfully completed");
+
             return 0;
+
+        } catch (\Exception $ex) {
+
+            # just show a simple output and
+            # no big red one
+            $io->text($ex->getMessage());
+
+            return 1;
         }
-
-        return 1;
     }
-
 
     /**
      * @param string $filename

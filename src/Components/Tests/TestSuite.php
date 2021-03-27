@@ -70,9 +70,9 @@ class TestSuite
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getType(): string
+    public function getType(): int
     {
         if (trim($this->dockerImage) !== '') {
             return self::TYPE_DOCKER_IMAGE;

@@ -21,7 +21,7 @@ class Stopwatch
      */
     public function start(): void
     {
-        $this->startTime = microtime(true);
+        $this->startTime = (int)microtime(true);
     }
 
     /**
@@ -29,7 +29,7 @@ class Stopwatch
      */
     public function stop(): void
     {
-        $this->endTime = microtime(true);
+        $this->endTime = (int)microtime(true);
     }
 
     /**
@@ -37,7 +37,7 @@ class Stopwatch
      */
     public function getMilliseconds(): int
     {
-        return round(($this->endTime - $this->startTime) * 1000, 2);
+        return (int)round(($this->endTime - $this->startTime) * 1000, 2);
     }
 
 }

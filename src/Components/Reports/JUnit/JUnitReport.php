@@ -4,10 +4,7 @@ namespace SVRUnit\Components\Reports\JUnit;
 
 use DOMDocument;
 use SVRUnit\Components\Reports\ReportInterface;
-use SVRUnit\Components\Reports\TestResult;
-use SVRUnit\Components\Reports\TestSuiteResult;
 use SVRUnit\Components\Tests\Results\RunResult;
-use SVRUnit\Components\Tests\Results\SuiteResult;
 
 
 class JUnitReport implements ReportInterface

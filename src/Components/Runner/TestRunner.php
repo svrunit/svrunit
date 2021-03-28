@@ -2,7 +2,6 @@
 
 namespace SVRUnit\Components\Runner;
 
-use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
@@ -37,9 +36,9 @@ class TestRunner
     private $debugMode;
 
     /**
-     * @var ReportInterface
+     * @var ReportInterface[]
      */
-    private $report;
+    private $reporters;
 
     /**
      * @var bool
@@ -53,16 +52,17 @@ class TestRunner
 
 
     /**
+     * TestRunner constructor.
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
      * @param bool $stopOnErrors
-     * @param ReportInterface $report
+     * @param array $reporters
      */
-    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, ReportInterface $report)
+    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, array $reporters)
     {
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
-        $this->report = $report;
+        $this->reporters = $reporters;
         $this->stopOnErrors = $stopOnErrors;
 
         $this->parserSuites = new ConfigXmlParser();
@@ -78,8 +78,9 @@ class TestRunner
         $this->debugMode = $debugMode;
 
         # always clear old reports
-        $this->report->clear();
-
+        foreach ($this->reporters as $reporter) {
+            $reporter->clear();
+        }
 
         $runResult = new RunResult();
 
@@ -114,12 +115,13 @@ class TestRunner
         $this->outputWriter->debug($runResult->getTestTime() . ' ms');
 
 
-        if (!$this->report instanceof NullReporter) {
-
+        if (count($this->reporters) > 0) {
             $this->outputWriter->debug('');
-            $this->outputWriter->debug('.........building test report........');
+            $this->outputWriter->debug('.........building test reports........');
+        }
 
-            $this->report->generate($runResult);
+        foreach ($this->reporters as $reporter) {
+            $reporter->generate($runResult);
         }
 
         if ($runResult->hasErrors()) {

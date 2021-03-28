@@ -55,7 +55,8 @@ class TestCommand extends Command
         $reportJunit = ($input->getOption('report-junit') !== false);
         $reportHtml = ($input->getOption('report-html') !== false);
 
-        $report = new NullReporter();
+        $reporters = [];
+
 
         if ($debug) {
             echo PHP_EOL;
@@ -72,7 +73,7 @@ class TestCommand extends Command
             echo PHP_EOL;
             echo "Report: JUnit XML, " . $path . PHP_EOL;
 
-            $report = new JUnitReport($path);
+            $reporters[] = new JUnitReport($path);
         }
 
         if ($reportHtml) {
@@ -80,7 +81,7 @@ class TestCommand extends Command
             echo PHP_EOL;
             echo "Report: HTML, " . $path . PHP_EOL;
 
-            $report = new HtmlReport($path);
+            $reporters[] = new HtmlReport($path);
         }
 
         $configAbsolutePath = $this->getAbsolutePath($configFile);
@@ -93,7 +94,7 @@ class TestCommand extends Command
             $configAbsolutePath,
             new ColoredOutputWriter(),
             $stopOnError,
-            $report
+            $reporters
         );
 
         try {

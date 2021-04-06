@@ -4,6 +4,12 @@ All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 
+## [1.2.2] - 2021-04-06
+
+### Added
+- Added new option "--report-html" to generate HTML reports
+
+
 ## [1.2.1] - 2021-03-27
 
 ### Added

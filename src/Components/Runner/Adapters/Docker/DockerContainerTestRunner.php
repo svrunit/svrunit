@@ -14,20 +14,13 @@ class DockerContainerTestRunner implements TestRunnerInterface
      */
     private $containerName;
 
-    /**
-     * @var OutputWriterInterface
-     */
-    private $outWriter;
-
 
     /**
      * @param string $containerName
-     * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(string $containerName, OutputWriterInterface $outputWriter)
+    public function __construct(string $containerName)
     {
         $this->containerName = $containerName;
-        $this->outWriter = $outputWriter;
     }
 
     /**

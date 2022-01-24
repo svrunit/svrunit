@@ -9,18 +9,12 @@ use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 class LocalTestRunner implements TestRunnerInterface
 {
 
-    /**
-     * @var OutputWriterInterface
-     */
-    private $outputWriter;
-
 
     /**
-     * @param OutputWriterInterface $outputWriter
+     *
      */
-    public function __construct(OutputWriterInterface $outputWriter)
+    public function __construct()
     {
-        $this->outputWriter = $outputWriter;
     }
 
 

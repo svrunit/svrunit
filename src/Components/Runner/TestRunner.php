@@ -265,16 +265,13 @@ class TestRunner
             case TestSuite::TYPE_DOCKER_CONTAINER:
                 $this->outputWriter->info('Starting tests in existing Docker container: ' . $suite->getDockerContainer());
                 $runner = new DockerContainerTestRunner(
-                    $suite->getDockerContainer(),
-                    $this->outputWriter
+                    $suite->getDockerContainer()
                 );
                 break;
 
             case TestSuite::TYPE_LOCAL:
                 $this->outputWriter->info('Starting tests locally');
-                $runner = new LocalTestRunner(
-                    $this->outputWriter
-                );
+                $runner = new LocalTestRunner();
                 break;
 
             default:

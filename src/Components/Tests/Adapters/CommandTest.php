@@ -67,7 +67,14 @@ class CommandTest implements TestInterface
     {
         $output = $runner->runTest($this->command);
 
-        if (!empty($this->expected)) {
+        # remove all new lines
+        # and also trim the output for a better comparison
+        $output = str_replace("\r\n", '', $output);
+        $output = str_replace("\r", '', $output);
+        $output = str_replace("\n", '', $output);
+        $output = trim($output);
+
+
         if ($this->expected != "") {
             $success = $this->stringContains($this->expected, $output);
         } else {

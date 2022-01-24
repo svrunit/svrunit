@@ -5,11 +5,8 @@ on: [push, pull_request]
 jobs:
 
   syntax_checks:
-    name: Syntax Checks | PHP ${{ matrix.php }}
+    name: Syntax Checks
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: [ '7.2', '7.3', '7.4', '8.0' ]
     steps:
       - name: Clone Code
         uses: actions/checkout@v2
@@ -17,7 +14,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 7.4
 
       - name: PHP Syntax Checks
         run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l

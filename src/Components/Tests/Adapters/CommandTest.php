@@ -68,6 +68,7 @@ class CommandTest implements TestInterface
         $output = $runner->runTest($this->command);
 
         if (!empty($this->expected)) {
+        if ($this->expected != "") {
             $success = $this->stringContains($this->expected, $output);
         } else {
             $success = !$this->stringContains($this->notExpected, $output);

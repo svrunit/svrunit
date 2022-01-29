@@ -4,6 +4,15 @@ All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 
+## [1.2.3] - 2022-01-29
+
+### Changed
+- Improved command output comparing by removing a few new lines and trim the values first
+
+### Fixed
+- Fix bug where an expected value of "0" in the command tests lead to a wrong behaviour
+
+
 ## [1.2.2] - 2021-04-06
 
 ### Added

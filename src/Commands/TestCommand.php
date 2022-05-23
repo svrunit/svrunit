@@ -45,7 +45,7 @@ class TestCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         echo "SVRUnit Testing Framework, v" . SVRUnit::VERSION . PHP_EOL;
-        echo "Copyright (c) 2021 Christian Dangl" . PHP_EOL;
+        echo "Copyright (c) 2022 Christian Dangl" . PHP_EOL;
         echo "www.svrunit.com" . PHP_EOL;
 
 

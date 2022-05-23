@@ -4,6 +4,7 @@ namespace SVRUnit\Components\Runner;
 
 use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerContainerTestRunner;
+use SVRUnit\Components\Runner\Adapters\Docker\DockerImageCommandRunner;
 use SVRUnit\Components\Runner\Adapters\Docker\DockerImageRunner;
 use SVRUnit\Components\Runner\Adapters\Local\LocalTestRunner;
 use SVRUnit\Components\Tests\Results\RunResult;
@@ -257,6 +258,16 @@ class TestRunner
                     $suite->getDockerEnvVariables(),
                     $suite->getDockerEntrypoint(),
                     $containerName,
+                    new ShellRunner(),
+                    $this->outputWriter
+                );
+                break;
+
+            case TestSuite::TYPE_DOCKER_COMMAND_RUNNER:
+                $this->outputWriter->info('Starting tests in Docker image as command runner');
+                $runner = new DockerImageCommandRunner(
+                    $suite->getDockerImage(),
+                    $suite->getDockerEnvVariables(),
                     new ShellRunner(),
                     $this->outputWriter
                 );

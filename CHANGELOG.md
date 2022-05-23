@@ -4,6 +4,12 @@ All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 
+## [1.2.4]
+
+### Added
+- Added new option "dockerImageRunner" in XML Configuration to also test simple commands that are run in a Docker image.
+
+
 ## [1.2.3] - 2022-01-29
 
 ### Changed

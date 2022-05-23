@@ -9,6 +9,8 @@ class TestSuite
     const TYPE_DOCKER_IMAGE = 1;
     const TYPE_DOCKER_CONTAINER = 2;
     const TYPE_LOCAL = 2;
+    const TYPE_DOCKER_COMMAND_RUNNER = 3;
+
 
     /**
      * @var string
@@ -19,6 +21,11 @@ class TestSuite
      * @var string
      */
     private $dockerImage = '';
+
+    /**
+     * @var bool
+     */
+    private $dockerCommandRunner = false;
 
     /**
      * @var string
@@ -74,6 +81,10 @@ class TestSuite
      */
     public function getType(): int
     {
+        if ($this->dockerCommandRunner) {
+            return self::TYPE_DOCKER_COMMAND_RUNNER;
+        }
+
         if (trim($this->dockerImage) !== '') {
             return self::TYPE_DOCKER_IMAGE;
         }
@@ -116,6 +127,15 @@ class TestSuite
     public function setDockerImage($dockerImage)
     {
         $this->dockerImage = $dockerImage;
+    }
+
+    /**
+     * @param $isEnabled
+     * @return void
+     */
+    public function setDockerCommandRunner($isEnabled)
+    {
+        $this->dockerCommandRunner = $isEnabled;
     }
 
     /**

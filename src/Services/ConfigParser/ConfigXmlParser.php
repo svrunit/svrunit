@@ -41,6 +41,11 @@ class ConfigXmlParser
                 $suite->setDockerImage((string)$suiteNode['dockerImage']);
             }
 
+            if ($suiteNode['dockerCommandRunner'] !== null) {
+                $value = (string)$suiteNode['dockerCommandRunner'];
+                $suite->setDockerCommandRunner((bool)$value);
+            }
+
             if ($suiteNode['dockerContainer'] !== null) {
                 $suite->setDockerContainer((string)$suiteNode['dockerContainer']);
             }

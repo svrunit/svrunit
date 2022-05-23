@@ -5,7 +5,7 @@ services:
 
   build:
     container_name: dev
-    image: php:7.2
+    image: php:7.4
     volumes:
       - "../:/app"
     entrypoint:

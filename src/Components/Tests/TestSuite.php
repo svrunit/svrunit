@@ -130,7 +130,7 @@ class TestSuite
     }
 
     /**
-     * @param $isEnabled
+     * @param bool $isEnabled
      * @return void
      */
     public function setDockerCommandRunner($isEnabled)

@@ -6,12 +6,12 @@ class Stopwatch
 {
 
     /**
-     * @var int
+     * @var float
      */
     private $startTime;
 
     /**
-     * @var int
+     * @var float
      */
     private $endTime;
 
@@ -21,7 +21,7 @@ class Stopwatch
      */
     public function start(): void
     {
-        $this->startTime = (int)microtime(true);
+        $this->startTime = microtime(true);
     }
 
     /**
@@ -29,7 +29,7 @@ class Stopwatch
      */
     public function stop(): void
     {
-        $this->endTime = (int)microtime(true);
+        $this->endTime = microtime(true);
     }
 
     /**

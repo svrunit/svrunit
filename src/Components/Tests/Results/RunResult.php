@@ -71,7 +71,7 @@ class RunResult
         $count = 0;
 
         foreach ($this->testSuiteResults as $suiteResult) {
-            $count .= count($suiteResult->getAllTestResults());
+            $count += count($suiteResult->getAllTestResults());
         }
 
         return $count;

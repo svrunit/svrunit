@@ -94,7 +94,6 @@ class TestSuiteRunner
 
             # now execute our anonymize test
             # ...whatever it is...
-            /** @var TestResult $result */
             $result = $test->executeTest($runner);
 
             # stop our timing, so we now how much
@@ -103,7 +102,8 @@ class TestSuiteRunner
 
             # ...and finally set the time
             # for our test run
-            $result->setTime($this->stopwatch->getMilliseconds());
+            $seconds = $this->stopwatch->getMilliseconds() / 1000.0;
+            $result->setTimeSeconds($seconds);
 
             $this->allResults[] = $result;
 

@@ -61,7 +61,7 @@ class HtmlReport implements ReportInterface
                 $testData = [
                     'name' => $test->getTest()->getName(),
                     'success' => $test->isSuccess(),
-                    'time' => $test->getTime(),
+                    'time' => $test->getTimeSeconds(),
                 ];
 
                 $suiteData['tests'][] = $testData;

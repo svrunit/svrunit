@@ -35,9 +35,9 @@ class RunResult
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getTestTime(): int
+    public function getTestTime(): float
     {
         $time = 0;
 

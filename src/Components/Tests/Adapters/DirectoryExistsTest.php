@@ -22,6 +22,11 @@ class DirectoryExistsTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $directory;
 
     /**
@@ -32,12 +37,14 @@ class DirectoryExistsTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $directory
      * @param bool $expected
      */
-    public function __construct(string $name, string $directory, bool $expected)
+    public function __construct(string $name, string $specFile, string $directory, bool $expected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->directory = $directory;
         $this->expected = $expected;
     }
@@ -83,6 +90,7 @@ class DirectoryExistsTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $isSuccess,
             1,
             $expectedString,

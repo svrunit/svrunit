@@ -21,6 +21,11 @@ class FilePermissionTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $file;
 
     /**
@@ -36,13 +41,15 @@ class FilePermissionTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $file
      * @param string $expected
      * @param string $notExpected
      */
-    public function __construct(string $name, string $file, string $expected, string $notExpected)
+    public function __construct(string $name, string $specFile, string $file, string $expected, string $notExpected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->file = $file;
         $this->expected = $expected;
         $this->notExpected = $notExpected;
@@ -75,6 +82,7 @@ class FilePermissionTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $this->expected,

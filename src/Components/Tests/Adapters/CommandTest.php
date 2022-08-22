@@ -22,6 +22,11 @@ class CommandTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $command;
 
     /**
@@ -37,13 +42,15 @@ class CommandTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $command
      * @param string $expected
      * @param string $notExpected
      */
-    public function __construct(string $name, string $command, string $expected, string $notExpected)
+    public function __construct(string $name, string $specFile, string $command, string $expected, string $notExpected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->command = $command;
         $this->expected = $expected;
         $this->notExpected = $notExpected;
@@ -57,7 +64,6 @@ class CommandTest implements TestInterface
     {
         return $this->name;
     }
-
 
     /**
      * @param TestRunnerInterface $runner
@@ -83,6 +89,7 @@ class CommandTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $this->expected,

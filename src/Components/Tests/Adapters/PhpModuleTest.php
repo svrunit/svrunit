@@ -22,17 +22,23 @@ class PhpModuleTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $expected;
 
 
     /**
-     * PhpModuleTest constructor.
      * @param string $name
+     * @param string $specFile
      * @param string $expectedModule
      */
-    public function __construct(string $name, string $expectedModule)
+    public function __construct(string $name, string $specFile, string $expectedModule)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->expected = $expectedModule;
     }
 
@@ -64,6 +70,7 @@ class PhpModuleTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $this->expected,

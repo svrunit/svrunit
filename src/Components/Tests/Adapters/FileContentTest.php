@@ -22,6 +22,11 @@ class FileContentTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $filename;
 
     /**
@@ -36,13 +41,15 @@ class FileContentTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $filename
      * @param string $expected
      * @param string $notExpected
      */
-    public function __construct(string $name, string $filename, string $expected, string $notExpected)
+    public function __construct(string $name, string $specFile, string $filename, string $expected, string $notExpected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->filename = $filename;
         $this->expected = $expected;
         $this->notExpected = $notExpected;
@@ -74,6 +81,7 @@ class FileContentTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $this->expected,

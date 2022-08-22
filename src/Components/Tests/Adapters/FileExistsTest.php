@@ -22,6 +22,11 @@ class FileExistsTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $file;
 
     /**
@@ -32,12 +37,14 @@ class FileExistsTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $file
      * @param bool $expected
      */
-    public function __construct(string $name, string $file, bool $expected)
+    public function __construct(string $name, string $specFile, string $file, bool $expected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->file = $file;
         $this->expected = $expected;
     }
@@ -83,6 +90,7 @@ class FileExistsTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $expectedString,

@@ -17,6 +17,7 @@ class TestResultTest extends TestCase
     {
         $r = new TestResult(
             new FakeTest(),
+            '',
             true,
             1,
             '',

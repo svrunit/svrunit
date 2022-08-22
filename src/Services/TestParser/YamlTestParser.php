@@ -34,18 +34,16 @@ class YamlTestParser
 
         $parsed = $parser->parse(file_get_contents($testsFile));
 
-        /** @var array $tests */
-        $tests = $this->parseTests($parsed);
-
-        return $tests;
+        return $this->parseTests(basename($testsFile), $parsed);
     }
 
 
     /**
+     * @param string $testFile
      * @param array $parsed
      * @return array
      */
-    private function parseTests(array $parsed): array
+    private function parseTests(string $testFile, array $parsed): array
     {
         $tests = [];
 
@@ -55,6 +53,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_COMMANDS] as $command) {
                 $cmd = new CommandTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('command', $command, ''),
                     $this->getValue('expected', $command, ''),
                     $this->getValue('not_expected', $command, '')
@@ -69,6 +68,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_FILE_EXISTS] as $command) {
                 $cmd = new FileExistsTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('file', $command, ''),
                     (bool)$this->getValue('expected', $command, '0')
                 );
@@ -82,6 +82,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_DIRECTORY_EXISTS] as $command) {
                 $cmd = new DirectoryExistsTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('directory', $command, ''),
                     (bool)$this->getValue('expected', $command, '0')
                 );
@@ -95,6 +96,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_PHP_INI] as $command) {
                 $cmd = new PhpIniTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('setting', $command, ''),
                     $this->getValue('value', $command, ''),
                     $this->getValue('not_value', $command, '')
@@ -109,6 +111,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_PHP_MODULE] as $command) {
                 $cmd = new PhpModuleTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('module', $command, '')
                 );
                 $tests[] = $cmd;
@@ -121,6 +124,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_FILE_PERMISSION] as $command) {
                 $cmd = new FilePermissionTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('file', $command, ''),
                     $this->getValue('expected', $command, ''),
                     $this->getValue('not_expected', $command, '')
@@ -135,6 +139,7 @@ class YamlTestParser
             foreach ($parsed[self::TEST_KEY_FILE_CONTENT] as $command) {
                 $cmd = new FileContentTest(
                     $this->getValue('name', $command, ''),
+                    $testFile,
                     $this->getValue('file', $command, ''),
                     $this->getValue('expected', $command, ''),
                     $this->getValue('not_expected', $command, '')
@@ -152,8 +157,7 @@ class YamlTestParser
      * @param string $default
      * @return string
      */
-    private
-    function getValue(string $key, array $struct, string $default): string
+    private function getValue(string $key, array $struct, string $default): string
     {
         if (!isset($struct[$key])) {
             return $default;

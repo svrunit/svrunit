@@ -46,14 +46,14 @@ class SuiteResult
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getTestTime(): int
+    public function getTestTime(): float
     {
         $time = 0;
 
         foreach ($this->testResults as $result) {
-            $time += $result->getTime();
+            $time += $result->getTimeSeconds();
         }
 
         return $time;

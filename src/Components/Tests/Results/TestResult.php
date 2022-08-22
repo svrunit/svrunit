@@ -14,6 +14,11 @@ class TestResult
     private $test;
 
     /**
+     * @var string
+     */
+    private $className;
+
+    /**
      * @var bool
      */
     private $success;
@@ -34,27 +39,29 @@ class TestResult
     private $actual;
 
     /**
-     * @var int
+     * @var float
      */
-    private $time;
+    private $timeSeconds;
 
 
     /**
      * @param TestInterface $test
+     * @param string $className
      * @param bool $success
      * @param int $assertions
      * @param string $expected
      * @param string $actual
      */
-    public function __construct(TestInterface $test, bool $success, int $assertions, string $expected, string $actual)
+    public function __construct(TestInterface $test, string $className, bool $success, int $assertions, string $expected, string $actual)
     {
         $this->test = $test;
+        $this->className = $className;
         $this->success = $success;
         $this->assertions = $assertions;
         $this->expected = $expected;
         $this->actual = $actual;
 
-        $this->time = 0;
+        $this->timeSeconds = 0;
     }
 
     /**
@@ -63,6 +70,14 @@ class TestResult
     public function getTest(): TestInterface
     {
         return $this->test;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassName(): string
+    {
+        return $this->className;
     }
 
     /**
@@ -110,19 +125,19 @@ class TestResult
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getTime(): int
+    public function getTimeSeconds(): float
     {
-        return $this->time;
+        return $this->timeSeconds;
     }
 
     /**
-     * @param int $time
+     * @param float $time
      */
-    public function setTime(int $time): void
+    public function setTimeSeconds(float $time): void
     {
-        $this->time = $time;
+        $this->timeSeconds = $time;
     }
 
 }

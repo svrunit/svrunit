@@ -22,6 +22,11 @@ class PhpIniTest implements TestInterface
     /**
      * @var string
      */
+    private $specFile;
+
+    /**
+     * @var string
+     */
     private $phpSetting;
 
     /**
@@ -36,13 +41,15 @@ class PhpIniTest implements TestInterface
 
     /**
      * @param string $name
+     * @param string $specFile
      * @param string $phpSetting
      * @param string $expected
      * @param string $notExpected
      */
-    public function __construct(string $name, string $phpSetting, string $expected, string $notExpected)
+    public function __construct(string $name, string $specFile, string $phpSetting, string $expected, string $notExpected)
     {
         $this->name = $name;
+        $this->specFile = $specFile;
         $this->phpSetting = $phpSetting;
         $this->expected = $expected;
         $this->notExpected = $notExpected;
@@ -78,6 +85,7 @@ class PhpIniTest implements TestInterface
 
         return new TestResult(
             $this,
+            $this->specFile,
             $success,
             1,
             $this->expected,

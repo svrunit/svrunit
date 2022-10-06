@@ -9,6 +9,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ### Fixed
 
 - Fixed wrong calculation (error) in ErrorCount for Test Results and Reports
+- Improved the reliability of the Yaml parser and fixed a few NULL crashes due to broken xml configurations
 
 
 ## [1.2.5]

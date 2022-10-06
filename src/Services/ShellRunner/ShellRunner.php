@@ -11,7 +11,7 @@ class ShellRunner implements ShellRunnerInterface
      */
     public function execute(string $command): string
     {
-        return shell_exec($command);
+        return (string)shell_exec($command);
     }
 
 }

@@ -56,7 +56,9 @@ class YamlTestParser
                     $testFile,
                     $this->getValue('command', $command, ''),
                     $this->getValue('expected', $command, ''),
-                    $this->getValue('not_expected', $command, '')
+                    $this->getValue('not_expected', $command, ''),
+                    $this->getValue('setup', $command, ''),
+                    $this->getValue('teardown', $command, '')
                 );
                 $tests[] = $cmd;
             }
@@ -153,12 +155,16 @@ class YamlTestParser
 
     /**
      * @param string $key
-     * @param array $struct
+     * @param array|null $struct
      * @param string $default
      * @return string
      */
-    private function getValue(string $key, array $struct, string $default): string
+    private function getValue(string $key, ?array $struct, string $default): string
     {
+        if ($struct === null) {
+            return $default;
+        }
+
         if (!isset($struct[$key])) {
             return $default;
         }

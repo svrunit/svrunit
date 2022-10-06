@@ -3,6 +3,14 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+
+## [UNRELEASED]
+
+### Fixed
+
+- Fixed wrong calculation (error) in ErrorCount for Test Results and Reports
+
+
 ## [1.2.5]
 
 ### Changed

@@ -85,7 +85,7 @@ class RunResult
         $count = 0;
 
         foreach ($this->testSuiteResults as $suiteResult) {
-            $count .= count($suiteResult->getFailedTests());
+            $count += count($suiteResult->getFailedTests());
         }
 
         return $count;

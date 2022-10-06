@@ -172,11 +172,11 @@ class TestRunner
 
             if (!$result->isSuccess()) {
 
-                $this->outputWriter->debug('[TEST] ' . $result->getTest()->getName() . ' FAILED....');
+                $this->outputWriter->debug('* [TEST] ' . $result->getTest()->getName() . ' FAILED....');
 
                 if ($this->debugMode) {
-                    $this->outputWriter->debug('Actual: ' . $result->getActual());
-                    $this->outputWriter->debug('Expected: ' . $result->getExpected());
+                    $this->outputWriter->debug('    - Expected: ' . $result->getExpected());
+                    $this->outputWriter->debug('    + Actual: ' . $result->getActual());
                 }
             }
         }

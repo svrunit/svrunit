@@ -3,8 +3,14 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
-
 ## [UNRELEASED]
+
+### Added
+
+- The CommandTest does now offer 2 new settings "setup" and "teardown" to run any commands prior or after the test.
+
+### Changed
+- Improve output of Expected and Actual values of test on CLI 
 
 ### Fixed
 

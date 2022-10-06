@@ -3,7 +3,7 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
-## [UNRELEASED]
+## [1.3.0]
 
 ### Added
 

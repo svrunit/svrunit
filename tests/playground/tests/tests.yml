@@ -1,7 +1,15 @@
 commands:
-  - name: "PHP 7.3"
-    command: "php -v"
-    expected: "7.3"
-  - name: "PHP 7.4"
+
+  - name: "Folder exists"
+    setup: "mkdir svrunitTest && touch ./svrunitTest/sample.txt"
+    expected: "sample.txt"
+    command: "ls -l svrunitTest"
+    teardown: "rm -rf svrunitTest"
+
+  - name: "PHP 7.4 is correctly found"
     command: "php -v"
     expected: "7.4"
+
+  - name: "PHP 8.1 is found (fails)"
+    command: "php -v"
+    expected: "8.1"

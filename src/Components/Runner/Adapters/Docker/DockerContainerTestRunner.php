@@ -44,7 +44,7 @@ class DockerContainerTestRunner implements TestRunnerInterface
     public function runTest(string $command): string
     {
         $cmd = "docker exec " . $this->containerName . " bash -c '" . $command . " 2>&1 '";
-        $output = shell_exec($cmd);
+        $output = (string)shell_exec($cmd);
 
         return $output;
     }

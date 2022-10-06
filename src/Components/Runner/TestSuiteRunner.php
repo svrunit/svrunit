@@ -18,7 +18,7 @@ class TestSuiteRunner
     private $suite;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $tests;
 
@@ -46,7 +46,7 @@ class TestSuiteRunner
     /**
      * TestSuiteRunner constructor.
      * @param TestSuite $suite
-     * @param array $tests
+     * @param array<mixed> $tests
      * @param int $setupTimeSeconds
      * @param bool $stopOnErrors
      */
@@ -71,6 +71,7 @@ class TestSuiteRunner
 
     /**
      * @param TestRunnerInterface $runner
+     * @return void
      */
     public function runTestSuite(TestRunnerInterface $runner)
     {

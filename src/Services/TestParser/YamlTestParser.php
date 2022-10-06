@@ -26,13 +26,13 @@ class YamlTestParser
 
     /**
      * @param string $testsFile
-     * @return array
+     * @return array<mixed>
      */
     public function parse(string $testsFile): array
     {
         $parser = new Parser();
 
-        $parsed = $parser->parse(file_get_contents($testsFile));
+        $parsed = $parser->parse((string)file_get_contents($testsFile));
 
         return $this->parseTests(basename($testsFile), $parsed);
     }
@@ -40,8 +40,8 @@ class YamlTestParser
 
     /**
      * @param string $testFile
-     * @param array $parsed
-     * @return array
+     * @param array<mixed> $parsed
+     * @return array<mixed>
      */
     private function parseTests(string $testFile, array $parsed): array
     {
@@ -49,7 +49,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_COMMANDS, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_COMMANDS] as $command) {
                 $cmd = new CommandTest(
                     $this->getValue('name', $command, ''),
@@ -66,7 +66,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_FILE_EXISTS, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_FILE_EXISTS] as $command) {
                 $cmd = new FileExistsTest(
                     $this->getValue('name', $command, ''),
@@ -80,7 +80,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_DIRECTORY_EXISTS, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_DIRECTORY_EXISTS] as $command) {
                 $cmd = new DirectoryExistsTest(
                     $this->getValue('name', $command, ''),
@@ -94,7 +94,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_PHP_INI, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_PHP_INI] as $command) {
                 $cmd = new PhpIniTest(
                     $this->getValue('name', $command, ''),
@@ -109,7 +109,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_PHP_MODULE, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_PHP_MODULE] as $command) {
                 $cmd = new PhpModuleTest(
                     $this->getValue('name', $command, ''),
@@ -122,7 +122,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_FILE_PERMISSION, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_FILE_PERMISSION] as $command) {
                 $cmd = new FilePermissionTest(
                     $this->getValue('name', $command, ''),
@@ -137,7 +137,7 @@ class YamlTestParser
 
         if (array_key_exists(self::TEST_KEY_FILE_CONTENT, $parsed)) {
 
-            /** @var array $command */
+            /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_FILE_CONTENT] as $command) {
                 $cmd = new FileContentTest(
                     $this->getValue('name', $command, ''),
@@ -155,7 +155,7 @@ class YamlTestParser
 
     /**
      * @param string $key
-     * @param array|null $struct
+     * @param array<mixed>|null $struct
      * @param string $default
      * @return string
      */

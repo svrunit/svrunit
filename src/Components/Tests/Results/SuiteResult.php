@@ -21,7 +21,7 @@ class SuiteResult
 
     /**
      * @param TestSuite $suite
-     * @param array $results
+     * @param array<mixed> $results
      */
     public function __construct(TestSuite $suite, array $results)
     {

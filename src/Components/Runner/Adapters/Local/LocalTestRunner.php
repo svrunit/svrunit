@@ -38,7 +38,7 @@ class LocalTestRunner implements TestRunnerInterface
      */
     function runTest(string $command): string
     {
-        $output = shell_exec($command . " 2>&1");
+        $output = (string)shell_exec($command . " 2>&1");
 
         return $output;
     }

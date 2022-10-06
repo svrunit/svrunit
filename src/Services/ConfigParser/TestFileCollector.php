@@ -8,8 +8,8 @@ class TestFileCollector
 
     /**
      * @param string $configDirectory
-     * @param array $folders
-     * @return array
+     * @param array<mixed> $folders
+     * @return array<mixed>
      */
     public function searchTestFiles(string $configDirectory, array $folders): array
     {
@@ -24,17 +24,20 @@ class TestFileCollector
                 continue;
             }
 
+            /** @var array<mixed> $files */
             $files = scandir($fullDir);
 
+            /** @var string $file */
             foreach ($files as $file) {
 
                 if ($file === '.' || $file === '..') {
                     continue;
                 }
 
+                /** @var array<mixed> $info */
                 $info = pathinfo($file);
 
-                if ($info['extension'] !== 'yml') {
+                if ((string)$info['extension'] !== 'yml') {
                     continue;
                 }
 

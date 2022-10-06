@@ -33,7 +33,7 @@ class TestSuite
     private $dockerContainer = '';
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $dockerEnvVariables;
 
@@ -43,7 +43,7 @@ class TestSuite
     private $dockerEntrypoint = '';
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $testFolders = [];
 
@@ -54,7 +54,6 @@ class TestSuite
 
 
     /**
-     * TestSuite constructor.
      * @param string $name
      */
     public function __construct(string $name)
@@ -106,7 +105,7 @@ class TestSuite
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getTestFolders()
     {
@@ -123,8 +122,9 @@ class TestSuite
 
     /**
      * @param string $dockerImage
+     * @return void
      */
-    public function setDockerImage($dockerImage)
+    public function setDockerImage(string $dockerImage)
     {
         $this->dockerImage = $dockerImage;
     }
@@ -133,7 +133,7 @@ class TestSuite
      * @param bool $isEnabled
      * @return void
      */
-    public function setDockerCommandRunner($isEnabled)
+    public function setDockerCommandRunner(bool $isEnabled)
     {
         $this->dockerCommandRunner = $isEnabled;
     }
@@ -148,16 +148,18 @@ class TestSuite
 
     /**
      * @param string $dockerEntrypoint
+     * @return void
      */
-    public function setDockerEntrypoint($dockerEntrypoint)
+    public function setDockerEntrypoint(string $dockerEntrypoint)
     {
         $this->dockerEntrypoint = $dockerEntrypoint;
     }
 
     /**
      * @param string $dockerContainer
+     * @return void
      */
-    public function setDockerContainer($dockerContainer)
+    public function setDockerContainer(string $dockerContainer)
     {
         $this->dockerContainer = $dockerContainer;
     }
@@ -171,7 +173,7 @@ class TestSuite
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function getDockerEnvVariables(): array
     {
@@ -179,7 +181,7 @@ class TestSuite
     }
 
     /**
-     * @param array $dockerEnvVariables
+     * @param array<mixed> $dockerEnvVariables
      */
     public function setDockerEnvVariables(array $dockerEnvVariables): void
     {

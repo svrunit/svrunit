@@ -18,7 +18,7 @@ class TestCommand extends Command
 {
 
     /**
-     *
+     * @return void
      */
     protected function configure()
     {
@@ -125,7 +125,7 @@ class TestCommand extends Command
             return '';
         }
 
-        $cur_dir = explode('\\', getcwd());
+        $cur_dir = explode('\\', (string)getcwd());
         $workingDir = $cur_dir[count($cur_dir) - 1];
 
         return $workingDir . '/' . $filename;

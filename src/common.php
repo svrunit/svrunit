@@ -7,7 +7,8 @@ class AppManager
 {
 
     /**
-     * @param array $arguments
+     * @param array<mixed> $arguments
+     * @return void
      * @throws Exception
      */
     public static function run(array $arguments)
@@ -17,7 +18,7 @@ class AppManager
         $cmd = new \SVRUnit\Commands\TestCommand();
         $application->add($cmd);
 
-        $application->setDefaultCommand($cmd->getName());
+        $application->setDefaultCommand((string)$cmd->getName());
 
         $application->run();
     }

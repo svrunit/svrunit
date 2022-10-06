@@ -15,7 +15,7 @@ class DockerImageCommandRunner implements TestRunnerInterface
     private $dockerImage;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $envVariables;
 
@@ -32,7 +32,7 @@ class DockerImageCommandRunner implements TestRunnerInterface
 
     /**
      * @param string $dockerImage
-     * @param array $envVariables
+     * @param array<mixed> $envVariables
      * @param ShellRunnerInterface $shellRunner
      * @param OutputWriterInterface $outWriter
      */

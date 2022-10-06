@@ -57,7 +57,7 @@ class TestRunner
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
      * @param bool $stopOnErrors
-     * @param array $reporters
+     * @param array<mixed> $reporters
      */
     public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, array $reporters)
     {
@@ -72,6 +72,7 @@ class TestRunner
 
     /**
      * @param bool $debugMode
+     * @return void
      * @throws \Exception
      */
     public function run(bool $debugMode)
@@ -215,7 +216,7 @@ class TestRunner
 
     /**
      * @param TestSuite $suite
-     * @return array
+     * @return array<mixed>
      */
     private function loadTestsOfSuite(TestSuite $suite): array
     {
@@ -224,7 +225,7 @@ class TestRunner
         $allSuiteTests = [];
 
 
-        /** @var array $testFiles */
+        /** @var array<mixed> $testFiles */
         $testFiles = $fileCollector->searchTestFiles(dirname($this->configFile), $suite->getTestFolders());
 
 

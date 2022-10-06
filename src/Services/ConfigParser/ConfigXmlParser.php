@@ -11,20 +11,29 @@ class ConfigXmlParser
 
     /**
      * @param string $configFile
-     * @return array
+     * @return array<mixed>
+     * @throws \Exception
      */
     public function loadTestSuites(string $configFile): array
     {
-        $xmlString = file_get_contents($configFile);
+        $xmlString = (string)file_get_contents($configFile);
         $xmlSettings = simplexml_load_string($xmlString);
 
         $testSuites = [];
 
-        $setupTime = (string)$xmlSettings->attributes()->setupTime[0];
-
-        if (empty($setupTime)) {
-            $setupTime = 0;
+        if (!$xmlSettings instanceof SimpleXMLElement) {
+            throw new \Exception('Error when loading Test Suite. Invalid XML: ' . $configFile);
         }
+
+        $attributes = $xmlSettings->attributes();
+
+        $setupTime = 0;
+
+        if ($attributes instanceof SimpleXMLElement) {
+            $setupTime = (string)$attributes->setupTime[0];
+        }
+
+        $setupTime = (int)$setupTime;
 
 
         /** @var SimpleXMLElement $suiteNode */

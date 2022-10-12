@@ -72,6 +72,6 @@ jobs:
           port: ${{ secrets.SSH_PROD_PORT }}
           username: ${{ secrets.SSH_PROD_USER }}
           password: ${{ secrets.SSH_PROD_PWD }}
-          local_dir: ./build/svrunit.zip
-          remote_dir: ${{ secrets.PROD_DOWNLOAD_DIR }}/svrunit.zip
+          local_dir: ./build/
+          remote_dir: ${{ secrets.PROD_DOWNLOAD_DIR }}/
           dry-run: false

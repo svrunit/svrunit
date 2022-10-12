@@ -1,0 +1,45 @@
+name: Release Pipeline
+
+on: [ workflow_dispatch ]
+
+
+jobs:
+
+  review:
+    name: Code Review
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: make dev -B
+
+      - name: Run Review
+        run: make pr -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: review
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: make build -B
+
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r svrunit.zip ./build/svrunit.phar
+
+      - name: Rsync to Server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.SSH_PROD_HOST }}
+          username: ${{ secrets.SSH_PROD_USER }}
+          password: ${{ secrets.SSH_PROD_PWD }
+          local_path: ./build/svrunit.phar
+          remote_path: ${{ secrets.PROD_DOWNLOAD_DIR }}

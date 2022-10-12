@@ -65,6 +65,7 @@ jobs:
         with:
           server: ${{ secrets.SSH_PROD_HOST }}
           username: ${{ secrets.SSH_PROD_USER }}
+          port: ${{ secrets.SSH_PROD_PORT }}
           password: ${{ secrets.SSH_PROD_PWD }}
           local_path: ./build/svrunit.phar
           remote_path: ${{ secrets.PROD_DOWNLOAD_DIR }}

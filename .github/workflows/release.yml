@@ -63,6 +63,7 @@ jobs:
       - name: Prepare Files
         run: |
           rm -rf ./build/svrunit.phar
+          rm -rf ./build/README.md
           mv svrunit.zip ./build/svrunit.zip
 
       - name: Show Files

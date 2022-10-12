@@ -20,7 +20,7 @@ dev: ## Installs all dev dependencies
 #------------------------------------------------------------------------------------------------
 
 csfix: ## Starts the PHP CS Fixer
-	@php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php --dry-run
+	PHP_CS_FIXER_IGNORE_ENV=1 php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php --dry-run
 
 stan: ## Starts the PHPStan Analyser
 	@php ./src/vendor/bin/phpstan analyse -c ./.phpstan.neon
@@ -31,7 +31,7 @@ test: ## Runs all tests
 #------------------------------------------------------------------------------------------------
 
 pr: ## Runs and prepares everything for a pull request
-	@php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php
+	PHP_CS_FIXER_IGNORE_ENV=1 php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php
 	@make test -B
 	@make stan -B
 

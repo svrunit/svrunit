@@ -5,11 +5,10 @@ on: [ workflow_dispatch ]
 
 jobs:
 
-  review:
-    name: Code Review
+  syntax_checks:
+    name: Syntax Checks
     runs-on: ubuntu-latest
     steps:
-
       - name: Clone Code
         uses: actions/checkout@v2
 
@@ -18,18 +17,32 @@ jobs:
         with:
           php-version: 7.4
 
+      - name: PHP Syntax Checks
+        run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
+  unit_tests:
+    name: Unit Tests
+    needs: syntax_checks
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
       - name: Install Dependencies
         run: make dev -B
 
-      - name: Run Review
-        run: make pr -B
+      - name: Run PHPUnit
+        run: make test -B
 
   # ------------------------------------------------------------------------------------------------------------------------
 
   deploy:
     name: Deployment
     runs-on: ubuntu-latest
-    needs: review
+    needs: unit_tests
     steps:
 
       - uses: actions/checkout@v2

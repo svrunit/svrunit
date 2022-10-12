@@ -60,6 +60,11 @@ jobs:
         with:
           args: zip -qq -r svrunit.zip ./build/svrunit.phar
 
+      - name: Prepare Files
+        run: |
+          rm -rf ./build/svrunit.phar
+          mv svrunit.zip ./build/svrunit.zip
+
       - name: Deployment to Server
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
@@ -67,6 +72,6 @@ jobs:
           port: ${{ secrets.SSH_PROD_PORT }}
           username: ${{ secrets.SSH_PROD_USER }}
           password: ${{ secrets.SSH_PROD_PWD }}
-          local_dir: svrunit.zip
+          local_dir: ./build/
           remote_dir: ${{ secrets.PROD_DOWNLOAD_DIR }}
           dry-run: true

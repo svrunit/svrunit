@@ -60,12 +60,17 @@ jobs:
         with:
           args: zip -qq -r svrunit.zip ./build/svrunit.phar
 
+      - name: Show Data
+        run: |
+          ls -la 
+          ls -la ./build
+
       - name: Rsync to Server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.SSH_PROD_HOST }}
-          username: ${{ secrets.SSH_PROD_USER }}
           port: ${{ secrets.SSH_PROD_PORT }}
+          username: ${{ secrets.SSH_PROD_USER }}
           password: ${{ secrets.SSH_PROD_PWD }}
-          local_path: ./build/svrunit.phar
+          local_path: ./build/svrunit.zip
           remote_path: ${{ secrets.PROD_DOWNLOAD_DIR }}

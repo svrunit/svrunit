@@ -146,3 +146,11 @@ jobs:
           pwd
           ls -la ./build
 
+      - name: Upload bundle
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          user: ${{ secrets.SSH_PROD_USER }}
+          password: ${{ secrets.SSH_PROD_PWD }}
+          host: ${{ secrets.SSH_PROD_HOST }}
+          src: ./build/svrunit.zip
+          dest: ${{ secrets.PROD_DOWNLOAD_DIR }}/svrunit-test.zip

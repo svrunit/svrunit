@@ -23,7 +23,7 @@ SVRUnit is based on a `phar` file and thus requires PHP to be installed. But onc
 
 ```
 curl -O https://www.svrunit.com/downloads/svrunit.zip
-unzip svrunit.zip -d .
+unzip -o svrunit.zip
 rm -f svrunit.zip
 ```
 

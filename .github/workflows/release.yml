@@ -135,7 +135,7 @@ jobs:
           path: src/vendor
           key: vendor
 
-      - name: Install Dependencies
+      - name: Build SVRUnit
         run: make build -B
 
       - uses: montudor/action-zip@v1

@@ -8,6 +8,8 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ### Added
 
 - Add new "group" option in Test Suite. Use groups to only run a set of specific test suites.
+- Add new "list-groups" option to output all available groups.
+- Add new "list-suites" option to output all available test suites.
 
 ## [1.3.0]
 

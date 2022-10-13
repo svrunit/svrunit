@@ -73,10 +73,12 @@ class TestRunner
     /**
      * @param bool $debugMode
      * @param string $group
+     * @param bool $listGroups
+     * @param bool $listSuites
      * @return void
      * @throws \Exception
      */
-    public function run(bool $debugMode, string $group)
+    public function run(bool $debugMode, string $group, bool $listGroups, bool $listSuites)
     {
         $this->debugMode = $debugMode;
 
@@ -96,45 +98,66 @@ class TestRunner
         $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
 
 
+        if ($listGroups) {
+            $this->outputWriter->section("Available Groups:");
+        } else if ($listSuites) {
+            $this->outputWriter->section("Available Suites");
+        }
+
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
 
-            # if we have a group filter applied
-            # then skip our suite if the group doesn't match
-            if (!empty($group) && $suite->getGroup() !== $group) {
-                continue;
+            if ($listGroups) {
+
+                if (!empty($suite->getGroup())) {
+                    $this->outputWriter->info("   - " . $suite->getGroup());
+                }
+
+            } else if ($listSuites) {
+
+                $this->outputWriter->info("   - " . $suite->getName());
+
+            } else {
+
+                # if we have a group filter applied
+                # then skip our suite if the group doesn't match
+                if (!empty($group) && $suite->getGroup() !== $group) {
+                    continue;
+                }
+
+                $this->outputWriter->debug('');
+                $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
+
+                $result = $this->runTestSuite($suite);
+
+                $runResult->addSuiteResult($result);
+
+                if ($result->hasErrors() && $this->stopOnErrors) {
+                    # also quit upcoming test suites
+                    break;
+                }
+            }
+        }
+
+
+        if (!$listGroups && !$listSuites) {
+            $this->outputWriter->debug('');
+            $this->outputWriter->debug('Time: ');
+            $this->outputWriter->debug($runResult->getTestTime() . ' ms');
+
+
+            if (count($this->reporters) > 0) {
+                $this->outputWriter->debug('');
+                $this->outputWriter->debug('.........building test reports........');
             }
 
-            $this->outputWriter->debug('');
-            $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
-
-            $result = $this->runTestSuite($suite);
-
-            $runResult->addSuiteResult($result);
-
-            if ($result->hasErrors() && $this->stopOnErrors) {
-                # also quit upcoming test suites
-                break;
+            foreach ($this->reporters as $reporter) {
+                $reporter->generate($runResult);
             }
-        }
 
-
-        $this->outputWriter->debug('');
-        $this->outputWriter->debug('Time: ');
-        $this->outputWriter->debug($runResult->getTestTime() . ' ms');
-
-
-        if (count($this->reporters) > 0) {
-            $this->outputWriter->debug('');
-            $this->outputWriter->debug('.........building test reports........');
-        }
-
-        foreach ($this->reporters as $reporter) {
-            $reporter->generate($runResult);
-        }
-
-        if ($runResult->hasErrors()) {
-            throw new \Exception('Tests have failed');
+            if ($runResult->hasErrors()) {
+                throw new \Exception('Tests have failed');
+            }
         }
     }
 

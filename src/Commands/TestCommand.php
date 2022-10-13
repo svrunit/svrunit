@@ -29,6 +29,8 @@ class TestCommand extends Command
             ->addOption('group', null, InputOption::VALUE_REQUIRED, '', '')
             ->addOption('debug', null, InputOption::VALUE_NONE, '')
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, '')
+            ->addOption('list-groups', null, InputOption::VALUE_NONE, '')
+            ->addOption('list-suites', null, InputOption::VALUE_NONE, '')
             ->addOption('report-junit', null, InputOption::VALUE_NONE, '')
             ->addOption('report-html', null, InputOption::VALUE_NONE, '');
 
@@ -56,6 +58,8 @@ class TestCommand extends Command
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
         $reportHtml = ($input->getOption('report-html') !== false);
+        $listGroupsMode = ($input->getOption('list-groups') !== false);
+        $listSuitesMode = ($input->getOption('list-suites') !== false);
 
         $reporters = [];
 
@@ -102,7 +106,7 @@ class TestCommand extends Command
 
         try {
 
-            $testRunner->run($debug, $group);
+            $testRunner->run($debug, $group, $listGroupsMode, $listSuitesMode);
 
             $io->success("SVRUnit tests successfully completed");
 

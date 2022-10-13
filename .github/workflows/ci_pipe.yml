@@ -47,7 +47,7 @@ jobs:
 
   unit_tests:
     name: Unit Tests
-    needs: syntax_checks
+    needs: install
     runs-on: ubuntu-latest
     steps:
 
@@ -68,7 +68,7 @@ jobs:
 
   phpstan:
     name: PHPStan Analyzer
-    needs: unit_tests
+    needs: install
     runs-on: ubuntu-latest
     steps:
 
@@ -87,7 +87,7 @@ jobs:
 
   phpcsfixer:
     name: PHP CS Fixer
-    needs: phpstan
+    needs: install
     runs-on: ubuntu-latest
     steps:
 

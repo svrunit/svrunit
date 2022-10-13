@@ -1,9 +1,7 @@
 
 [<img src="https://raw.githubusercontent.com/wiki/svrunit/svrunit/assets/logo.png">]()
 
-![Build Status](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/svrunit/svrunit) ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/svrunit/svrunit/latest)
-
-
+![Build Status](https://github.com/svrunit/svrunit/actions/workflows/ci_pipe.yml/badge.svg) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/svrunit/svrunit) ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/svrunit/svrunit/latest) ![Build Status](https://github.com/svrunit/svrunit/actions/workflows/nightly_build.yml/badge.svg)
 
 Welcome to SVRUnit - Your Server Testing Framework!
 

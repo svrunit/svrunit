@@ -46,6 +46,6 @@ build: ## Builds SVRUNIT and creates svrunit.phar
 	@php build.php
 
 release: ## Create a ZIP file in the build folder
-	cd build && zip -qq -j svrunit.zip svrunit.phar
-	rm -rf ./build/svrunit.phar
 	rm -rf ./build/README.md
+	cd build && zip svrunit.zip svrunit.phar
+	cd build && rm -rf svrunit.phar

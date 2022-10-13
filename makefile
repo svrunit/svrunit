@@ -44,3 +44,9 @@ build: ## Builds SVRUNIT and creates svrunit.phar
 	@php -i | grep phar.readonly
 	@php -i | grep "Loaded Configuration"
 	@php build.php
+
+release: ## Create a ZIP file in the build folder
+	zip -qq -r -j svrunit.zip ./build/svrunit.phar
+	rm -rf ./build/svrunit.phar
+	rm -rf ./build/README.md
+	mv svrunit.zip ./build/svrunit.zip

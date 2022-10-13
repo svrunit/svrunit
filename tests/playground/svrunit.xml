@@ -2,11 +2,11 @@
 
     <testsuites>
 
-        <testsuite name="dockware/flex:latest 1" dockerImage="dockware/flex:latest" dockerEnv="">
+        <testsuite name="dockware/flex:latest 1" group="group1" dockerImage="dockware/flex:latest" dockerEnv="">
             <directory>./tests</directory>
         </testsuite>
 
-        <testsuite name="dockware/flex:latest 2" dockerImage="dockware/flex:latest" dockerEnv="">
+        <testsuite name="dockware/flex:latest 2" group="group2" dockerImage="dockware/flex:latest" dockerEnv="">
             <directory>./tests</directory>
         </testsuite>
 

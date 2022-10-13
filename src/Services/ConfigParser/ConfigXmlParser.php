@@ -40,7 +40,8 @@ class ConfigXmlParser
         foreach ($xmlSettings->testsuites->children() as $suiteNode) {
 
             $suite = new TestSuite(
-                (string)$suiteNode['name']
+                (string)$suiteNode['name'],
+                (string)$suiteNode['group']
             );
 
             $suite->setSetupTimeSeconds($setupTime);

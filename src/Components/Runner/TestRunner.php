@@ -72,10 +72,11 @@ class TestRunner
 
     /**
      * @param bool $debugMode
+     * @param string $group
      * @return void
      * @throws \Exception
      */
-    public function run(bool $debugMode)
+    public function run(bool $debugMode, string $group)
     {
         $this->debugMode = $debugMode;
 
@@ -97,6 +98,12 @@ class TestRunner
 
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
+
+            # if we have a group filter applied
+            # then skip our suite if the group doesn't match
+            if (!empty($group) && $suite->getGroup() !== $group) {
+                continue;
+            }
 
             $this->outputWriter->debug('');
             $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');

@@ -20,6 +20,11 @@ class TestSuite
     /**
      * @var string
      */
+    private $group = '';
+
+    /**
+     * @var string
+     */
     private $dockerImage = '';
 
     /**
@@ -55,10 +60,12 @@ class TestSuite
 
     /**
      * @param string $name
+     * @param string $group
      */
-    public function __construct(string $name)
+    public function __construct(string $name, string $group)
     {
         $this->name = $name;
+        $this->group = $group;
 
         $this->dockerEntrypoint = '';
         $this->dockerEnvVariables = [];
@@ -102,6 +109,14 @@ class TestSuite
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 
     /**

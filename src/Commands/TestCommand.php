@@ -26,6 +26,7 @@ class TestCommand extends Command
             ->setName('test')
             ->setDescription('Starts the tests for the provided configuration file')
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, '', '')
+            ->addOption('group', null, InputOption::VALUE_REQUIRED, '', '')
             ->addOption('debug', null, InputOption::VALUE_NONE, '')
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, '')
             ->addOption('report-junit', null, InputOption::VALUE_NONE, '')
@@ -50,6 +51,7 @@ class TestCommand extends Command
 
 
         $configFile = (string)$input->getOption('configuration');
+        $group = (string)$input->getOption('group');
         $debug = ($input->getOption('debug') !== false);
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
@@ -57,20 +59,22 @@ class TestCommand extends Command
 
         $reporters = [];
 
+        echo PHP_EOL;
+
+        if ($group) {
+            echo "Group: " . $group . PHP_EOL;
+        }
 
         if ($debug) {
-            echo PHP_EOL;
             echo "Debug Mode: active" . PHP_EOL;
         }
 
         if ($stopOnError) {
-            echo PHP_EOL;
             echo "Stop on Errors: yes" . PHP_EOL;
         }
 
         if ($reportJunit) {
             $path = $this->getAbsolutePath('./.reports/report.xml');
-            echo PHP_EOL;
             echo "Report: JUnit XML, " . $path . PHP_EOL;
 
             $reporters[] = new JUnitReport($path);
@@ -78,7 +82,6 @@ class TestCommand extends Command
 
         if ($reportHtml) {
             $path = $this->getAbsolutePath('./.reports/index.html');
-            echo PHP_EOL;
             echo "Report: HTML, " . $path . PHP_EOL;
 
             $reporters[] = new HtmlReport($path);
@@ -99,7 +102,7 @@ class TestCommand extends Command
 
         try {
 
-            $testRunner->run($debug);
+            $testRunner->run($debug, $group);
 
             $io->success("SVRUnit tests successfully completed");
 

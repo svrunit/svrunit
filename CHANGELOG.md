@@ -3,6 +3,12 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [1.4.0]
+
+### Added
+
+- Add new "group" option in Test Suite. Use groups to only run a set of specific test suites.
+
 ## [1.3.0]
 
 ### Added
@@ -10,13 +16,13 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 - The CommandTest does now offer 2 new settings "setup" and "teardown" to run any commands prior or after the test.
 
 ### Changed
-- Improve output of Expected and Actual values of test on CLI 
+
+- Improve output of Expected and Actual values of test on CLI
 
 ### Fixed
 
 - Fixed wrong calculation (error) in ErrorCount for Test Results and Reports
 - Improved the reliability of the Yaml parser and fixed a few NULL crashes due to broken xml configurations
-
 
 ## [1.2.5]
 

@@ -49,4 +49,3 @@ release: ## Create a ZIP file in the build folder
 	cd build && zip -qq -j svrunit.zip svrunit.phar
 	rm -rf ./build/svrunit.phar
 	rm -rf ./build/README.md
-	mv svrunit.zip ./build/svrunit.zip

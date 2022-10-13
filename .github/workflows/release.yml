@@ -3,12 +3,38 @@ name: Release Pipeline
 on:
   workflow_dispatch:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
 
+
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Install Dependencies
+        run: make dev -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
   syntax_checks:
     name: Syntax Checks
+    needs: install
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
@@ -22,29 +48,76 @@ jobs:
       - name: PHP Syntax Checks
         run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
 
-  # ------------------------------------------------------------------------------------------------------------------------
-
   unit_tests:
     name: Unit Tests
-    needs: syntax_checks
+    needs: install
     runs-on: ubuntu-latest
     steps:
 
       - name: Clone Code
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: make dev -B
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
 
       - name: Run PHPUnit
         run: make test -B
 
   # ------------------------------------------------------------------------------------------------------------------------
 
+  phpstan:
+    name: PHPStan Analyzer
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Run PHPStan
+        run: make stan -B
+
+  phpcsfixer:
+    name: PHP CS Fixer
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Run PHP CS Fixer
+        run: make csfix -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
   deploy:
     name: Deployment
     runs-on: ubuntu-latest
-    needs: unit_tests
+    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
     steps:
 
       - uses: actions/checkout@v2
@@ -54,6 +127,13 @@ jobs:
         with:
           php-version: 7.4
           ini-values: phar.readonly=OFF
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
 
       - name: Install Dependencies
         run: make build -B

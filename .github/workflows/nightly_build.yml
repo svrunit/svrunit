@@ -1,0 +1,164 @@
+name: Nightly Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 00:15 am
+    - cron: '15 0 * * *'
+
+jobs:
+
+
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Install Dependencies
+        run: make dev -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
+  syntax_checks:
+    name: Syntax Checks
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: PHP Syntax Checks
+        run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
+
+  unit_tests:
+    name: Unit Tests
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Run PHPUnit
+        run: make test -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
+  phpstan:
+    name: PHPStan Analyzer
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Run PHPStan
+        run: make stan -B
+
+  phpcsfixer:
+    name: PHP CS Fixer
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Run PHP CS Fixer
+        run: make csfix -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
+  deploy:
+    name: Deployment
+    runs-on: ubuntu-latest
+    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          ini-values: phar.readonly=OFF
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Build SVRUnit
+        run: make build -B
+
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r svrunit-nightly.zip ./build/svrunit.phar
+
+      - name: Prepare Files
+        run: |
+          rm -rf ./build/svrunit.phar
+          rm -rf ./build/README.md
+          mv svrunit-nightly.zip ./build/svrunit-nightly.zip
+
+      - name: Show Files
+        run: |
+          pwd
+          ls -la ./build
+
+      - name: Deployment to Server
+        uses: sebastianpopp/ftp-action@releases/v2
+        with:
+          host: ${{ secrets.SSH_PROD_HOST }}
+          user: ${{ secrets.SSH_PROD_USER }}
+          password: ${{ secrets.SSH_PROD_PWD }}
+          localDir: ./build
+          remoteDir: ${{ secrets.PROD_DOWNLOAD_DIR }}

@@ -146,3 +146,12 @@ jobs:
         run: |
           pwd
           ls -la ./build
+
+      - name: Deployment to Server
+        uses: bayssmekanique/action-simple-file-upload@v1
+        with:
+          host: ${{ secrets.SSH_PROD_HOST }}
+          user: ${{ secrets.SSH_PROD_USER }}
+          password: ${{ secrets.SSH_PROD_PWD }}
+          src: ./build/svrunit.zip
+          dest: ${{ secrets.PROD_DOWNLOAD_DIR }}/svrunit-nightly.zip

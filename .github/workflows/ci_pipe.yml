@@ -4,8 +4,34 @@ on: [push, pull_request]
 
 jobs:
 
+
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Install Dependencies
+        run: make dev -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
   syntax_checks:
     name: Syntax Checks
+    needs: install
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
@@ -19,8 +45,6 @@ jobs:
       - name: PHP Syntax Checks
         run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
 
-  # ------------------------------------------------------------------------------------------------------------------------
-
   unit_tests:
     name: Unit Tests
     needs: syntax_checks
@@ -30,8 +54,12 @@ jobs:
       - name: Clone Code
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: make dev -B
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
 
       - name: Run PHPUnit
         run: make test -B
@@ -47,8 +75,12 @@ jobs:
       - name: Clone Code
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: make dev -B
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
 
       - name: Run PHPStan
         run: make stan -B
@@ -67,8 +99,12 @@ jobs:
         with:
           php-version: 7.4
 
-      - name: Install Dependencies
-        run: make dev -B
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
 
       - name: Run PHP CS Fixer
         run: make csfix -B

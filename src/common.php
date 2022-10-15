@@ -18,7 +18,7 @@ class AppManager
         $cmd = new \SVRUnit\Commands\TestCommand();
         $application->add($cmd);
 
-        $application->setDefaultCommand((string)$cmd->getName());
+        $application->setDefaultCommand('list');
 
         $application->run();
     }

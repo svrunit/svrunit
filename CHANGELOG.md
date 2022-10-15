@@ -9,6 +9,10 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 - Add new "exclude-group" option to exclude one or more groups during the test run
 
+### Changed
+
+- Changed the default command to be "list". "php svrunit.phar" will now show all available commands.
+
 ## [1.4.0]
 
 ### Added

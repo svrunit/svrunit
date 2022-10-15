@@ -12,6 +12,6 @@ help:
 #------------------------------------------------------------------------------------------------
 
 tests: ## Runs all tests
-	php ../../build/svrunit.phar --configuration=svrunit.xml --list-suites
-	php ../../build/svrunit.phar --configuration=svrunit.xml --list-groups
-	php ../../build/svrunit.phar --configuration=svrunit.xml --report-junit --report-html
+	php ../../build/svrunit.phar test --configuration=svrunit.xml --list-suites
+	php ../../build/svrunit.phar test --configuration=svrunit.xml --list-groups
+	php ../../build/svrunit.phar test --configuration=svrunit.xml --report-junit --report-html

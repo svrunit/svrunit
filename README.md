@@ -49,7 +49,7 @@ php svrunit.phar test --configuration=./svrunit.xml
 ```
 
 That's it for now!
-You can read more about all these different possibilities in your WIKI guide.
+You can read more about all these different possibilities in your documentation.
 
 
 

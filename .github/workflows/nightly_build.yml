@@ -35,7 +35,7 @@ jobs:
 
   syntax_checks:
     name: Syntax Checks
-    needs: e2e
+    needs: install
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code

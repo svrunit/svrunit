@@ -1,6 +1,7 @@
 {
   "name": "svrunit/svrunit",
-  "license": "proprietary",
+  "version": "v1.4.0",
+  "license": "MIT",
   "description": "SVRUnit allows you to configure tests that you can run against your server, Docker container or even plain Docker images.",
   "authors": [
     {

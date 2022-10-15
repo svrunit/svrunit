@@ -1,0 +1,13 @@
+{
+  "name": "svrunit/svrunit",
+  "license": "proprietary",
+  "description": "SVRUnit allows you to configure tests that you can run against your server, Docker container or even plain Docker images.",
+  "authors": [
+    {
+      "name": "Christian Dangl"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  }
+}

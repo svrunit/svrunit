@@ -11,7 +11,7 @@ Sometimes it's hard to verify that your server or even Docker image has all mand
 
 Or maybe you just want to verify that some files exist - or do not exist at all?!
 
-SVRUnit allows you to configure different test that you can run against your server, Docker container or even plain Docker images.
+SVRUnit allows you to configure tests that you can run against your server, Docker container or even plain Docker images.
 
 Why not just testing all these different Xdebug versions of your Docker images!?
 

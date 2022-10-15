@@ -3,6 +3,12 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## []
+
+### Added
+
+- Add new "exclude-group" option to exclude one or more groups during the test run
+
 ## [1.4.0]
 
 ### Added

@@ -45,7 +45,7 @@ SVRUnit provides different assertion options, such as "File Exists", "File Conta
 Once configured, you can easily start your test with this command:
 
 ```
-php svrunit.phar --configuration=./svrunit.xml
+php svrunit.phar test --configuration=./svrunit.xml
 ```
 
 That's it for now!

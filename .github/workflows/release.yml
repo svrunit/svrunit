@@ -114,10 +114,40 @@ jobs:
 
   # ------------------------------------------------------------------------------------------------------------------------
 
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          ini-values: phar.readonly=OFF
+
+      - name: Mount Cache
+        id: cache-vendor
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: vendor
+
+      - name: Build SVRUnit
+        run: make build -B
+
+      - name: Start E2E Tests
+        run: |
+          cd tests/e2e && make tests -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
   deploy:
     name: Deployment
     runs-on: ubuntu-latest
-    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    needs: e2e
     steps:
 
       - uses: actions/checkout@v2

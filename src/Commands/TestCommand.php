@@ -25,14 +25,19 @@ class TestCommand extends Command
         $this
             ->setName('test')
             ->setDescription('Starts the tests for the provided configuration file')
-            ->addOption('configuration', null, InputOption::VALUE_REQUIRED, '', '')
-            ->addOption('group', null, InputOption::VALUE_REQUIRED, '', '')
-            ->addOption('debug', null, InputOption::VALUE_NONE, '')
-            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, '')
-            ->addOption('list-groups', null, InputOption::VALUE_NONE, '')
-            ->addOption('list-suites', null, InputOption::VALUE_NONE, '')
-            ->addOption('report-junit', null, InputOption::VALUE_NONE, '')
-            ->addOption('report-html', null, InputOption::VALUE_NONE, '');
+
+            ->addOption('configuration', null, InputOption::VALUE_REQUIRED, 'Read configuration from XML file', '')
+
+            ->addOption('list-groups', null, InputOption::VALUE_NONE, 'List available test groups', null)
+            ->addOption('list-suites', null, InputOption::VALUE_NONE, 'List available test suites', null)
+
+            ->addOption('group', null, InputOption::VALUE_REQUIRED, 'Only runs tests from the specified group', '')
+            ->addOption('exclude-group', null, InputOption::VALUE_REQUIRED, 'Exclude tests from the specified group(s)', '')
+
+            ->addOption('debug', null, InputOption::VALUE_NONE, 'Output debug information during the execution', null)
+            ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stop execution upon first error', null)
+            ->addOption('report-junit', null, InputOption::VALUE_NONE, 'Log test execution in JUnit XML format to file', null)
+            ->addOption('report-html', null, InputOption::VALUE_NONE, 'Log test execution in SVRUnit HTML format to file', null);
 
         parent::configure();
     }
@@ -54,6 +59,7 @@ class TestCommand extends Command
 
         $configFile = (string)$input->getOption('configuration');
         $group = (string)$input->getOption('group');
+        $excludeGroups = (string)$input->getOption('exclude-group');
         $debug = ($input->getOption('debug') !== false);
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
@@ -101,14 +107,25 @@ class TestCommand extends Command
             $configAbsolutePath,
             new ColoredOutputWriter(),
             $stopOnError,
+            $debug,
             $reporters
         );
 
         try {
 
-            $testRunner->run($debug, $group, $listGroupsMode, $listSuitesMode);
+            if ($listGroupsMode) {
 
-            $io->success("SVRUnit tests successfully completed");
+                $testRunner->listGroups();
+
+            } elseif ($listSuitesMode) {
+
+                $testRunner->listSuites();
+
+            } else {
+
+                $testRunner->runTests($group, $excludeGroups);
+                $io->success("SVRUnit tests successfully completed");
+            }
 
             return 0;
 

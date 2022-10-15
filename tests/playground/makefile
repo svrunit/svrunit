@@ -12,7 +12,7 @@ help:
 #------------------------------------------------------------------------------------------------
 
 test: ## Runs all tests
-	php ../../build/svrunit.phar --configuration=svrunit.xml --report-junit --report-html
+	php ../../build/svrunit.phar --configuration=svrunit.xml --report-junit --report-html --exclude-group=group1,group2
 
 report: ## Shows the last report
 	@npm install -g junit-cli-report-viewer

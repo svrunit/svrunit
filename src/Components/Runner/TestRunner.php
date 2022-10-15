@@ -53,35 +53,74 @@ class TestRunner
 
 
     /**
-     * TestRunner constructor.
      * @param string $configFile
      * @param OutputWriterInterface $outputWriter
      * @param bool $stopOnErrors
+     * @param bool $debugMode
      * @param array<mixed> $reporters
      */
-    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, array $reporters)
+    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, bool $debugMode, array $reporters)
     {
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
         $this->reporters = $reporters;
         $this->stopOnErrors = $stopOnErrors;
+        $this->debugMode = $debugMode;
 
         $this->parserSuites = new ConfigXmlParser();
     }
 
 
     /**
-     * @param bool $debugMode
-     * @param string $group
-     * @param bool $listGroups
-     * @param bool $listSuites
      * @return void
      * @throws \Exception
      */
-    public function run(bool $debugMode, string $group, bool $listGroups, bool $listSuites)
+    public function listGroups()
     {
-        $this->debugMode = $debugMode;
+        if (!file_exists($this->configFile)) {
+            throw new \Exception('No configuration file provided!');
+        }
 
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
+
+        $this->outputWriter->section("Available Groups:");
+
+        /** @var TestSuite $suite */
+        foreach ($testSuites as $suite) {
+            if (!empty($suite->getGroup())) {
+                $this->outputWriter->info("   - " . $suite->getGroup());
+            }
+        }
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function listSuites()
+    {
+        if (!file_exists($this->configFile)) {
+            throw new \Exception('No configuration file provided!');
+        }
+
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
+
+        $this->outputWriter->section("Available Suites");
+
+        /** @var TestSuite $suite */
+        foreach ($testSuites as $suite) {
+            $this->outputWriter->info("   - " . $suite->getName());
+        }
+    }
+
+    /**
+     * @param string $filterGroup
+     * @param string $excludedFilterGroups
+     * @return void
+     * @throws \Exception
+     */
+    public function runTests(string $filterGroup, string $excludedFilterGroups)
+    {
         # always clear old reports
         foreach ($this->reporters as $reporter) {
             $reporter->clear();
@@ -98,66 +137,54 @@ class TestRunner
         $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
 
 
-        if ($listGroups) {
-            $this->outputWriter->section("Available Groups:");
-        } else if ($listSuites) {
-            $this->outputWriter->section("Available Suites");
-        }
+        $excludedGroups = array_filter(explode(',', $excludedFilterGroups));
 
         /** @var TestSuite $suite */
         foreach ($testSuites as $suite) {
 
-            if ($listGroups) {
+            # if we have a group filter applied
+            # then skip our suite if the group doesn't match
+            if (!empty($filterGroup) && $suite->getGroup() !== $filterGroup) {
+                continue;
+            }
 
-                if (!empty($suite->getGroup())) {
-                    $this->outputWriter->info("   - " . $suite->getGroup());
-                }
-
-            } else if ($listSuites) {
-
-                $this->outputWriter->info("   - " . $suite->getName());
-
-            } else {
-
-                # if we have a group filter applied
-                # then skip our suite if the group doesn't match
-                if (!empty($group) && $suite->getGroup() !== $group) {
+            # if we have excluded groups, and our suite is
+            # in that group, then just move on to the next suite
+            if (count($excludedGroups) > 0) {
+                if (in_array($suite->getGroup(), $excludedGroups)) {
                     continue;
                 }
+            }
 
-                $this->outputWriter->debug('');
-                $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
+            $this->outputWriter->debug('');
+            $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
 
-                $result = $this->runTestSuite($suite);
+            $result = $this->runTestSuite($suite);
 
-                $runResult->addSuiteResult($result);
+            $runResult->addSuiteResult($result);
 
-                if ($result->hasErrors() && $this->stopOnErrors) {
-                    # also quit upcoming test suites
-                    break;
-                }
+            if ($result->hasErrors() && $this->stopOnErrors) {
+                # also quit upcoming test suites
+                break;
             }
         }
 
 
-        if (!$listGroups && !$listSuites) {
+        $this->outputWriter->debug('');
+        $this->outputWriter->debug('Time: ');
+        $this->outputWriter->debug($runResult->getTestTime() . ' ms');
+
+        if (count($this->reporters) > 0) {
             $this->outputWriter->debug('');
-            $this->outputWriter->debug('Time: ');
-            $this->outputWriter->debug($runResult->getTestTime() . ' ms');
+            $this->outputWriter->debug('.........building test reports........');
+        }
 
+        foreach ($this->reporters as $reporter) {
+            $reporter->generate($runResult);
+        }
 
-            if (count($this->reporters) > 0) {
-                $this->outputWriter->debug('');
-                $this->outputWriter->debug('.........building test reports........');
-            }
-
-            foreach ($this->reporters as $reporter) {
-                $reporter->generate($runResult);
-            }
-
-            if ($runResult->hasErrors()) {
-                throw new \Exception('Tests have failed');
-            }
+        if ($runResult->hasErrors()) {
+            throw new \Exception('Tests have failed');
         }
     }
 

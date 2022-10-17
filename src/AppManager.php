@@ -20,7 +20,6 @@ class AppManager
     {
         $application = new Application('SVRUnit', SVRUnit::VERSION);
 
-
         $application->add(new ListSuitesCommand());
         $application->add(new ListGroupsCommand());
         $application->add(new TestCommand());

@@ -106,8 +106,8 @@ jobs:
         run: make csfix -B
 
 
-  install_prod:
-    name: Install Prod Dependencies
+  build:
+    name: Build Binaries
     needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
     runs-on: ubuntu-latest
     steps:
@@ -126,12 +126,12 @@ jobs:
           key: vendor
 
       - name: Install Dependencies
-        run: make install -B
+        run: make build -B
 
 
   test_bin:
     name: E2E Tests | bin/svrunit
-    needs: [ install_prod ]
+    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
 
@@ -141,7 +141,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-          ini-values: phar.readonly=OFF
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -156,7 +155,7 @@ jobs:
 
   test_phar:
     name: E2E Tests | svrunit.phar
-    needs: [ install_prod ]
+    needs: [ build ]
     runs-on: ubuntu-latest
     steps:
 
@@ -166,16 +165,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-          ini-values: phar.readonly=OFF
 
       - name: Mount Cache
         uses: actions/cache@v3
         with:
           path: vendor
           key: vendor
-
-      - name: Build SVRUnit
-        run: make build -B
 
       - name: Start Tests
         run: |

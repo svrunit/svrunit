@@ -215,4 +215,3 @@ jobs:
         uses: distributhor/workflow-webhook@v2
         env:
           webhook_url: ${{ secrets.PACKAGIST_WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.PACKAGIST_WEBHOOK_SECRET }}

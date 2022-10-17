@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -54,7 +54,7 @@ jobs:
     steps:
 
       - name: Clone Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -74,7 +74,7 @@ jobs:
     steps:
 
       - name: Clone Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -92,7 +92,7 @@ jobs:
     steps:
 
       - name: Clone Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -116,7 +116,7 @@ jobs:
     needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -140,7 +140,7 @@ jobs:
     needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -169,7 +169,7 @@ jobs:
     needs: [ test_bin, test_phar ]
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -209,7 +209,7 @@ jobs:
     needs: [ deploy ]
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Invoke Packagist Webhook
         run: |

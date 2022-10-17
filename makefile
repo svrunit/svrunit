@@ -32,7 +32,7 @@ phpunit: ## Runs all tests
 
 pr: ## Runs and prepares everything for a pull request
 	PHP_CS_FIXER_IGNORE_ENV=1 php ./vendor/bin/php-cs-fixer fix --config=./.php_cs.php
-	@make test -B
+	@make phpunit -B
 	@make stan -B
 
 #------------------------------------------------------------------------------------------------

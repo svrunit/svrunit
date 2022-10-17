@@ -8,9 +8,8 @@ on:
 
 jobs:
 
-
-  install:
-    name: Install Dependencies
+  install_dev:
+    name: Install Dev Dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
@@ -34,7 +33,7 @@ jobs:
 
   syntax_checks:
     name: Syntax Checks
-    needs: install
+    needs: install_dev
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
@@ -50,7 +49,7 @@ jobs:
 
   unit_tests:
     name: Unit Tests
-    needs: install
+    needs: install_dev
     runs-on: ubuntu-latest
     steps:
 
@@ -68,7 +67,7 @@ jobs:
 
   phpstan:
     name: PHPStan Analyzer
-    needs: install
+    needs: install_dev
     runs-on: ubuntu-latest
     steps:
 
@@ -86,7 +85,7 @@ jobs:
 
   phpcsfixer:
     name: PHP CS Fixer
-    needs: install
+    needs: install_dev
     runs-on: ubuntu-latest
     steps:
 
@@ -109,10 +108,34 @@ jobs:
 
   # ------------------------------------------------------------------------------------------------------------------------
 
+  install_prod:
+    name: Install Prod Dependencies
+    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Mount Cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: vendor
+
+      - name: Install Dependencies
+        run: make install -B
+
+  # ------------------------------------------------------------------------------------------------------------------------
+
   test_bin:
     name: E2E Tests | bin/svrunit
     runs-on: ubuntu-latest
-    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    needs: [ install_prod ]
     steps:
 
       - uses: actions/checkout@v3
@@ -133,11 +156,10 @@ jobs:
         run: |
           cd tests/e2e && make bin -B
 
-
   test_phar:
     name: E2E Tests | svrunit.phar
     runs-on: ubuntu-latest
-    needs: [ syntax_checks, unit_tests, phpstan, phpcsfixer ]
+    needs: [ install_prod ]
     steps:
 
       - uses: actions/checkout@v3

@@ -212,8 +212,5 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Invoke Packagist Webhook
-        uses: distributhor/workflow-webhook@v2
-        env:
-          webhook_url: https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USER }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}
-          webhook_secret: ${{ secrets.PACKAGIST_TOKEN }}
-          data: '{"repository":{"url":"https://packagist.org/packages/svrunit/svrunit"}}'
+        run: |
+          curl -XPOST -H'content-type:application/json' 'https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USER }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}' -d'{"repository":{"url":"https://packagist.org/packages/svrunit/svrunit"}}'

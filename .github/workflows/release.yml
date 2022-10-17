@@ -202,3 +202,17 @@ jobs:
           password: ${{ secrets.SSH_PROD_PWD }}
           src: ./build/svrunit.zip
           dest: ${{ secrets.PROD_DOWNLOAD_DIR }}/svrunit.zip
+
+  packagist:
+    name: Update Packagist
+    runs-on: ubuntu-latest
+    needs: [ deploy ]
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Invoke Packagist Webhook
+        uses: distributhor/workflow-webhook@v2
+        env:
+          webhook_url: ${{ secrets.PACKAGIST_WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.PACKAGIST_WEBHOOK_SECRET }}

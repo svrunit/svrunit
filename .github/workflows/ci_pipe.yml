@@ -20,7 +20,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -58,7 +58,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -80,7 +80,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -105,7 +105,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -113,6 +113,7 @@ jobs:
       - name: Run PHP CS Fixer
         run: make csfix -B
 
+  # ------------------------------------------------------------------------------------------------------------------------
 
   build:
     name: Build Binaries
@@ -131,7 +132,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -139,6 +140,7 @@ jobs:
       - name: Build Binaries
         run: make build -B
 
+  # ------------------------------------------------------------------------------------------------------------------------
 
   test_bin:
     name: E2E Tests | bin/svrunit
@@ -156,7 +158,7 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor
@@ -178,11 +180,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-          
+
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          key: cache
+          key: cache-${{ github.run_id }}
           path: |
             build
             vendor

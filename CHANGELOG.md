@@ -8,6 +8,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ### Changed
 
 - Moved the commands to list groups and suites to 2 separate commands "list:groups" and "list:suites".
+- The Docker pull command is now done in "quiet" mode if the Docker image is not found locally. This reduces the CLI output.
 
 ## [1.6.0]
 

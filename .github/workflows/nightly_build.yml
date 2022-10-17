@@ -23,8 +23,10 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Install Dependencies
         run: make dev -B
@@ -59,8 +61,10 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Run PHPUnit
         run: make phpunit -B
@@ -77,8 +81,10 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Run PHPStan
         run: make stan -B
@@ -100,8 +106,10 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Run PHP CS Fixer
         run: make csfix -B
@@ -125,10 +133,12 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-build-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
-      - name: Install Dependencies
+      - name: Build Binaries
         run: make build -B
 
   # ------------------------------------------------------------------------------------------------------------------------
@@ -145,13 +155,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-          ini-values: phar.readonly=OFF
 
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-build-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Start Tests
         run: |
@@ -169,13 +180,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
-          ini-values: phar.readonly=OFF
 
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-build-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Start Tests
         run: |
@@ -200,8 +212,10 @@ jobs:
       - name: Mount Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: vendor
+          key: cache-build-${{ github.run_id }}
+          path: |
+            build
+            vendor
 
       - name: Build Release ZIP file
         run: make release -B

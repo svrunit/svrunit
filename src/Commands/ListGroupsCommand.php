@@ -2,11 +2,8 @@
 
 namespace SVRUnit\Commands;
 
-use SVRUnit\Components\Reports\Html\HtmlReport;
-use SVRUnit\Components\Reports\JUnit\JUnitReport;
 use SVRUnit\Components\Runner\TestRunner;
 use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
-use SVRUnit\SVRUnit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

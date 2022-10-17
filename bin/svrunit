@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 
+
 use SVRUnit\AppManager;
 
 if (php_sapi_name() !== 'cli') {

@@ -6,7 +6,6 @@ use SVRUnit\Components\Reports\Html\HtmlReport;
 use SVRUnit\Components\Reports\JUnit\JUnitReport;
 use SVRUnit\Components\Runner\TestRunner;
 use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
-use SVRUnit\SVRUnit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,6 +14,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TestCommand extends Command
 {
+
+    use CommandTrait;
 
     /**
      * @return void
@@ -25,8 +26,6 @@ class TestCommand extends Command
             ->setName('test')
             ->setDescription('Starts the tests for the provided configuration file')
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, 'Read configuration from XML file', '')
-            ->addOption('list-groups', null, InputOption::VALUE_NONE, 'List available test groups', null)
-            ->addOption('list-suites', null, InputOption::VALUE_NONE, 'List available test suites', null)
             ->addOption('group', null, InputOption::VALUE_REQUIRED, 'Only runs tests from the specified group', '')
             ->addOption('exclude-group', null, InputOption::VALUE_REQUIRED, 'Exclude tests from the specified group(s)', '')
             ->addOption('debug', null, InputOption::VALUE_NONE, 'Output debug information during the execution', null)
@@ -47,10 +46,7 @@ class TestCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        echo "SVRUnit Testing Framework, v" . SVRUnit::VERSION . PHP_EOL;
-        echo "Copyright (c) 2022 Christian Dangl" . PHP_EOL;
-        echo "www.svrunit.com" . PHP_EOL;
-
+        $this->showHeader();
 
         $configFile = (string)$input->getOption('configuration');
         $group = (string)$input->getOption('group');
@@ -59,8 +55,6 @@ class TestCommand extends Command
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
         $reportHtml = ($input->getOption('report-html') !== false);
-        $listGroupsMode = ($input->getOption('list-groups') !== false);
-        $listSuitesMode = ($input->getOption('list-suites') !== false);
 
         $reporters = [];
 
@@ -108,19 +102,8 @@ class TestCommand extends Command
 
         try {
 
-            if ($listGroupsMode) {
-
-                $testRunner->listGroups();
-
-            } elseif ($listSuitesMode) {
-
-                $testRunner->listSuites();
-
-            } else {
-
-                $testRunner->runTests($group, $excludeGroups);
-                $io->success("SVRUnit tests successfully completed");
-            }
+            $testRunner->runTests($group, $excludeGroups);
+            $io->success("SVRUnit tests successfully completed");
 
             return 0;
 

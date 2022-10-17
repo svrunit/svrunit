@@ -3,6 +3,8 @@
 namespace SVRUnit;
 
 use Exception;
+use SVRUnit\Commands\ListGroupsCommand;
+use SVRUnit\Commands\ListSuitesCommand;
 use SVRUnit\Commands\TestCommand;
 use Symfony\Component\Console\Application;
 
@@ -18,8 +20,9 @@ class AppManager
     {
         $application = new Application('SVRUnit', SVRUnit::VERSION);
 
-        $cmd = new TestCommand();
-        $application->add($cmd);
+        $application->add(new ListGroupsCommand());
+        $application->add(new ListSuitesCommand());
+        $application->add(new TestCommand());
 
         $application->setDefaultCommand('list');
 

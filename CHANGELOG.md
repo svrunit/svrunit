@@ -3,6 +3,12 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## []
+
+### Changed
+
+- Moved the commands to list groups and suites to 2 separate commands "list:groups" and "list:suites".
+
 ## [1.6.0]
 
 ### Added

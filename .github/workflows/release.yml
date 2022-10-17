@@ -214,4 +214,5 @@ jobs:
       - name: Invoke Packagist Webhook
         uses: distributhor/workflow-webhook@v2
         env:
-          webhook_url: ${{ secrets.PACKAGIST_WEBHOOK_URL }}
+          webhook_url: https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USER }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}
+          data: '{"repository":{"url":"https://packagist.org/packages/svrunit/svrunit"}}'

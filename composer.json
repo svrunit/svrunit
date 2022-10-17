@@ -15,7 +15,7 @@
     }
   ],
   "bin": [
-    "svrunit"
+    "bin/svrunit"
   ],
   "config": {
     "optimize-autoloader": true,

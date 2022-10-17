@@ -12,26 +12,26 @@ help:
 #------------------------------------------------------------------------------------------------
 
 install: ## Installs all prod dependencies
-	@cd src && composer install --no-dev
+	composer install --no-dev
 
 dev: ## Installs all dev dependencies
-	@cd src && composer install
+	composer install
 
 #------------------------------------------------------------------------------------------------
 
 csfix: ## Starts the PHP CS Fixer
-	PHP_CS_FIXER_IGNORE_ENV=1 php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php --dry-run
+	PHP_CS_FIXER_IGNORE_ENV=1 php ./vendor/bin/php-cs-fixer fix --config=./.php_cs.php --dry-run
 
 stan: ## Starts the PHPStan Analyser
-	@php ./src/vendor/bin/phpstan analyse -c ./.phpstan.neon
+	@php ./vendor/bin/phpstan analyse -c ./.phpstan.neon
 
-test: ## Runs all tests
-	@php ./src/vendor/bin/phpunit --configuration=./phpunit.xml -v
+phpunit: ## Runs all tests
+	@php ./vendor/bin/phpunit --configuration=./phpunit.xml -v
 
 #------------------------------------------------------------------------------------------------
 
 pr: ## Runs and prepares everything for a pull request
-	PHP_CS_FIXER_IGNORE_ENV=1 php ./src/vendor/bin/php-cs-fixer fix --config=./.php_cs.php
+	PHP_CS_FIXER_IGNORE_ENV=1 php ./vendor/bin/php-cs-fixer fix --config=./.php_cs.php
 	@make test -B
 	@make stan -B
 
@@ -43,7 +43,7 @@ build: ## Builds SVRUNIT and creates svrunit.phar
 	@echo "verifying if phar files can be created....phar.readonly has to be OFF"
 	@php -i | grep phar.readonly
 	@php -i | grep "Loaded Configuration"
-	@php build.php
+	@cd scripts && php build.php
 
 release: ## Create a ZIP file in the build folder
 	rm -rf ./build/README.md

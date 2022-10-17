@@ -3,6 +3,12 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## []
+
+### Added
+
+- Add new bin/svrunit script. This means you can finally also install and run it via composer in your project.
+
 ## [1.5.0]
 
 ### Added

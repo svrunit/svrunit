@@ -6,7 +6,7 @@
          cacheResult="false"
          colors="true"
          executionOrder="random"
-         bootstrap="./src/autoload.php">
+         bootstrap="./vendor/autoload.php">
 
     <php>
         <ini name="error_reporting" value="-1"/>

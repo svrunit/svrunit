@@ -3,12 +3,45 @@
   "version": "v1.5.0",
   "license": "MIT",
   "description": "SVRUnit allows you to configure tests that you can run against your server, Docker container or even plain Docker images.",
+  "keywords": [
+    "svrunit",
+    "docker",
+    "server",
+    "testing"
+  ],
   "authors": [
     {
       "name": "Christian Dangl"
     }
   ],
+  "bin": [
+    "svrunit"
+  ],
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
   "require": {
-    "php": ">=7.1"
+    "php": ">=7.2",
+    "ext-simplexml": "*",
+    "ext-dom": "*",
+    "symfony/yaml": "^4.0",
+    "symfony/console": "*",
+    "twig/twig": "v3.3.10"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5",
+    "phpstan/phpstan": "*",
+    "friendsofphp/php-cs-fixer": "^2.18"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/"
+    ]
   }
 }

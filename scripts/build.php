@@ -2,8 +2,8 @@
 
 $pharName = 'svrunit.phar';
 
-$srcRoot = __DIR__ . "/src";
-$buildRoot = __DIR__ . "/build";
+$srcRoot = __DIR__ . "/..";
+$buildRoot = __DIR__ . "/../build";
 
 
 echo ">> building " . $pharName . "\n";
@@ -20,11 +20,7 @@ $phar = new Phar($buildRoot . "/" . $pharName, FilesystemIterator::CURRENT_AS_FI
 $phar->buildFromDirectory($srcRoot, '/.$/');
 
 # set stub to index.php file
-$phar->setStub($phar->createDefaultStub("index.php"));
-
-# prepare template files in build folder
-copy($srcRoot . '/../README.md', $buildRoot . '/README.md');
-
+$phar->setStub($phar->createDefaultStub("src/index.php"));
 
 echo ">> build complete...";
 

@@ -4,7 +4,6 @@ namespace SVRUnit\Commands;
 
 use SVRUnit\Components\Reports\Html\HtmlReport;
 use SVRUnit\Components\Reports\JUnit\JUnitReport;
-use SVRUnit\Components\Reports\Null\NullReporter;
 use SVRUnit\Components\Runner\TestRunner;
 use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
 use SVRUnit\SVRUnit;
@@ -25,15 +24,11 @@ class TestCommand extends Command
         $this
             ->setName('test')
             ->setDescription('Starts the tests for the provided configuration file')
-
             ->addOption('configuration', null, InputOption::VALUE_REQUIRED, 'Read configuration from XML file', '')
-
             ->addOption('list-groups', null, InputOption::VALUE_NONE, 'List available test groups', null)
             ->addOption('list-suites', null, InputOption::VALUE_NONE, 'List available test suites', null)
-
             ->addOption('group', null, InputOption::VALUE_REQUIRED, 'Only runs tests from the specified group', '')
             ->addOption('exclude-group', null, InputOption::VALUE_REQUIRED, 'Exclude tests from the specified group(s)', '')
-
             ->addOption('debug', null, InputOption::VALUE_NONE, 'Output debug information during the execution', null)
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stop execution upon first error', null)
             ->addOption('report-junit', null, InputOption::VALUE_NONE, 'Log test execution in JUnit XML format to file', null)

@@ -1,0 +1,14 @@
+#!/usr/bin/php
+<?php
+
+use SVRUnit\AppManager;
+
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
+$root = dirname(__DIR__);
+
+require $root . '/vendor/autoload.php';
+
+AppManager::run($argv);

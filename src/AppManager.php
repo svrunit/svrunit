@@ -1,6 +1,9 @@
 <?php
 
-use SVRUnit\SVRUnit;
+namespace SVRUnit;
+
+use Exception;
+use SVRUnit\Commands\TestCommand;
 use Symfony\Component\Console\Application;
 
 class AppManager
@@ -15,7 +18,7 @@ class AppManager
     {
         $application = new Application('SVRUnit', SVRUnit::VERSION);
 
-        $cmd = new \SVRUnit\Commands\TestCommand();
+        $cmd = new TestCommand();
         $application->add($cmd);
 
         $application->setDefaultCommand('list');

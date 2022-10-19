@@ -1,12 +1,13 @@
 name: CI Pipeline
 
 on:
+  workflow_dispatch:
   pull_request:
     paths-ignore:
       - '**.md'
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - '.github/**'
       - '**.md'

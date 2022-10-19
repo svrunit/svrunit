@@ -8,7 +8,8 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ### Added
 
 - Added new "expected_and" and "expected_or" conditions to Command tests. This allows you to provide an array of expected strings.
-- Add new option to provide single files in addition to directory for Test Suites.
+- Added new option to provide single files in addition to directory for Test Suites.
+- Added new option to check PHP INI values also from Apache Web values. 2 Modes are available: "web" and "cli" for ini tests.
 
 ### Changed
 

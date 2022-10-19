@@ -110,6 +110,7 @@ class TestSpecFileParser
                 $cmd = new PhpIniTest(
                     $this->getValue('name', $command, ''),
                     $testFile,
+                    $this->getValue('mode', $command, PhpIniTest::MODE_CLI),
                     $this->getValue('setting', $command, ''),
                     $this->getValue('value', $command, ''),
                     $this->getValue('not_value', $command, ''),
@@ -127,7 +128,7 @@ class TestSpecFileParser
                     $this->getValue('name', $command, ''),
                     $testFile,
                     $this->getValue('module', $command, '')
-            );
+                );
                 $tests[] = $cmd;
             }
         }

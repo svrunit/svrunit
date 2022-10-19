@@ -12,6 +12,10 @@ use SVRUnit\Traits\StringTrait;
 class PhpIniTest implements TestInterface
 {
 
+    public const MODE_WEB = 'web';
+    public const MODE_CLI = 'cli';
+
+
     use StringTrait;
 
     /**
@@ -23,6 +27,11 @@ class PhpIniTest implements TestInterface
      * @var string
      */
     private $specFile;
+
+    /**
+     * @var string
+     */
+    private $mode;
 
     /**
      * @var string
@@ -48,15 +57,17 @@ class PhpIniTest implements TestInterface
     /**
      * @param string $name
      * @param string $specFile
+     * @param string $mode
      * @param string $phpSetting
      * @param string $expected
      * @param string $notExpected
      * @param array<mixed> $expectedOr
      */
-    public function __construct(string $name, string $specFile, string $phpSetting, string $expected, string $notExpected, array $expectedOr)
+    public function __construct(string $name, string $specFile, string $mode, string $phpSetting, string $expected, string $notExpected, array $expectedOr)
     {
         $this->name = $name;
         $this->specFile = $specFile;
+        $this->mode = $mode;
         $this->phpSetting = $phpSetting;
         $this->expected = $expected;
         $this->notExpected = $notExpected;
@@ -87,25 +98,13 @@ class PhpIniTest implements TestInterface
             throw new \Exception('No expected values defined for PHP Ini test: ' . $this->name);
         }
 
-        # $command = "php -r \"echo ini_get('" . $this->phpSetting . "');\"";
-        $command = 'php -i | grep ' . $this->phpSetting;
-
-        $output = $runner->runTest($command);
-
-        # remote the setting itself and keep the value part
-        $output = str_replace($this->phpSetting, '', $output);
-
-        if ($this->stringContains('=>', $output)) {
-            $parts = explode('=>', $output);
-            $output = $parts[1];
+        if ($this->mode == self::MODE_CLI) {
+            $output = $this->getCli($runner);
+        } else if ($this->mode == self::MODE_WEB) {
+            $output = $this->getWeb($runner);
+        } else {
+            throw new \Exception('Unknown mode for PHP Init Test: ' . $this->name . '. Available modes: web | cli');
         }
-
-        if ($this->stringContains("\n", $output)) {
-            $parts = explode("\n", $output);
-            $output = $parts[0];
-        }
-
-        $output = trim($output);
 
 
         $success = false;
@@ -114,44 +113,44 @@ class PhpIniTest implements TestInterface
 
             $expectedText = 'Should contain one of these: ';
 
-            foreach ($this->expectedOr as $condition) {
+            if ($output !== '') {
+                foreach ($this->expectedOr as $condition) {
 
-                $operator = $condition['operator'];
-                $value = $condition['value'];
+                    $operator = $condition['operator'];
+                    $value = $condition['value'];
 
-                $expectedText .= $operator . ' ' . $value . ', ';
+                    $expectedText .= $operator . ' ' . $value . ', ';
 
-                $isOK = false;
+                    switch ($operator) {
 
-                switch ($operator) {
+                        case '=':
+                            $isOK = (string)$value === $output;
+                            break;
 
-                    case '=':
-                        $isOK = (string)$value === $output;
+                        case '>':
+                            $isOK = $this->toByteSize($output) > $this->toByteSize($value);
+                            break;
+
+                        case '>=':
+                            $isOK = $this->toByteSize($output) >= $this->toByteSize($value);
+                            break;
+
+                        case '<':
+                            $isOK = $this->toByteSize($output) < $this->toByteSize($value);
+                            break;
+
+                        case '<=':
+                            $isOK = $this->toByteSize($output) <= $this->toByteSize($value);
+                            break;
+
+                        default:
+                            throw new \Exception('Unknown operator ' . $operator . ' found in expected or conditions in PHP Ini test: ' . $this->name);
+                    }
+
+                    if ($isOK) {
+                        $success = true;
                         break;
-
-                    case '>':
-                        $isOK = $this->toByteSize($output) > $this->toByteSize($value);
-                        break;
-
-                    case '>=':
-                        $isOK = $this->toByteSize($output) >= $this->toByteSize($value);
-                        break;
-
-                    case '<':
-                        $isOK = $this->toByteSize($output) < $this->toByteSize($value);
-                        break;
-
-                    case '<=':
-                        $isOK = $this->toByteSize($output) <= $this->toByteSize($value);
-                        break;
-
-                    default:
-                        throw new \Exception('Unknown operator ' . $operator . ' found in expected or conditions in PHP Ini test: ' . $this->name);
-                }
-
-                if ($isOK) {
-                    $success = true;
-                    break;
+                    }
                 }
             }
 
@@ -174,12 +173,15 @@ class PhpIniTest implements TestInterface
     }
 
 
-    private function toByteSize($p_sFormatted): float
+    private function toByteSize(string $p_sFormatted): float
     {
-        $aUnits = array('B' => 0, 'KB' => 1, 'MB' => 2, 'GB' => 3, 'TB' => 4, 'PB' => 5, 'EB' => 6, 'ZB' => 7, 'YB' => 8);
+        $aUnits = ['B' => 0, 'KB' => 1, 'MB' => 2, 'GB' => 3, 'TB' => 4, 'PB' => 5, 'EB' => 6, 'ZB' => 7, 'YB' => 8];
+        $unites = [
+            'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'
+        ];
 
         $found = false;
-        foreach ($aUnits as $unit) {
+        foreach ($unites as $unit) {
             if ($this->stringContains($unit, $p_sFormatted)) {
                 $found = true;
                 break;
@@ -195,13 +197,94 @@ class PhpIniTest implements TestInterface
             $sUnit = 'B';
         }
         if (!in_array($sUnit, array_keys($aUnits))) {
-            return false;
+            throw new \Exception('cannot calculate: ' . $p_sFormatted);
         }
         $iUnits = trim(substr($p_sFormatted, 0, strlen($p_sFormatted) - 2));
         if (!intval($iUnits) == $iUnits) {
-            return false;
+            throw new \Exception('cannot calculate: ' . $p_sFormatted);
         }
-        return $iUnits * pow(1024, $aUnits[$sUnit]);
+
+        return (float)$iUnits * pow(1024, (float)$aUnits[$sUnit]);
+    }
+
+    /**
+     * @param TestRunnerInterface $runner
+     * @return string
+     */
+    private function getCli(TestRunnerInterface $runner)
+    {
+        # $command = "php -r \"echo ini_get('" . $this->phpSetting . "');\"";
+        $command = 'php -i | grep ' . $this->phpSetting;
+
+        $output = $runner->runTest($command);
+
+        # remote the setting itself and keep the value part
+        $output = str_replace($this->phpSetting, '', $output);
+
+        if ($this->stringContains('=>', $output)) {
+            $parts = explode('=>', $output);
+            $output = $parts[1];
+        }
+
+        if ($this->stringContains("\n", $output)) {
+            $parts = explode("\n", $output);
+            $output = $parts[0];
+        }
+
+        return trim($output);
+    }
+
+    /**
+     * @param TestRunnerInterface $runner
+     * @return string
+     */
+    private function getWeb(TestRunnerInterface $runner)
+    {
+        // $docRoot = $runner->runTest($getDocRoot);
+        $docRoot = "/var/www/html/public";
+        $phpFile = $docRoot . "/svrunit.php";
+
+
+        if ($this->phpSetting === 'PHP_VERSION') {
+            $command = 'echo "<?php echo \"SVRUNIT: \" . phpversion();"';
+        } else {
+            $command = 'echo "<?php echo \"SVRUNIT: \" . ini_get(\"' . $this->phpSetting . '\");"';
+        }
+
+
+        $runner->runTest("touch " . $phpFile);
+        $runner->runTest($command . ' > ' . $phpFile);
+
+
+        $output = $runner->runTest('curl -L http://localhost/svrunit.php');
+
+        sleep(2);
+
+        $runner->runTest("rm -rf " . $phpFile);
+
+
+        if ($this->stringContains('SVRUNIT:', $output)) {
+
+            /** @var array<mixed> $parts */
+            $parts = explode('SVRUNIT:', $output);
+            if (count($parts) >= 1) {
+                $output = $parts[1];
+            } else {
+                $output = '';
+            }
+        } else {
+            $output = '';
+        }
+
+
+        $output = trim((string)$output);
+
+        if ($this->phpSetting === 'PHP_VERSION') {
+            $parts = explode('.', $output);
+            $output = $parts[0] . '.' . $parts[1];
+        }
+
+        return trim((string)$output);
     }
 
 }

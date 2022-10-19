@@ -1,6 +1,16 @@
 name: CI Pipeline
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
+      - 'makefile'
 
 jobs:
 

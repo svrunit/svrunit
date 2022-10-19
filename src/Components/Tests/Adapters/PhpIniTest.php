@@ -288,7 +288,7 @@ class PhpIniTest implements TestInterface
         return trim((string)$output);
     }
 
-    private function generateRandomString($length = 10)
+    private function generateRandomString(int $length = 10): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

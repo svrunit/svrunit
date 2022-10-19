@@ -15,6 +15,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 - Moved the commands to list groups and suites to 2 separate commands "list:groups" and "list:suites".
 - The Docker pull command is now done in "quiet" mode if the Docker image is not found locally. This reduces the CLI output.
 - Improved expected and actual output for directory tests.
+- Runs without 0 found tests will now lead to a failure. Before this, this was just a warning output.
 
 ## [1.6.0]
 

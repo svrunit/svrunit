@@ -103,15 +103,14 @@ class TestCommand extends Command
         try {
 
             $testRunner->runTests($group, $excludeGroups);
+
             $io->success("SVRUnit tests successfully completed");
 
             return 0;
 
         } catch (\Exception $ex) {
 
-            # just show a simple output and
-            # no big red one
-            $io->text($ex->getMessage());
+            $io->error($ex->getMessage());
 
             return 1;
         }

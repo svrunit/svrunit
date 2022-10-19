@@ -199,10 +199,7 @@ class TestRunner
         $allSuiteTests = $this->loadTestsOfSuite($suite);
 
         if (count($allSuiteTests) <= 0) {
-
-            $this->outputWriter->warning('NO TESTS FOUND');
-
-            return new SuiteResult($suite, []);
+            throw new \Exception('No tests found in suite: ' . $suite->getName());
         }
 
         $this->outputWriter->debug('');
@@ -285,6 +282,10 @@ class TestRunner
         /** @var array<mixed> $testFiles */
         $testFiles = $fileCollector->searchTestFiles(dirname($this->configFile), $suite->getTestFolders());
 
+        # also add individual files
+        foreach ($suite->getTestFiles() as $file) {
+            $testFiles[] = dirname($this->configFile) . '/' . $file;
+        }
 
         /** @var string $file */
         foreach ($testFiles as $file) {

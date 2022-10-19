@@ -2,6 +2,10 @@
 
     <testsuites>
 
+        <testsuite name="dockware/flex:latest File Tests" dockerImage="dockware/flex:latest" dockerEnv="">
+            <file>./tests_files/sample_system.yml</file>
+        </testsuite>
+
         <testsuite name="dockware/flex:latest Group1" group="group1" dockerImage="dockware/flex:latest" dockerEnv="">
             <directory>./tests</directory>
         </testsuite>

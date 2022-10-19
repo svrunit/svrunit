@@ -75,9 +75,23 @@ class TestSuiteConfigParser
 
 
             /** @var SimpleXMLElement $directory */
-            foreach ($suiteNode->children() as $directory) {
-                $folder = (string)$directory[0];
-                $suite->addTestFolder($folder);
+            foreach ($suiteNode->children() as $childNode) {
+
+                $nodeType = $childNode->getName();
+                $nodeValue = (string)$childNode[0];
+
+                switch ($nodeType) {
+                    case 'file':
+                        $suite->addTestFile($nodeValue);
+                        break;
+
+                    case 'directory':
+                        $suite->addTestFolder($nodeValue);
+                        break;
+
+                    default:
+                        throw new \Exception('Unknown child in test suite: ' . $childNode->getName() . ', ' . $suite->getName());
+                }
             }
 
             $testSuites[] = $suite;

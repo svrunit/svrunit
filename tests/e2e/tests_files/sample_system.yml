@@ -1,0 +1,4 @@
+commands:
+  - name: "Test Expected"
+    command: "php -v"
+    expected: "PHP 7.4"

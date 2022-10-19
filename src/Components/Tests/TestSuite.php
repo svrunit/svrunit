@@ -53,6 +53,11 @@ class TestSuite
     private $testFolders = [];
 
     /**
+     * @var array<mixed>
+     */
+    private $testFiles = [];
+
+    /**
      * @var int
      */
     private $setupTimeSeconds;
@@ -71,6 +76,9 @@ class TestSuite
         $this->dockerEnvVariables = [];
 
         $this->setupTimeSeconds = 0;
+
+        $this->testFiles = [];
+        $this->testFolders = [];
     }
 
 
@@ -80,6 +88,15 @@ class TestSuite
     public function addTestFolder(string $folder): void
     {
         $this->testFolders[] = $folder;
+    }
+
+    /**
+     * @param string $file
+     * @return void
+     */
+    public function addTestFile(string $file): void
+    {
+        $this->testFiles[] = $file;
     }
 
     /**
@@ -126,6 +143,15 @@ class TestSuite
     {
         return $this->testFolders;
     }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getTestFiles(): array
+    {
+        return $this->testFiles;
+    }
+
 
     /**
      * @return string

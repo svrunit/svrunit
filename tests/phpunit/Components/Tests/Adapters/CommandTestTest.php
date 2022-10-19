@@ -20,6 +20,8 @@ class CommandTestTest extends TestCase
             '',
             '',
             '',
+            [],
+            [],
             '',
             '',
             ''
@@ -42,6 +44,8 @@ class CommandTestTest extends TestCase
             '',
             'ls -la',
             '',
+            [],
+            [],
             '',
             '',
             ''
@@ -68,6 +72,8 @@ class CommandTestTest extends TestCase
             '',
             'ls -la test',
             '',
+            [],
+            [],
             '',
             'mkdir -p test',
             'rm -rf test'

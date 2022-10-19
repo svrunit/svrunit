@@ -96,9 +96,14 @@ class CommandTest implements TestInterface
     /**
      * @param TestRunnerInterface $runner
      * @return TestResult
+     * @throws \Exception
      */
     public function executeTest(TestRunnerInterface $runner): TestResult
     {
+        if ($this->expected === '' && $this->notExpected === '' && count($this->expectedAnd) === 0 && count($this->expectedOr) === 0) {
+            throw new \Exception("Command test has an invalid configuration without an expected value: " . $this->name);
+        }
+
         if ($this->setupCommand !== '') {
             $runner->runTest($this->setupCommand);
         }

@@ -67,9 +67,14 @@ class PhpIniTest implements TestInterface
     /**
      * @param TestRunnerInterface $runner
      * @return TestResult
+     * @throws \Exception
      */
     public function executeTest(TestRunnerInterface $runner): TestResult
     {
+        if ($this->phpSetting === '') {
+            throw new \Exception('No setting specified for PHP Ini test: ' . $this->name);
+        }
+
         $command = 'php -i | grep ' . $this->phpSetting;
 
         $output = $runner->runTest($command);

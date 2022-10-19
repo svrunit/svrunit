@@ -7,3 +7,17 @@ php_ini:
   - name: "PHP Ini must not have value"
     setting: "PHP_VERSION"
     not_value: "8.1"
+
+  - name: "PHP Ini OR conditions"
+    setting: "PHP_VERSION"
+    value_or:
+      - "operator": "="
+        "value": "7.4"
+      - "operator": "="
+        "value": "8.1"
+
+  - name: "PHP Ini OR conditions with operator"
+    setting: "PHP_VERSION"
+    value_or:
+      - "operator": ">="
+        "value": "7.4"

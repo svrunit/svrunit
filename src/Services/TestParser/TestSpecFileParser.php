@@ -112,7 +112,8 @@ class TestSpecFileParser
                     $testFile,
                     $this->getValue('setting', $command, ''),
                     $this->getValue('value', $command, ''),
-                    $this->getValue('not_value', $command, '')
+                    $this->getValue('not_value', $command, ''),
+                    $this->getArray('value_or', $command, [])
                 );
                 $tests[] = $cmd;
             }
@@ -126,7 +127,7 @@ class TestSpecFileParser
                     $this->getValue('name', $command, ''),
                     $testFile,
                     $this->getValue('module', $command, '')
-                );
+            );
                 $tests[] = $cmd;
             }
         }

@@ -1,0 +1,9 @@
+file_permission:
+
+  - name: "File has permission"
+    file: "/entrypoint.sh"
+    expected: "755"
+
+  - name: "File must not have permission"
+    file: "/entrypoint.sh"
+    not_expected: "777"

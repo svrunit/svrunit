@@ -1,0 +1,4 @@
+php_module:
+
+  - name: "PHP Module must exist"
+    module: "ssh2"

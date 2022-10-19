@@ -14,7 +14,7 @@ help:
 bin: ## Runs all tests via bin/svrunit
 	cd ../.. && php bin/svrunit list:suites --configuration=./tests/e2e/svrunit.xml
 	cd ../.. && php bin/svrunit list:groups --configuration=./tests/e2e/svrunit.xml
-	cd ../.. && php bin/svrunit test --configuration=./tests/e2e/svrunit.xml --report-junit --report-html
+	cd ../.. && php bin/svrunit test --configuration=./tests/e2e/svrunit.xml --report-junit --report-html --debug
 
 phar: ## Runs all tests with the PHAR
 	php ../../build/svrunit.phar list:suites --configuration=svrunit.xml

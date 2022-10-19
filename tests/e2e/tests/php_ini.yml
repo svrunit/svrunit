@@ -1,0 +1,9 @@
+php_ini:
+
+  - name: "PHP Ini has value"
+    setting: "PHP_VERSION"
+    value: "7.4"
+
+  - name: "PHP Ini must not have value"
+    setting: "PHP_VERSION"
+    not_value: "8.1"

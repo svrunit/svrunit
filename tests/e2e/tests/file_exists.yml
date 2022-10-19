@@ -1,0 +1,9 @@
+directory_exists:
+
+  - name: "Directory exists"
+    directory: "/var/www/html"
+    expected: true
+
+  - name: "Directory must not exist"
+    directory: "/var/www/html/test123"
+    expected: false

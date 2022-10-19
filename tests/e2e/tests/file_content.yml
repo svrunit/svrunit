@@ -1,0 +1,9 @@
+file_content:
+
+  - name: "File content exists"
+    file: "/entrypoint.sh"
+    expected: "DOCKWARE IMAGE: flex"
+
+  - name: "File content must not exist"
+    file: "/entrypoint.sh"
+    not_expected: "SVRUNIT Image"

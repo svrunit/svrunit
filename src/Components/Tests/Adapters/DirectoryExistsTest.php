@@ -77,9 +77,9 @@ class DirectoryExistsTest implements TestInterface
         }
 
         if ($this->expected) {
-            $expectedString = 'directory should exist';
+            $expectedString = 'directory should exist: ' . $this->directory;
         } else {
-            $expectedString = 'directory should not exist';
+            $expectedString = 'directory should not exist: ' . $this->directory;
         }
 
         if ($isExisting) {

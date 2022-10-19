@@ -6,7 +6,7 @@ use SimpleXMLElement;
 use SVRUnit\Components\Tests\TestSuite;
 
 
-class ConfigXmlParser
+class TestSuiteConfigParser
 {
 
     /**

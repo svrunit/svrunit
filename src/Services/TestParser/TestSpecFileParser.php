@@ -12,7 +12,7 @@ use SVRUnit\Components\Tests\Adapters\PhpIniTest;
 use SVRUnit\Components\Tests\Adapters\PhpModuleTest;
 use Symfony\Component\Yaml\Parser;
 
-class YamlTestParser
+class TestSpecFileParser
 {
 
     const TEST_KEY_COMMANDS = "commands";
@@ -56,6 +56,8 @@ class YamlTestParser
                     $testFile,
                     $this->getValue('command', $command, ''),
                     $this->getValue('expected', $command, ''),
+                    $this->getArray('expected_and', $command, []),
+                    $this->getArray('expected_or', $command, []),
                     $this->getValue('not_expected', $command, ''),
                     $this->getValue('setup', $command, ''),
                     $this->getValue('teardown', $command, '')
@@ -170,6 +172,25 @@ class YamlTestParser
         }
 
         return (string)$struct[$key];
+    }
+
+    /**
+     * @param string $key
+     * @param array<mixed>|null $struct
+     * @param array<mixed> $default
+     * @return array<mixed>
+     */
+    private function getArray(string $key, ?array $struct, array $default): array
+    {
+        if ($struct === null) {
+            return $default;
+        }
+
+        if (!isset($struct[$key])) {
+            return $default;
+        }
+
+        return (array)$struct[$key];
     }
 
 }

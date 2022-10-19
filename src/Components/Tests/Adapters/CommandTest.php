@@ -49,22 +49,36 @@ class CommandTest implements TestInterface
      */
     private $notExpected;
 
+    /**
+     * @var array<mixed>
+     */
+    private $expectedAnd;
+
+    /**
+     * @var array<mixed>
+     */
+    private $expectedOr;
+
 
     /**
      * @param string $name
      * @param string $specFile
      * @param string $command
      * @param string $expected
+     * @param array<mixed> $expectedAnd
+     * @param array<mixed> $expectedOr
      * @param string $notExpected
      * @param string $setupCommand
      * @param string $tearDownCommand
      */
-    public function __construct(string $name, string $specFile, string $command, string $expected, string $notExpected, string $setupCommand, string $tearDownCommand)
+    public function __construct(string $name, string $specFile, string $command, string $expected, array $expectedAnd, array $expectedOr, string $notExpected, string $setupCommand, string $tearDownCommand)
     {
         $this->name = $name;
         $this->specFile = $specFile;
         $this->command = $command;
         $this->expected = $expected;
+        $this->expectedAnd = $expectedAnd;
+        $this->expectedOr = $expectedOr;
         $this->notExpected = $notExpected;
         $this->setupCommand = $setupCommand;
         $this->tearDownCommand = $tearDownCommand;
@@ -102,10 +116,43 @@ class CommandTest implements TestInterface
         $output = str_replace("\n", '', $output);
         $output = trim($output);
 
+        $expectedText = '';
+
+        $success = false;
 
         if ($this->expected != "") {
+            $expectedText = 'Should contain: ' . $this->expected;
+
             $success = $this->stringContains($this->expected, $output);
+        } else if (count($this->expectedAnd) > 0) {
+
+            $expectedText = 'Should contain ALL of these: ' . implode(', ', $this->expectedAnd);
+
+            $allFound = true;
+            # ALL conditions need to be met
+            foreach ($this->expectedAnd as $condition) {
+                if (!$this->stringContains($condition, $output)) {
+                    $allFound = false;
+                    break;
+                }
+            }
+
+            $success = $allFound;
+
+        } else if (count($this->expectedOr) > 0) {
+
+            $expectedText = 'Should contain 1 of these: ' . implode(', ', $this->expectedAnd);
+
+            # 1 CONDITION needs to be met
+            foreach ($this->expectedOr as $condition) {
+                if ($this->stringContains($condition, $output)) {
+                    $success = true;
+                    break;
+                }
+            }
+
         } else {
+            $expectedText = 'Should not contain: ' . $this->notExpected;
             $success = !$this->stringContains($this->notExpected, $output);
         }
 
@@ -114,7 +161,7 @@ class CommandTest implements TestInterface
             $this->specFile,
             $success,
             1,
-            $this->expected,
+            $expectedText,
             $output
         );
     }

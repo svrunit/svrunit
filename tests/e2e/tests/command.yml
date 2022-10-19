@@ -1,0 +1,28 @@
+commands:
+
+  - name: "Test Expected"
+    command: "php -v"
+    expected: "PHP 7.4"
+
+  - name: "Test Not Expected"
+    command: "php -v"
+    not_expected: "PHP 8.1"
+
+  - name: "Test Expected OR Condition"
+    command: "php -v"
+    expected_or:
+      - "PHP 8.1"
+      - "PHP 8.0"
+      - "PHP 7.4"
+
+  - name: "Test Expected AND Condition"
+    command: "php -v"
+    expected_and:
+      - "PHP 7.4"
+      - "OPcache v7.4"
+
+  - name: "Test Setup + Teardown"
+    command: "ls -l svrunitTest"
+    setup: "mkdir svrunitTest && touch ./svrunitTest/sample.txt"
+    teardown: "rm -rf svrunitTest"
+    expected: "sample.txt"

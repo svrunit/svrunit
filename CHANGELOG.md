@@ -5,10 +5,15 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ## []
 
+### Added
+
+- Added new "expected_and" and "expected_or" conditions to Command tests. This allows you to provide an array of expected strings.
+
 ### Changed
 
 - Moved the commands to list groups and suites to 2 separate commands "list:groups" and "list:suites".
 - The Docker pull command is now done in "quiet" mode if the Docker image is not found locally. This reduces the CLI output.
+- Improved expected and actual output for directory tests.
 
 ## [1.6.0]
 

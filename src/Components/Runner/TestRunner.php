@@ -11,11 +11,11 @@ use SVRUnit\Components\Tests\Results\RunResult;
 use SVRUnit\Components\Tests\Results\SuiteResult;
 use SVRUnit\Components\Tests\Results\TestResult;
 use SVRUnit\Components\Tests\TestSuite;
-use SVRUnit\Services\ConfigParser\ConfigXmlParser;
+use SVRUnit\Services\ConfigParser\TestSuiteConfigParser;
 use SVRUnit\Services\ConfigParser\TestFileCollector;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 use SVRUnit\Services\ShellRunner\ShellRunner;
-use SVRUnit\Services\TestParser\YamlTestParser;
+use SVRUnit\Services\TestParser\TestSpecFileParser;
 
 
 class TestRunner
@@ -47,7 +47,7 @@ class TestRunner
     private $stopOnErrors;
 
     /**
-     * @var ConfigXmlParser
+     * @var TestSuiteConfigParser
      */
     private $parserSuites;
 
@@ -67,7 +67,7 @@ class TestRunner
         $this->stopOnErrors = $stopOnErrors;
         $this->debugMode = $debugMode;
 
-        $this->parserSuites = new ConfigXmlParser();
+        $this->parserSuites = new TestSuiteConfigParser();
     }
 
 
@@ -277,7 +277,7 @@ class TestRunner
      */
     private function loadTestsOfSuite(TestSuite $suite): array
     {
-        $parser = new YamlTestParser();
+        $parser = new TestSpecFileParser();
         $fileCollector = new TestFileCollector();
         $allSuiteTests = [];
 

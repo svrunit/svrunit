@@ -1,0 +1,83 @@
+php_ini:
+
+  - name: "PHP Version is correct"
+    setting: "PHP_VERSION"
+    mode: "web"
+    value_or:
+      - "operator": ">="
+        "value": "7.4"
+
+  - name: "max_execution_time 30 seconds or higher"
+    setting: "max_execution_time"
+    mode: "web"
+    value_or:
+      - "operator": "="
+        "value": "0"
+      - "operator": ">="
+        "value": "30"
+
+  - name: "memory_limit 512M or higher"
+    setting: "memory_limit"
+    mode: "web"
+    value_or:
+      - "operator": ">="
+        "value": "512M"
+
+php_module:
+
+  - name: "ext-curl"
+    module: "curl"
+
+  - name: "ext-dom"
+    module: "dom"
+
+  - name: "ext-fileinfo"
+    module: "fileinfo"
+
+  - name: "ext-gd"
+    module: "gd"
+
+  - name: "ext-iconv"
+    module: "iconv"
+
+  - name: "ext-intl"
+    module: "intl"
+
+  - name: "ext-json"
+    module: "json"
+
+  - name: "ext-libxml"
+    module: "libxml"
+
+  - name: "ext-mbstring"
+    module: "mbstring"
+
+  - name: "ext-openssl"
+    module: "openssl"
+
+  - name: "ext-pcre"
+    module: "pcre"
+
+  - name: "ext-pdo"
+    module: "pdo"
+
+  - name: "ext-pdo_mysql"
+    module: "pdo_mysql"
+
+  - name: "ext-phar"
+    module: "Phar"
+
+  - name: "ext-simplexml"
+    module: "SimpleXML"
+
+  - name: "ext-sodium"
+    module: "sodium"
+
+  - name: "ext-xml"
+    module: "xml"
+
+  - name: "ext-zip"
+    module: "zip"
+
+  - name: "ext-zlib"
+    module: "zlib"

@@ -1,0 +1,11 @@
+<svrunit setupTime="0">
+
+    <testsuites>
+
+        <testsuite name="Shopware 6 System Requirements" dockerImage="dockware/flex:latest" dockerEnv="">
+            <file>./shopware6.yml</file>
+        </testsuite>
+
+    </testsuites>
+
+</svrunit>

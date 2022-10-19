@@ -2,14 +2,17 @@ php_ini:
 
   - name: "PHP Ini has value"
     setting: "PHP_VERSION"
+    mode: "cli"
     value: "7.4"
 
   - name: "PHP Ini must not have value"
     setting: "PHP_VERSION"
+    mode: "cli"
     not_value: "8.1"
 
   - name: "PHP Ini OR conditions"
     setting: "PHP_VERSION"
+    mode: "cli"
     value_or:
       - "operator": "="
         "value": "7.4"
@@ -18,6 +21,21 @@ php_ini:
 
   - name: "PHP Ini OR conditions with operator"
     setting: "PHP_VERSION"
+    mode: "cli"
     value_or:
       - "operator": ">="
         "value": "7.4"
+
+  - name: "PHP Ini can rad PHP_VERSION values from WEB"
+    setting: "PHP_VERSION"
+    mode: "web"
+    value_or:
+      - "operator": ">="
+        "value": "7.4"
+
+  - name: "PHP Ini can rad values from WEB"
+    setting: "memory_limit"
+    mode: "web"
+    value_or:
+      - "operator": ">="
+        "value": "512M"

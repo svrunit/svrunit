@@ -87,6 +87,7 @@ class PhpIniTest implements TestInterface
             throw new \Exception('No expected values defined for PHP Ini test: ' . $this->name);
         }
 
+        # $command = "php -r \"echo ini_get('" . $this->phpSetting . "');\"";
         $command = 'php -i | grep ' . $this->phpSetting;
 
         $output = $runner->runTest($command);
@@ -145,7 +146,7 @@ class PhpIniTest implements TestInterface
                         break;
 
                     default:
-                        throw new \Exception('Unknown operator found in expected OR conditions in PHP Ini test: ' . $this->name);
+                        throw new \Exception('Unknown operator ' . $operator . ' found in expected or conditions in PHP Ini test: ' . $this->name);
                 }
 
                 if ($isOK) {

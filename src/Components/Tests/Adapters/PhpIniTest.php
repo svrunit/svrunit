@@ -242,7 +242,8 @@ class PhpIniTest implements TestInterface
     {
         // $docRoot = $runner->runTest($getDocRoot);
         $docRoot = "/var/www/html/public";
-        $phpFile = $docRoot . "/svrunit.php";
+        $phpFile = "svrunit" . $this->generateRandomString(5) . ".php";
+        $phpPath = $docRoot . "/" . $phpFile;
 
 
         if ($this->phpSetting === 'PHP_VERSION') {
@@ -252,16 +253,16 @@ class PhpIniTest implements TestInterface
         }
 
 
-        $runner->runTest("touch " . $phpFile);
-        $runner->runTest($command . ' > ' . $phpFile);
-
-
-        $output = $runner->runTest('curl -L http://localhost/svrunit.php');
+        $runner->runTest("touch " . $phpPath);
+        $runner->runTest($command . ' > ' . $phpPath);
 
         sleep(2);
 
-        $runner->runTest("rm -rf " . $phpFile);
+        $output = $runner->runTest('curl -L http://localhost/' . $phpFile);
 
+        sleep(2);
+
+        $runner->runTest("rm -rf " . $phpPath);
 
         if ($this->stringContains('SVRUNIT:', $output)) {
 
@@ -285,6 +286,17 @@ class PhpIniTest implements TestInterface
         }
 
         return trim((string)$output);
+    }
+
+    private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 }

@@ -74,7 +74,7 @@ class TestSuiteConfigParser
             }
 
 
-            /** @var SimpleXMLElement $directory */
+            /** @var SimpleXMLElement $childNode */
             foreach ($suiteNode->children() as $childNode) {
 
                 $nodeType = $childNode->getName();

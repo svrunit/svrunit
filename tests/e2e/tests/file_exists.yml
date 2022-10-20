@@ -1,9 +1,9 @@
-directory_exists:
+file_exists:
 
-  - name: "Directory exists"
-    directory: "/var/www/html"
+  - name: "File exists"
+    file: "/entrypoint.sh"
     expected: true
 
-  - name: "Directory must not exist"
-    directory: "/var/www/html/test123"
+  - name: "File must not exist"
+    file: "/var/www/html/test123.txt"
     expected: false

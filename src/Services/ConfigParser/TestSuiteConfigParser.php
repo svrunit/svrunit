@@ -30,7 +30,9 @@ class TestSuiteConfigParser
         $setupTime = 0;
 
         if ($attributes instanceof SimpleXMLElement) {
-            $setupTime = (string)$attributes->setupTime[0];
+            if ($attributes->setupTime) {
+                $setupTime = (string)$attributes->setupTime[0];
+            } 
         }
 
         $setupTime = (int)$setupTime;

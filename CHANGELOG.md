@@ -17,6 +17,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 - The Docker pull command is now done in "quiet" mode if the Docker image is not found locally. This reduces the CLI output.
 - Improved expected and actual output for directory tests.
 - Runs without 0 found tests will now lead to a failure. Before this, this was just a warning output.
+- Failed catches due to Fatal exceptions will now be visible with a red symfony console output.
 
 ## [1.6.0]
 

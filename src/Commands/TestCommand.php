@@ -108,7 +108,7 @@ class TestCommand extends Command
 
             return 0;
 
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
 
             $io->error($ex->getMessage());
 

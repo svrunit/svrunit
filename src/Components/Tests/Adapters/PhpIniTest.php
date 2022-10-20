@@ -241,7 +241,12 @@ class PhpIniTest implements TestInterface
     private function getWeb(TestRunnerInterface $runner)
     {
         // $docRoot = $runner->runTest($getDocRoot);
-        $docRoot = "/var/www/html/public";
+        $docRoot = $this->getDocRoot($runner);
+
+        if (empty($docRoot)) {
+            throw new \Error('Could not detect Apache DocRoot folder. PHP INI web test cannot be executed');
+        }
+
         $phpFile = "svrunit" . $this->generateRandomString(5) . ".php";
         $phpPath = $docRoot . "/" . $phpFile;
 
@@ -256,11 +261,20 @@ class PhpIniTest implements TestInterface
         $runner->runTest("touch " . $phpPath);
         $runner->runTest($command . ' > ' . $phpPath);
 
-        sleep(2);
 
-        $output = $runner->runTest('curl -L http://localhost/' . $phpFile);
+        $tries = 0;
+        $exit = false;
+        while ($exit == false && $tries <= 5) {
 
-        sleep(2);
+            sleep(2);
+
+            $output = $runner->runTest('curl -L http://localhost/' . $phpFile);
+
+            if (!$this->stringContains("Failed to connect to localhost", $output)) {
+                $exit = true;
+            }
+            $tries++;
+        }
 
         $runner->runTest("rm -rf " . $phpPath);
 
@@ -268,11 +282,13 @@ class PhpIniTest implements TestInterface
 
             /** @var array<mixed> $parts */
             $parts = explode('SVRUNIT:', $output);
+
             if (count($parts) >= 1) {
                 $output = $parts[1];
             } else {
                 $output = '';
             }
+
         } else {
             $output = '';
         }
@@ -280,12 +296,41 @@ class PhpIniTest implements TestInterface
 
         $output = trim((string)$output);
 
-        if ($this->phpSetting === 'PHP_VERSION') {
+
+        if ($this->phpSetting === 'PHP_VERSION' && $this->stringContains('.', $output)) {
             $parts = explode('.', $output);
             $output = $parts[0] . '.' . $parts[1];
         }
 
+
         return trim((string)$output);
+    }
+
+    /**
+     * @param TestRunnerInterface $runner
+     * @return string
+     */
+    private function getDocRoot(TestRunnerInterface $runner)
+    {
+        $cmd = "php -i | grep APACHE_DOCROOT";
+
+        $output = $runner->runTest($cmd);
+
+
+        if (!$this->stringContains('=>', $output)) {
+            return '';
+        }
+
+
+        $parts = explode('=>', $output);
+
+        $output = $parts[1];
+
+        $output = str_replace('$_SERVER[\'APACHE_DOCROOT\']', "", $output);
+
+        $output = trim($output);
+
+        return $output;
     }
 
     private function generateRandomString(int $length = 10): string

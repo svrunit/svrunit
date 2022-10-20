@@ -23,10 +23,10 @@
   },
   "require": {
     "php": ">=7.2",
-    "ext-simplexml": "*",
     "ext-dom": "*",
-    "symfony/yaml": "*",
+    "ext-simplexml": "*",
     "symfony/console": "*",
+    "symfony/yaml": "^5.4",
     "twig/twig": "v3.3.10"
   },
   "require-dev": {

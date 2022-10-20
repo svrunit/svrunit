@@ -25,7 +25,7 @@
     "php": ">=7.2",
     "ext-simplexml": "*",
     "ext-dom": "*",
-    "symfony/yaml": "^4.0",
+    "symfony/yaml": "*",
     "symfony/console": "*",
     "twig/twig": "v3.3.10"
   },

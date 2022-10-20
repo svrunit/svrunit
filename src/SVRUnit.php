@@ -8,6 +8,6 @@ class SVRUnit
     /**
      *
      */
-    public const VERSION = "1.6.0";
+    public const VERSION = "1.7.0";
 
 }

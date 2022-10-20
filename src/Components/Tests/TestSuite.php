@@ -8,8 +8,8 @@ class TestSuite
 
     const TYPE_DOCKER_IMAGE = 1;
     const TYPE_DOCKER_CONTAINER = 2;
-    const TYPE_LOCAL = 2;
-    const TYPE_DOCKER_COMMAND_RUNNER = 3;
+    const TYPE_LOCAL = 3;
+    const TYPE_DOCKER_COMMAND_RUNNER = 4;
 
 
     /**

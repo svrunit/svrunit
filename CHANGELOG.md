@@ -19,6 +19,9 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 - Runs without 0 found tests will now lead to a failure. Before this, this was just a warning output.
 - Failed catches due to Fatal exceptions will now be visible with a red symfony console output.
 
+### Fixed 
+- Fixed broken local test runner without Docker.
+
 ## [1.6.0]
 
 ### Added

@@ -8,16 +8,23 @@ class FakeTestRunner implements TestRunnerInterface
 {
 
     /**
+     * @var string
+     */
+    private $ouput;
+
+    /**
      * @var array
      */
     private $runCommands;
 
 
     /**
-     *
+     * @param string $output
      */
-    public function __construct()
+    public function __construct(string $output = '')
     {
+        $this->ouput = $output;
+
         $this->runCommands = [];
     }
 
@@ -39,7 +46,7 @@ class FakeTestRunner implements TestRunnerInterface
     {
         $this->runCommands[] = $command;
 
-        return '';
+        return $this->ouput;
     }
 
     public function tearDown(): void

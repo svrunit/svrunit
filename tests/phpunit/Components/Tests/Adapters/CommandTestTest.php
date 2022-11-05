@@ -13,7 +13,7 @@ class CommandTestTest extends TestCase
      * This test verifies that our success property
      * is correctly set and returned.
      */
-    public function testName()
+    public function testName(): void
     {
         $test = new CommandTest(
             'PHP Test',
@@ -33,9 +33,11 @@ class CommandTestTest extends TestCase
     /**
      * This  test verifies that our command is correctly
      * passed on to the test runner.
+     *
      * @return void
+     * @throws \Exception
      */
-    public function testCommandIsRun()
+    public function testCommandIsRun(): void
     {
         $fakeRunner = new FakeTestRunner();
 
@@ -61,9 +63,11 @@ class CommandTestTest extends TestCase
      * This  test verifies that our provided setup and
      * teardown commands are correctly passed on to
      * our test runner.
+     *
      * @return void
+     * @throws \Exception
      */
-    public function testSetupAndTeardownAreUsed()
+    public function testSetupAndTeardownAreUsed(): void
     {
         $fakeRunner = new FakeTestRunner();
 

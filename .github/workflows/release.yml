@@ -18,7 +18,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -44,7 +44,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: PHP Syntax Checks
         run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
@@ -103,7 +103,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -129,7 +129,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
           ini-values: phar.readonly=OFF
 
       - name: Mount Cache
@@ -156,7 +156,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -181,7 +181,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -208,7 +208,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
 
       - name: Mount Cache
         uses: actions/cache@v3

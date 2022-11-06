@@ -3,6 +3,10 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [UNRELEASED]
+
+- DirectoryExists Tests does now throw an error if no directory was specified.
+
 ## [1.7.0]
 
 ### Added

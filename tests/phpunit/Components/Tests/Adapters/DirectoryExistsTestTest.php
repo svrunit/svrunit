@@ -4,6 +4,7 @@ namespace SVRUnit\Tests\Components\Tests\Adapters;
 
 use PHPUnit\Framework\TestCase;
 use SVRUnit\Components\Tests\Adapters\DirectoryExistsTest;
+use SVRUnit\Components\Tests\Adapters\FileExistsTest;
 use SVRUnit\Tests\Fakes\FakeTestRunner;
 
 class DirectoryExistsTestTest extends TestCase
@@ -23,6 +24,28 @@ class DirectoryExistsTestTest extends TestCase
         );
 
         $this->assertEquals('DocRoot exists', $test->getName());
+    }
+
+    /**
+     * This test verifies that our test throws an exception
+     * if no directory was configured to be tested.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function testThrowsExceptionWithoutFile(): void
+    {
+        $this->expectExceptionMessage('DirectoryExists test has an invalid configuration without a directory');
+
+        $test = new DirectoryExistsTest(
+            'DocRoot exists',
+            '',
+            '',
+            false
+        );
+
+        $fakeRunner = new FakeTestRunner('yes');
+        $test->executeTest($fakeRunner);
     }
 
     /**
@@ -51,6 +74,7 @@ class DirectoryExistsTestTest extends TestCase
      * @param bool $dirFound
      * @param bool $isSuccess
      * @return void
+     * @throws \Exception
      */
     public function testResultForExpected(bool $dirFound, bool $isSuccess): void
     {
@@ -73,6 +97,7 @@ class DirectoryExistsTestTest extends TestCase
      * @param bool $dirFound
      * @param bool $isSuccess
      * @return void
+     * @throws \Exception
      */
     public function testResultForNotExpected(bool $dirFound, bool $isSuccess): void
     {

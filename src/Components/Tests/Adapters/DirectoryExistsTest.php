@@ -61,9 +61,14 @@ class DirectoryExistsTest implements TestInterface
     /**
      * @param TestRunnerInterface $runner
      * @return TestResult
+     * @throws \Exception
      */
     public function executeTest(TestRunnerInterface $runner): TestResult
     {
+        if ($this->directory === '') {
+            throw new \Exception("DirectoryExists test has an invalid configuration without a directory");
+        }
+
         $command = '[ -d ' . $this->directory . ' ] && echo yes || echo no';
 
         $output = $runner->runTest($command);

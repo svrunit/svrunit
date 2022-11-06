@@ -156,10 +156,10 @@ class PhpIniTest implements TestInterface
 
         } else if (!empty($this->expected)) {
             $expectedText = 'Should match: ' . $this->expected;
-            $success = $this->stringContains($this->expected, $output);
+            $success = $this->containsString($this->expected, $output);
         } else {
             $expectedText = 'Should not match: ' . $this->notExpected;
-            $success = !$this->stringContains($this->notExpected, $output);
+            $success = !$this->containsString($this->notExpected, $output);
         }
 
         return new TestResult(
@@ -182,7 +182,7 @@ class PhpIniTest implements TestInterface
 
         $found = false;
         foreach ($unites as $unit) {
-            if ($this->stringContains($unit, $p_sFormatted)) {
+            if ($this->containsString($unit, $p_sFormatted)) {
                 $found = true;
                 break;
             }
@@ -221,12 +221,12 @@ class PhpIniTest implements TestInterface
         # remote the setting itself and keep the value part
         $output = str_replace($this->phpSetting, '', $output);
 
-        if ($this->stringContains('=>', $output)) {
+        if ($this->containsString('=>', $output)) {
             $parts = explode('=>', $output);
             $output = $parts[1];
         }
 
-        if ($this->stringContains("\n", $output)) {
+        if ($this->containsString("\n", $output)) {
             $parts = explode("\n", $output);
             $output = $parts[0];
         }
@@ -270,7 +270,7 @@ class PhpIniTest implements TestInterface
 
             $output = $runner->runTest('curl -L http://localhost/' . $phpFile);
 
-            if (!$this->stringContains("Failed to connect to localhost", $output)) {
+            if (!$this->containsString("Failed to connect to localhost", $output)) {
                 $exit = true;
             }
             $tries++;
@@ -278,7 +278,7 @@ class PhpIniTest implements TestInterface
 
         $runner->runTest("rm -rf " . $phpPath);
 
-        if ($this->stringContains('SVRUNIT:', $output)) {
+        if ($this->containsString('SVRUNIT:', $output)) {
 
             /** @var array<mixed> $parts */
             $parts = explode('SVRUNIT:', $output);
@@ -297,7 +297,7 @@ class PhpIniTest implements TestInterface
         $output = trim((string)$output);
 
 
-        if ($this->phpSetting === 'PHP_VERSION' && $this->stringContains('.', $output)) {
+        if ($this->phpSetting === 'PHP_VERSION' && $this->containsString('.', $output)) {
             $parts = explode('.', $output);
             $output = $parts[0] . '.' . $parts[1];
         }
@@ -317,7 +317,7 @@ class PhpIniTest implements TestInterface
         $output = $runner->runTest($cmd);
 
 
-        if (!$this->stringContains('=>', $output)) {
+        if (!$this->containsString('=>', $output)) {
             return '';
         }
 

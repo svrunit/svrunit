@@ -128,7 +128,7 @@ class CommandTest implements TestInterface
         if ($this->expected != "") {
             $expectedText = 'Should contain: ' . $this->expected;
 
-            $success = $this->stringContains($this->expected, $output);
+            $success = $this->containsString($this->expected, $output);
         } else if (count($this->expectedAnd) > 0) {
 
             $expectedText = 'Should contain ALL of these: ' . implode(', ', $this->expectedAnd);
@@ -136,7 +136,7 @@ class CommandTest implements TestInterface
             $allFound = true;
             # ALL conditions need to be met
             foreach ($this->expectedAnd as $condition) {
-                if (!$this->stringContains($condition, $output)) {
+                if (!$this->containsString($condition, $output)) {
                     $allFound = false;
                     break;
                 }
@@ -150,7 +150,7 @@ class CommandTest implements TestInterface
 
             # 1 CONDITION needs to be met
             foreach ($this->expectedOr as $condition) {
-                if ($this->stringContains($condition, $output)) {
+                if ($this->containsString($condition, $output)) {
                     $success = true;
                     break;
                 }
@@ -158,7 +158,7 @@ class CommandTest implements TestInterface
 
         } else {
             $expectedText = 'Should not contain: ' . $this->notExpected;
-            $success = !$this->stringContains($this->notExpected, $output);
+            $success = !$this->containsString($this->notExpected, $output);
         }
 
         return new TestResult(

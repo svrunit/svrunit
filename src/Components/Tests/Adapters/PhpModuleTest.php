@@ -60,7 +60,7 @@ class PhpModuleTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        $success = $this->stringContains($this->expected, $output);
+        $success = $this->containsString($this->expected, $output);
 
         if ($success) {
             $output = 'Module exists';

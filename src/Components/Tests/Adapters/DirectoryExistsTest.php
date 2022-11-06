@@ -73,7 +73,7 @@ class DirectoryExistsTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        $isExisting = $this->stringContains('yes', $output);
+        $isExisting = $this->containsString('yes', $output);
 
         if ($this->expected) {
             $isSuccess = $isExisting;

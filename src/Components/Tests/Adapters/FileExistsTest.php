@@ -73,7 +73,7 @@ class FileExistsTest implements TestInterface
 
         $output = $runner->runTest($command);
 
-        $isExisting = $this->stringContains('svrunit-file-exists', $output);
+        $isExisting = $this->containsString('svrunit-file-exists', $output);
 
         if ($this->expected) {
             $success = $isExisting;

@@ -83,9 +83,9 @@ class FileContentTest implements TestInterface
         $output = $runner->runTest('cat ' . $this->filename);
 
         if (!empty($this->expected)) {
-            $success = $this->stringContains($this->expected, $output);
+            $success = $this->containsString($this->expected, $output);
         } else {
-            $success = !$this->stringContains($this->notExpected, $output);
+            $success = !$this->containsString($this->notExpected, $output);
         }
 
         return new TestResult(

@@ -75,9 +75,9 @@ class FilePermissionTest implements TestInterface
         $output = $runner->runTest($command);
 
         if (!empty($this->expected)) {
-            $success = $this->stringContains($this->expected, $output);
+            $success = $this->containsString($this->expected, $output);
         } else {
-            $success = !$this->stringContains($this->notExpected, $output);
+            $success = !$this->containsString($this->notExpected, $output);
         }
 
         return new TestResult(

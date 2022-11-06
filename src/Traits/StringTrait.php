@@ -10,7 +10,7 @@ trait StringTrait
      * @param string $text
      * @return bool
      */
-    protected function stringContains(string $expected, string $text): bool
+    protected function containsString(string $expected, string $text): bool
     {
         if (strpos($text, $expected) !== false) {
             return true;

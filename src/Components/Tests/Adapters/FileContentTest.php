@@ -68,9 +68,18 @@ class FileContentTest implements TestInterface
     /**
      * @param TestRunnerInterface $runner
      * @return TestResult
+     * @throws \Exception
      */
     public function executeTest(TestRunnerInterface $runner): TestResult
     {
+        if ($this->filename === '') {
+            throw new \Exception("FileContent test has an invalid configuration without a file");
+        }
+
+        if ($this->expected === '' && $this->notExpected === '') {
+            throw new \Exception("FileContent test has an invalid configuration without an expected or unexpected value");
+        }
+
         $output = $runner->runTest('cat ' . $this->filename);
 
         if (!empty($this->expected)) {

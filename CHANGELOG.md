@@ -6,6 +6,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ## [UNRELEASED]
 
 - DirectoryExists Tests does now throw an error if no directory was specified.
+- FileExists Tests does now throw an error if no file was specified.
 
 ## [1.7.0]
 

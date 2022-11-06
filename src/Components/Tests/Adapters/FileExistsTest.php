@@ -61,9 +61,14 @@ class FileExistsTest implements TestInterface
     /**
      * @param TestRunnerInterface $runner
      * @return TestResult
+     * @throws \Exception
      */
     public function executeTest(TestRunnerInterface $runner): TestResult
     {
+        if ($this->file === '') {
+            throw new \Exception("FileExists test has an invalid configuration without a file");
+        }
+
         $command = '[ -f ' . $this->file . ' ] && echo svrunit-file-exists || echo svrunit-file-not-existing';
 
         $output = $runner->runTest($command);

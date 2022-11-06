@@ -26,7 +26,7 @@ stan: ## Starts the PHPStan Analyser
 	@php ./vendor/bin/phpstan analyse -c ./.phpstan.neon
 
 phpunit: ## Runs all tests
-	@php ./vendor/bin/phpunit --configuration=./phpunit.xml -v
+	XDEBUG_MODE=coverage php ./vendor/bin/phpunit --configuration=./phpunit.xml --coverage-html ./.reports
 
 #------------------------------------------------------------------------------------------------
 

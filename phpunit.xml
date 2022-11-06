@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
@@ -7,32 +8,31 @@
          executionOrder="random"
          bootstrap="./vendor/autoload.php">
 
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <server name="KERNEL_DIR" value="app/"/>
+    </php>
+
     <testsuites>
         <testsuite name="SVRUnit">
             <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
 
-    <php>
-        <ini name="error_reporting" value="-1"/>
-        <server name="KERNEL_DIR" value="app/"/>
-    </php>
-
-    <coverage processUncoveredFiles="true">
-        <include>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./</directory>
-        </include>
-        <exclude>
-            <directory suffix=".php">./tests</directory>
-            <directory suffix=".php">./src/vendor</directory>
-            <file>./MollieShopware.php</file>
-        </exclude>
-        <report>
-            <clover outputFile="./.reports/logs/clover.xml"/>
-            <html outputDirectory="./.reports/coverage" lowUpperBound="35" highLowerBound="70"/>
-        </report>
-    </coverage>
+            <exclude>
+                <directory suffix=".php">./tests</directory>
+                <directory suffix=".php">./src/vendor</directory>
+                <file>./MollieShopware.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
 
-    <logging/>
+    <logging>
+        <log type="coverage-clover" target="./.reports/logs/clover.xml"/>
+        <log type="coverage-html" target="./.reports/coverage" lowUpperBound="35" highLowerBound="70"/>
+    </logging>
 
 </phpunit>

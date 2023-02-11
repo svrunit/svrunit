@@ -11,7 +11,7 @@ use SVRUnit\Components\Tests\Adapters\FileExistsTest;
 use SVRUnit\Components\Tests\Adapters\FilePermissionTest;
 use SVRUnit\Components\Tests\Adapters\PhpIniTest;
 use SVRUnit\Components\Tests\Adapters\PhpModuleTest;
-
+use Symfony\Component\Yaml\Parser;
 
 class TestSpecFileParser
 {
@@ -36,7 +36,8 @@ class TestSpecFileParser
             throw new FileNotFoundException('Test File not found: ' . $testsFile);
         }
 
-        $parsed = yaml_parse_file($testsFile);
+        $parser = new Parser();
+        $parsed = $parser->parse((string)file_get_contents($testsFile));
 
         if ($parsed === null) {
             throw new \Exception("Error when reading tests from file: " . $testsFile);

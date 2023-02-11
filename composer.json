@@ -26,7 +26,6 @@
     "ext-dom": "*",
     "ext-simplexml": "*",
     "symfony/console": "*",
-    "symfony/yaml": "^5.4",
     "twig/twig": "^3.4"
   },
   "require-dev": {

@@ -11,6 +11,7 @@ help:
 
 run: ## Installs all prod dependencies
 	docker-compose up -d
-	sleep 5
-	docker exec -it dev bash -c 'cd /app && make dev'
-	docker exec -it dev bash -c 'cd /app && make pr'
+	sleep 8
+	docker exec -it svrunit bash -c 'cd /app && make dev'
+	docker exec -it svrunit bash -c 'cd /app && make pr'
+	docker exec -it svrunit bash

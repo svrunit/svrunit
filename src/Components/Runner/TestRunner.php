@@ -289,7 +289,7 @@ class TestRunner
 
         /** @var string $file */
         foreach ($testFiles as $file) {
-            $newTests = $parser->parse($file);
+            $newTests = $parser->parse($file, $suite->getExecutable());
             $allSuiteTests = array_merge($newTests, $allSuiteTests);
         }
 

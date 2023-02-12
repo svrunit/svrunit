@@ -27,10 +27,11 @@ class TestSpecFileParser
 
     /**
      * @param string $testsFile
+     * @param string $executablePlaceholder
      * @return mixed[]
      * @throws \Exception
      */
-    public function parse(string $testsFile): array
+    public function parse(string $testsFile, string $executablePlaceholder): array
     {
         if (!file_exists($testsFile)) {
             throw new FileNotFoundException('Test File not found: ' . $testsFile);
@@ -43,16 +44,17 @@ class TestSpecFileParser
             throw new \Exception("Error when reading tests from file: " . $testsFile);
         }
 
-        return $this->parseTests(basename($testsFile), $parsed);
+        return $this->parseTests(basename($testsFile), $parsed, $executablePlaceholder);
     }
 
 
     /**
      * @param string $testFile
      * @param array<mixed> $parsed
+     * @param string $executablePlaceholder
      * @return array<mixed>
      */
-    private function parseTests(string $testFile, array $parsed): array
+    private function parseTests(string $testFile, array $parsed, string $executablePlaceholder): array
     {
         $tests = [];
 
@@ -60,10 +62,16 @@ class TestSpecFileParser
 
             /** @var array<mixed> $command */
             foreach ($parsed[self::TEST_KEY_COMMANDS] as $command) {
+
+                $bashCmd = $this->getValue('command', $command, '');
+
+                # now replace with our executable placeholder
+                $bashCmd = str_replace('(($EXEC))', $executablePlaceholder, $bashCmd);
+
                 $cmd = new CommandTest(
                     $this->getValue('name', $command, ''),
                     $testFile,
-                    $this->getValue('command', $command, ''),
+                    $bashCmd,
                     $this->getValue('expected', $command, ''),
                     $this->getArray('expected_and', $command, []),
                     $this->getArray('expected_or', $command, []),

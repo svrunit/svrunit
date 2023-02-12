@@ -25,6 +25,11 @@ class TestSuite
     /**
      * @var string
      */
+    private $executable = '';
+
+    /**
+     * @var string
+     */
     private $dockerImage = '';
 
     /**
@@ -243,6 +248,22 @@ class TestSuite
     public function setSetupTimeSeconds(int $setupTimeSeconds): void
     {
         $this->setupTimeSeconds = $setupTimeSeconds;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExecutable(): string
+    {
+        return $this->executable;
+    }
+
+    /**
+     * @param string $executable
+     */
+    public function setExecutable(string $executable): void
+    {
+        $this->executable = $executable;
     }
 
 }

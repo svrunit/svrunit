@@ -49,6 +49,10 @@ class TestSuiteConfigParser
             $suite->setSetupTimeSeconds($setupTime);
 
 
+            if ($suiteNode['executable'] !== null) {
+                $suite->setExecutable((string)$suiteNode['executable']);
+            }
+
             if ($suiteNode['dockerImage'] !== null) {
                 $suite->setDockerImage((string)$suiteNode['dockerImage']);
             }

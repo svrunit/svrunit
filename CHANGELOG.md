@@ -5,6 +5,10 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ## [UNRELEASED]
 
+### Added
+
+- Added new suite argument **(($EXEC))** to provide a custom executable placeholder. This helps to reuse the same tests for different types of your AUT. You can e.g. test a bin/script + PHAR version with the same tests by using placeholders for your executable.
+
 ### Changed
 
 - Change dependencies of symfony/yaml and twig/twig to * for better composer compatibility in other projects

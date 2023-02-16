@@ -3,7 +3,7 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
-## [UNRELEASED]
+## [1.8.0]
 
 ### Added
 
@@ -11,12 +11,12 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ### Changed
 
+- Allow test files with a "*.yaml" extension and not only "*.yml"
 - Change dependencies of symfony/yaml and twig/twig to * for better composer compatibility in other projects
 - DirectoryExists Tests does now throw an error if no directory was specified.
 - FileExists Tests does now throw an error if no file was specified.
 - FileContentTest Tests does now throw an error if no file or expected/unexpected conditions where specified.
-- Allow test files with a "*.yaml" extension and not only "*.yml"
-- 
+
 ## [1.7.0]
 
 ### Added

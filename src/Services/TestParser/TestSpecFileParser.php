@@ -2,8 +2,6 @@
 
 namespace SVRUnit\Services\TestParser;
 
-
-use _PHPStan_ecc307676\Nette\FileNotFoundException;
 use SVRUnit\Components\Tests\Adapters\CommandTest;
 use SVRUnit\Components\Tests\Adapters\DirectoryExistsTest;
 use SVRUnit\Components\Tests\Adapters\FileContentTest;
@@ -34,7 +32,7 @@ class TestSpecFileParser
     public function parse(string $testsFile, string $executablePlaceholder): array
     {
         if (!file_exists($testsFile)) {
-            throw new FileNotFoundException('Test File not found: ' . $testsFile);
+            throw new \Exception('Test File not found: ' . $testsFile);
         }
 
         $parser = new Parser();

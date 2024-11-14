@@ -9,12 +9,17 @@ use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 class LocalTestRunner implements TestRunnerInterface
 {
 
+    /**
+     * @var OutputWriterInterface
+     */
+    private $outWriter;
 
     /**
-     *
+     * @param OutputWriterInterface $outputWriter
      */
-    public function __construct()
+    public function __construct(OutputWriterInterface $outputWriter)
     {
+        $this->outWriter = $outputWriter;
     }
 
 
@@ -38,6 +43,8 @@ class LocalTestRunner implements TestRunnerInterface
      */
     function runTest(string $command): string
     {
+        $this->outWriter->debug($command);
+
         $output = (string)shell_exec($command . " 2>&1");
 
         return $output;

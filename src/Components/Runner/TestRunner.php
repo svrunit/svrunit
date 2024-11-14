@@ -341,7 +341,7 @@ class TestRunner
 
             case TestSuite::TYPE_LOCAL:
                 $this->outputWriter->info('Starting tests locally');
-                $runner = new LocalTestRunner();
+                $runner = new LocalTestRunner($this->outputWriter);
                 break;
 
             default:

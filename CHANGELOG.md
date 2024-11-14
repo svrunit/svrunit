@@ -3,6 +3,16 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [unreleased]
+
+### Added
+
+- Add command debug output to local test runner
+
+### Fixed
+
+- Fixed problem with invalid characters in JUnit Reports.
+
 ## [1.8.0]
 
 ### Added

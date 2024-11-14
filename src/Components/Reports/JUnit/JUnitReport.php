@@ -92,7 +92,7 @@ class JUnitReport implements ReportInterface
     private function sanitizeXmlString(string $xml): string
     {
         // Remove ASCII control characters except tab, newline, and carriage return
-        return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $xml);
+        return (string)preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $xml);
     }
 
 }

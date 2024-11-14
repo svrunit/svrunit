@@ -37,7 +37,7 @@ class TestFileCollector
                 /** @var array<mixed> $info */
                 $info = pathinfo($file);
 
-                $ext = (string)$info['extension'];
+                $ext = isset($info['extension']) ? (string)$info['extension'] : '';
 
                 if ($ext !== 'yml' && $ext !== 'yaml') {
                     continue;

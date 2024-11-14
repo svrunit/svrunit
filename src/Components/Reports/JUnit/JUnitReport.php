@@ -70,7 +70,9 @@ class JUnitReport implements ReportInterface
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
 
-        $dom->loadXML($content);
+        $sanitizedContent = $this->sanitizeXmlString($content);
+
+        $dom->loadXML($sanitizedContent);
         $out = $dom->saveXML();
 
         file_put_contents($this->filename, $out);
@@ -84,6 +86,13 @@ class JUnitReport implements ReportInterface
         if (file_exists($this->filename)) {
             unlink($this->filename);
         }
+    }
+
+
+    private function sanitizeXmlString(string $xml): string
+    {
+        // Remove ASCII control characters except tab, newline, and carriage return
+        return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $xml);
     }
 
 }

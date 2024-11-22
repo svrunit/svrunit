@@ -113,6 +113,8 @@ class DockerImageRunner implements TestRunnerInterface
     {
         $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
 
+        $this->outWriter->debug($cmd);
+
         $output = $this->shellRunner->execute($cmd);
 
         return (string)$output;

@@ -14,14 +14,21 @@ class DockerContainerTestRunner implements TestRunnerInterface
      */
     private $containerName;
 
+    /**
+     * @var OutputWriterInterface
+     */
+    private $outWriter;
 
     /**
      * @param string $containerName
+     * @param OutputWriterInterface $outWriter
      */
-    public function __construct(string $containerName)
+    public function __construct(string $containerName, OutputWriterInterface $outWriter)
     {
         $this->containerName = $containerName;
+        $this->outWriter = $outWriter;
     }
+
 
     /**
      *
@@ -44,6 +51,9 @@ class DockerContainerTestRunner implements TestRunnerInterface
     public function runTest(string $command): string
     {
         $cmd = "docker exec " . $this->containerName . " bash -c '" . $command . " 2>&1 '";
+
+        $this->outWriter->debug($cmd);
+
         $output = (string)shell_exec($cmd);
 
         return $output;

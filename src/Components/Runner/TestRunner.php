@@ -335,7 +335,8 @@ class TestRunner
             case TestSuite::TYPE_DOCKER_CONTAINER:
                 $this->outputWriter->info('Starting tests in existing Docker container: ' . $suite->getDockerContainer());
                 $runner = new DockerContainerTestRunner(
-                    $suite->getDockerContainer()
+                    $suite->getDockerContainer(),
+                    $this->outputWriter
                 );
                 break;
 

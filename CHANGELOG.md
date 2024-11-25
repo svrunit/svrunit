@@ -7,8 +7,8 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ### Added
 
+- Add new **{{tag}}** placeholder that you can use in your configuration. Just use the **docker-tag** option when running your test to dynamically run any provided tag.
 - Add output of commands if debug mode is enabled
-
 
 ### Fixed
 

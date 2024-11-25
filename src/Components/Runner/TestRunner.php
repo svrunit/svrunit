@@ -32,6 +32,11 @@ class TestRunner
     private $configFile;
 
     /**
+     * @var string
+     */
+    private $dockerTag;
+
+    /**
      * @var bool
      */
     private $debugMode;
@@ -59,12 +64,13 @@ class TestRunner
      * @param bool $debugMode
      * @param array<mixed> $reporters
      */
-    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, bool $debugMode, array $reporters)
+    public function __construct(string $configFile, OutputWriterInterface $outputWriter, bool $stopOnErrors, bool $debugMode, string $dockerTag, array $reporters)
     {
         $this->configFile = $configFile;
         $this->outputWriter = $outputWriter;
         $this->reporters = $reporters;
         $this->stopOnErrors = $stopOnErrors;
+        $this->dockerTag = $dockerTag;
         $this->debugMode = $debugMode;
 
         $this->parserSuites = new TestSuiteConfigParser();
@@ -81,7 +87,7 @@ class TestRunner
             throw new \Exception('No configuration file provided!');
         }
 
-        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile, $this->dockerTag);
 
         $this->outputWriter->section("Available Groups:");
 
@@ -103,7 +109,7 @@ class TestRunner
             throw new \Exception('No configuration file provided!');
         }
 
-        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile, $this->dockerTag);
 
         $this->outputWriter->section("Available Suites");
 
@@ -134,7 +140,7 @@ class TestRunner
 
         # first start by loading our
         # list of test suites from our xml configuration file
-        $testSuites = $this->parserSuites->loadTestSuites($this->configFile);
+        $testSuites = $this->parserSuites->loadTestSuites($this->configFile, $this->dockerTag);
 
 
         $excludedGroups = array_filter(explode(',', $excludedFilterGroups));

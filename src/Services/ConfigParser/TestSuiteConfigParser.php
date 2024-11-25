@@ -14,9 +14,15 @@ class TestSuiteConfigParser
      * @return array<mixed>
      * @throws \Exception
      */
-    public function loadTestSuites(string $configFile): array
+    public function loadTestSuites(string $configFile, string $dockerTag): array
     {
         $xmlString = (string)file_get_contents($configFile);
+
+        # replace {{tag}} with the provided docker tag, if not empty
+        if (!empty($dockerTag)) {
+            $xmlString = str_replace('{{tag}}', $dockerTag, $xmlString);
+        }
+
         $xmlSettings = simplexml_load_string($xmlString);
 
         $testSuites = [];
@@ -32,7 +38,7 @@ class TestSuiteConfigParser
         if ($attributes instanceof SimpleXMLElement) {
             if ($attributes->setupTime) {
                 $setupTime = (string)$attributes->setupTime[0];
-            } 
+            }
         }
 
         $setupTime = (int)$setupTime;

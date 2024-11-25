@@ -31,7 +31,8 @@ class TestCommand extends Command
             ->addOption('debug', null, InputOption::VALUE_NONE, 'Output debug information during the execution', null)
             ->addOption('stop-on-error', null, InputOption::VALUE_NONE, 'Stop execution upon first error', null)
             ->addOption('report-junit', null, InputOption::VALUE_NONE, 'Log test execution in JUnit XML format to file', null)
-            ->addOption('report-html', null, InputOption::VALUE_NONE, 'Log test execution in SVRUnit HTML format to file', null);
+            ->addOption('report-html', null, InputOption::VALUE_NONE, 'Log test execution in SVRUnit HTML format to file', null)
+            ->addOption('docker-tag', null, InputOption::VALUE_REQUIRED, 'Placeholder for the tag {{tag}} in your configuration file', null);
 
         parent::configure();
     }
@@ -55,6 +56,7 @@ class TestCommand extends Command
         $stopOnError = ($input->getOption('stop-on-error') !== false);
         $reportJunit = ($input->getOption('report-junit') !== false);
         $reportHtml = ($input->getOption('report-html') !== false);
+        $dockerTag = (string)$input->getOption('docker-tag');
 
         $reporters = [];
 
@@ -97,6 +99,7 @@ class TestCommand extends Command
             new ColoredOutputWriter(),
             $stopOnError,
             $debug,
+            $dockerTag,
             $reporters
         );
 

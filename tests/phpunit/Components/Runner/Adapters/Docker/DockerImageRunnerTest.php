@@ -26,7 +26,8 @@ class DockerImageRunnerTest extends TestCase
             '',
             'svrunit_abc',
             $shell,
-            new FakeOutputWriter()
+            new FakeOutputWriter(),
+            false
         );
 
         $runner->setUp();
@@ -49,7 +50,8 @@ class DockerImageRunnerTest extends TestCase
             '',
             'svrunit_abc',
             $shell,
-            new FakeOutputWriter()
+            new FakeOutputWriter(),
+            false
         );
 
         $runner->setUp();
@@ -71,7 +73,8 @@ class DockerImageRunnerTest extends TestCase
             '',
             'svrunit_abc',
             $shell,
-            new FakeOutputWriter()
+            new FakeOutputWriter(),
+            false
         );
 
         $runner->tearDown();

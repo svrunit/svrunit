@@ -58,6 +58,7 @@ class ListSuitesCommand extends Command
             new ColoredOutputWriter(),
             false,
             false,
+            '',
             $reporters
         );
 

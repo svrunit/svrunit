@@ -58,6 +58,7 @@ class ListGroupsCommand extends Command
             new ColoredOutputWriter(),
             false,
             false,
+            '',
             $reporters
         );
 

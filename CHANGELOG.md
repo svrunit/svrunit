@@ -7,7 +7,8 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 ### Added
 
-- Add command debug output to local test runner
+- Add output of commands if debug mode is enabled
+
 
 ### Fixed
 

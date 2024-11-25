@@ -15,11 +15,18 @@ class LocalTestRunner implements TestRunnerInterface
     private $outWriter;
 
     /**
+     * @var bool
+     */
+    private $debugMode;
+
+
+    /**
      * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(OutputWriterInterface $outputWriter)
+    public function __construct(OutputWriterInterface $outputWriter, bool $debugMode)
     {
         $this->outWriter = $outputWriter;
+        $this->debugMode = $debugMode;
     }
 
 
@@ -43,11 +50,11 @@ class LocalTestRunner implements TestRunnerInterface
      */
     function runTest(string $command): string
     {
-        $this->outWriter->debug($command);
+        if ($this->debugMode) {
+            $this->outWriter->debug($command);
+        }
 
-        $output = (string)shell_exec($command . " 2>&1");
-
-        return $output;
+        return (string)shell_exec($command . " 2>&1");
     }
 
 }

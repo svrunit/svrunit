@@ -318,7 +318,8 @@ class TestRunner
                     $suite->getDockerEntrypoint(),
                     $containerName,
                     new ShellRunner(),
-                    $this->outputWriter
+                    $this->outputWriter,
+                    $this->debugMode
                 );
                 break;
 
@@ -328,7 +329,8 @@ class TestRunner
                     $suite->getDockerImage(),
                     $suite->getDockerEnvVariables(),
                     new ShellRunner(),
-                    $this->outputWriter
+                    $this->outputWriter,
+                    $this->debugMode
                 );
                 break;
 
@@ -336,13 +338,14 @@ class TestRunner
                 $this->outputWriter->info('Starting tests in existing Docker container: ' . $suite->getDockerContainer());
                 $runner = new DockerContainerTestRunner(
                     $suite->getDockerContainer(),
-                    $this->outputWriter
+                    $this->outputWriter,
+                    $this->debugMode
                 );
                 break;
 
             case TestSuite::TYPE_LOCAL:
                 $this->outputWriter->info('Starting tests locally');
-                $runner = new LocalTestRunner($this->outputWriter);
+                $runner = new LocalTestRunner($this->outputWriter, $this->debugMode);
                 break;
 
             default:

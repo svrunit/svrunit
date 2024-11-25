@@ -41,6 +41,11 @@ class DockerImageRunner implements TestRunnerInterface
      */
     private $outWriter;
 
+    /**
+     * @var bool
+     */
+    private $debugMode;
+
 
     /**
      * @param string $dockerImage
@@ -50,7 +55,7 @@ class DockerImageRunner implements TestRunnerInterface
      * @param ShellRunnerInterface $shellRunner
      * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, string $containerName, ShellRunnerInterface $shellRunner, OutputWriterInterface $outputWriter)
+    public function __construct(string $dockerImage, array $envVariables, string $entryPoint, string $containerName, ShellRunnerInterface $shellRunner, OutputWriterInterface $outputWriter, bool $debugMode)
     {
         $this->dockerImage = $dockerImage;
         $this->envVariables = $envVariables;
@@ -58,6 +63,7 @@ class DockerImageRunner implements TestRunnerInterface
         $this->shellRunner = $shellRunner;
         $this->outWriter = $outputWriter;
         $this->name = $containerName;
+        $this->debugMode = $debugMode;
     }
 
 
@@ -113,11 +119,11 @@ class DockerImageRunner implements TestRunnerInterface
     {
         $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
 
-        $this->outWriter->debug($cmd);
+        if ($this->debugMode) {
+            $this->outWriter->debug($cmd);
+        }
 
-        $output = $this->shellRunner->execute($cmd);
-
-        return (string)$output;
+        return (string)$this->shellRunner->execute($cmd);
     }
 
 }

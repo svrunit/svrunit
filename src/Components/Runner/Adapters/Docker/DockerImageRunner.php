@@ -84,11 +84,6 @@ class DockerImageRunner implements TestRunnerInterface
             $envCommands .= ' --env ' . $env . ' ';
         }
 
-        # first pull in quiet mode
-        # then we don't have such a long cli output
-        $cmd = "docker pull -q " . $this->dockerImage;
-        $this->shellRunner->execute($cmd);
-
         $cmd = "docker run --rm " . $entrypoint . " " . $envCommands . " --name " . $this->name . " -d " . $this->dockerImage;
 
         $cmd = str_replace('  ', ' ', $cmd);

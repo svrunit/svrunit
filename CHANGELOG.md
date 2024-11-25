@@ -14,6 +14,10 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 - Fixed problem with invalid characters in JUnit Reports.
 
+### Removed
+
+- Removed the **docker pull** command which might update to the online version instead of the local one.
+
 ## [1.8.0]
 
 ### Added

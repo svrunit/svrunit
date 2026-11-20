@@ -34,6 +34,7 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 ### Removed
 
 - Removed the **docker pull** command which might update to the online version instead of the local one.
+- Removed the ZIP download of the PHAR file. SVRUnit is now only distributed with Composer.
 
 ## [1.8.0]
 

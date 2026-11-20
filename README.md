@@ -20,23 +20,11 @@ Why not just testing all these different Xdebug versions of your Docker images!?
 
 SVRUnit is based on PHP. So you need to have PHP installed.
 
-### PHAR File
-
-SVRUnit is available as `phar` file.
-Just download the ZIP file, extract it and you are ready to go.
+SVRUnit is installed with Composer.
+It works in projects with PHP 7.4 and newer.
 
 ```
-curl -O https://www.svrunit.com/downloads/svrunit.zip
-unzip -o svrunit.zip
-rm -f svrunit.zip
-```
-
-### Composer
-
-You can also use SVRUnit with Composer. Just install it with this script.
-
-```
-composer require svrunit/svrunit
+composer require --dev svrunit/svrunit
 ```
 
 You can then run it with this command
@@ -64,7 +52,7 @@ SVRUnit provides different assertion options, such as "File Exists", "File Conta
 Once configured, you can easily start your test with this command:
 
 ```
-php svrunit.phar test --configuration=./svrunit.xml
+php vendor/bin/svrunit test --configuration=./svrunit.xml
 ```
 
 That's it for now!

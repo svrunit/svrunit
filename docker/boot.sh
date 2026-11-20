@@ -3,6 +3,7 @@ apt-get install -y git
 apt-get install -y php-xdebug
 apt-get install -y zip
 apt-get install -y unzip
+apt-get install -y libonig-dev && docker-php-ext-install mbstring
 
 # ----------------------------------------------------
 php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer

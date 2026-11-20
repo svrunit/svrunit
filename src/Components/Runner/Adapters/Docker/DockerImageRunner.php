@@ -3,7 +3,6 @@
 namespace SVRUnit\Components\Runner\Adapters\Docker;
 
 
-use _HumbugBox373c0874430e\Roave\Signature\Encoder\Sha1SumEncoder;
 use SVRUnit\Components\Runner\TestRunnerInterface;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
 use SVRUnit\Services\ShellRunner\ShellRunnerInterface;
@@ -89,7 +88,9 @@ class DockerImageRunner implements TestRunnerInterface
         $cmd = str_replace('  ', ' ', $cmd);
         $cmd = str_replace('  ', ' ', $cmd);
 
-        $this->outWriter->debug("Setup: " . $cmd);
+        if ($this->debugMode) {
+            $this->outWriter->debug("Setup: " . $cmd);
+        }
 
         $output = $this->shellRunner->execute($cmd);
     }
@@ -101,7 +102,9 @@ class DockerImageRunner implements TestRunnerInterface
     {
         $cmd = "docker rm -f " . $this->name;
 
-        $this->outWriter->debug("Teardown: " . $cmd);
+        if ($this->debugMode) {
+            $this->outWriter->debug("Teardown: " . $cmd);
+        }
 
         $output = $this->shellRunner->execute($cmd);
     }
@@ -112,7 +115,7 @@ class DockerImageRunner implements TestRunnerInterface
      */
     public function runTest(string $command): string
     {
-        $cmd = "docker exec " . $this->name . " bash -c '" . $command . " 2>&1 '";
+        $cmd = "docker exec " . $this->name . " bash -c " . escapeshellarg($command . " 2>&1");
 
         if ($this->debugMode) {
             $this->outWriter->debug($cmd);

@@ -138,6 +138,10 @@ class TestRunner
             throw new \Exception('No configuration file provided!');
         }
 
+        if ($this->dockerTag === '' && strpos((string)file_get_contents($this->configFile), '{{tag}}') !== false) {
+            throw new \Exception('Configuration uses the {{tag}} placeholder, but no --docker-tag option was provided!');
+        }
+
         # first start by loading our
         # list of test suites from our xml configuration file
         $testSuites = $this->parserSuites->loadTestSuites($this->configFile, $this->dockerTag);
@@ -162,8 +166,8 @@ class TestRunner
                 }
             }
 
-            $this->outputWriter->debug('');
-            $this->outputWriter->section('** TEST SUITE: ' . $suite->getName() . ', Setup Time: ' . $suite->getSetupTimeSeconds() . 's');
+            $this->outputWriter->info('');
+            $this->outputWriter->section(' ▶ ' . $suite->getName());
 
             $result = $this->runTestSuite($suite);
 
@@ -176,13 +180,29 @@ class TestRunner
         }
 
 
-        $this->outputWriter->debug('');
-        $this->outputWriter->debug('Time: ');
-        $this->outputWriter->debug($runResult->getTestTime() . ' ms');
+        $failed = $runResult->getErrorCount();
+
+        $summary = sprintf(
+            ' Suites: %d   Tests: %d   Passed: %d   Failed: %d   Time: %.2fs',
+            count($runResult->getTestSuiteResults()),
+            $runResult->getTestCount(),
+            $runResult->getTestCount() - $failed,
+            $failed,
+            $runResult->getTestTime()
+        );
+
+        $this->outputWriter->info('');
+        $this->outputWriter->debug(' ' . str_repeat('─', 60));
+
+        if ($failed > 0) {
+            $this->outputWriter->error($summary);
+        } else {
+            $this->outputWriter->success($summary);
+        }
 
         if (count($this->reporters) > 0) {
-            $this->outputWriter->debug('');
-            $this->outputWriter->debug('.........building test reports........');
+            $this->outputWriter->info('');
+            $this->outputWriter->debug(' Building test reports...');
         }
 
         foreach ($this->reporters as $reporter) {
@@ -208,9 +228,6 @@ class TestRunner
             throw new \Exception('No tests found in suite: ' . $suite->getName());
         }
 
-        $this->outputWriter->debug('');
-
-
         $runner = new TestSuiteRunner(
             $suite,
             $allSuiteTests,
@@ -218,61 +235,66 @@ class TestRunner
             $this->stopOnErrors
         );
 
+        $testRunner = $this->buildTestRunner($suite);
 
-        # execute our test suite
-        $runner->runTestSuite($this->buildTestRunner($suite));
+        if ($suite->getSetupTimeSeconds() > 0) {
+            $this->outputWriter->debug('   waiting ' . $suite->getSetupTimeSeconds() . 's for setup');
+        }
+
+        # execute our test suite and print
+        # every test result as soon as it's done
+        $runner->runTestSuite(
+            $testRunner,
+            function (TestResult $result) {
+                $this->printTestResult($result);
+            }
+        );
 
         # ...and grab the report data
         $suiteReport = $runner->getResults();
 
-
-        $this->outputWriter->debug('');
-
-        /** @var TestResult $result */
-        foreach ($suiteReport->getAllTestResults() as $result) {
-
-            if (!$result->isSuccess()) {
-
-                $this->outputWriter->debug('* [TEST] ' . $result->getTest()->getName() . ' FAILED....');
-
-                if ($this->debugMode) {
-                    $this->outputWriter->debug('    - Expected: ' . $result->getExpected());
-                    $this->outputWriter->debug('    + Actual: ' . $result->getActual());
-                }
-            }
-        }
-
-        $this->outputWriter->debug('');
+        $summary = sprintf(
+            '   %d/%d passed · %.2fs',
+            count($suiteReport->getPassedTests()),
+            count($suiteReport->getAllTestResults()),
+            $suiteReport->getTestTime()
+        );
 
         if ($suiteReport->hasErrors()) {
-
-            $this->outputWriter->error('FAILED ' . count($suiteReport->getFailedTests()) . '/' . count($suiteReport->getAllTestResults()) . ' TESTS FAILED');
-
+            $this->outputWriter->error($summary);
         } else {
-
-            $this->outputWriter->success('OK ' . count($suiteReport->getPassedTests()) . '/' . count($suiteReport->getAllTestResults()) . ' TESTS PASSED');
+            $this->outputWriter->success($summary);
         }
 
         return $suiteReport;
     }
 
     /**
-     * @param int $length
-     * @return string
+     * @param TestResult $result
+     * @return void
      */
-    private function getRandomName(int $length): string
+    private function printTestResult(TestResult $result)
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
+        $line = sprintf('%s  %.2fs', $result->getTest()->getName(), $result->getTimeSeconds());
 
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        if ($result->isSuccess()) {
+            $this->outputWriter->success('   ✔ ' . $line);
+            return;
         }
 
-        return $randomString;
-    }
+        $this->outputWriter->error('   ✘ ' . $line);
 
+        $actual = trim($result->getActual());
+
+        # keep the output readable, the full output
+        # is only shown in debug mode
+        if (!$this->debugMode && strlen($actual) > 150) {
+            $actual = substr($actual, 0, 150) . '...';
+        }
+
+        $this->outputWriter->debug('       expected: ' . $result->getExpected());
+        $this->outputWriter->debug('       actual:   ' . $actual);
+    }
 
     /**
      * @param TestSuite $suite
@@ -314,9 +336,9 @@ class TestRunner
         switch ($suite->getType()) {
 
             case TestSuite::TYPE_DOCKER_IMAGE:
-                $this->outputWriter->info('Starting tests in new Docker image: ' . $suite->getDockerImage());
+                $this->outputWriter->debug('   Docker image: ' . $suite->getDockerImage());
 
-                $containerName = "svrunit_" . $this->getRandomName(4);
+                $containerName = "svrunit_" . bin2hex(random_bytes(4));
 
                 $runner = new DockerImageRunner(
                     $suite->getDockerImage(),
@@ -330,7 +352,7 @@ class TestRunner
                 break;
 
             case TestSuite::TYPE_DOCKER_COMMAND_RUNNER:
-                $this->outputWriter->info('Starting tests in Docker image as command runner');
+                $this->outputWriter->debug('   Docker image (command runner): ' . $suite->getDockerImage());
                 $runner = new DockerImageCommandRunner(
                     $suite->getDockerImage(),
                     $suite->getDockerEnvVariables(),
@@ -341,17 +363,18 @@ class TestRunner
                 break;
 
             case TestSuite::TYPE_DOCKER_CONTAINER:
-                $this->outputWriter->info('Starting tests in existing Docker container: ' . $suite->getDockerContainer());
+                $this->outputWriter->debug('   Docker container: ' . $suite->getDockerContainer());
                 $runner = new DockerContainerTestRunner(
                     $suite->getDockerContainer(),
+                    new ShellRunner(),
                     $this->outputWriter,
                     $this->debugMode
                 );
                 break;
 
             case TestSuite::TYPE_LOCAL:
-                $this->outputWriter->info('Starting tests locally');
-                $runner = new LocalTestRunner($this->outputWriter, $this->debugMode);
+                $this->outputWriter->debug('   Local machine');
+                $runner = new LocalTestRunner(new ShellRunner(), $this->outputWriter, $this->debugMode);
                 break;
 
             default:

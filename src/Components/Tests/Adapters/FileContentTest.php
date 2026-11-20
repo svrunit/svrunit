@@ -83,8 +83,10 @@ class FileContentTest implements TestInterface
         $output = $runner->runTest('cat ' . $this->filename);
 
         if (!empty($this->expected)) {
+            $expectedText = $this->expected;
             $success = $this->containsString($this->expected, $output);
         } else {
+            $expectedText = 'Should not contain: ' . $this->notExpected;
             $success = !$this->containsString($this->notExpected, $output);
         }
 
@@ -93,7 +95,7 @@ class FileContentTest implements TestInterface
             $this->specFile,
             $success,
             1,
-            $this->expected,
+            $expectedText,
             $output
         );
     }

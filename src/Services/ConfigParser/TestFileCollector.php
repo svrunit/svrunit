@@ -24,7 +24,6 @@ class TestFileCollector
                 continue;
             }
 
-            /** @var array<mixed> $files */
             $files = scandir($fullDir);
 
             /** @var string $file */

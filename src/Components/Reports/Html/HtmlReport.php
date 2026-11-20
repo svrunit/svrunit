@@ -4,9 +4,9 @@ namespace SVRUnit\Components\Reports\Html;
 
 use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Tests\Results\RunResult;
+use SVRUnit\SVRUnit;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Twig\Template;
 
 
 class HtmlReport implements ReportInterface
@@ -44,6 +44,11 @@ class HtmlReport implements ReportInterface
     public function generate(RunResult $result): void
     {
         $params = [
+            'version' => SVRUnit::VERSION,
+            'generated' => date('Y-m-d H:i:s T'),
+            'total' => $result->getTestCount(),
+            'failed' => $result->getErrorCount(),
+            'time' => $result->getTestTime(),
             'testsuites' => [],
         ];
 
@@ -51,7 +56,9 @@ class HtmlReport implements ReportInterface
 
             $suiteData = [
                 'name' => $suiteResult->getTestSuite()->getName(),
+                'group' => $suiteResult->getTestSuite()->getGroup(),
                 'time' => $suiteResult->getTestTime(),
+                'total' => count($suiteResult->getAllTestResults()),
                 'errors' => count($suiteResult->getFailedTests()),
                 'tests' => [],
             ];
@@ -62,6 +69,8 @@ class HtmlReport implements ReportInterface
                     'name' => $test->getTest()->getName(),
                     'success' => $test->isSuccess(),
                     'time' => $test->getTimeSeconds(),
+                    'expected' => $test->getExpected(),
+                    'actual' => $test->getActual(),
                 ];
 
                 $suiteData['tests'][] = $testData;
@@ -76,7 +85,7 @@ class HtmlReport implements ReportInterface
         $path = dirname($this->filename);
 
         if (!is_dir($path)) {
-            mkdir($path);
+            mkdir($path, 0777, true);
         }
 
         file_put_contents($this->filename, $html);

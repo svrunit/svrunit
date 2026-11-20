@@ -65,7 +65,7 @@ class TestSuiteConfigParser
 
             if ($suiteNode['dockerCommandRunner'] !== null) {
                 $value = (string)$suiteNode['dockerCommandRunner'];
-                $suite->setDockerCommandRunner((bool)$value);
+                $suite->setDockerCommandRunner(filter_var($value, FILTER_VALIDATE_BOOLEAN));
             }
 
             if ($suiteNode['dockerContainer'] !== null) {

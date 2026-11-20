@@ -1,7 +1,8 @@
 <?php
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setUsingCache(false)
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setRules([
         'array_syntax' => ['syntax' => 'short'],
         'ordered_imports' => true,

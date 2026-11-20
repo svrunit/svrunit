@@ -92,4 +92,30 @@ class CommandTestTest extends TestCase
         $this->assertEquals('rm -rf test', $fakeRunner->getRunCommands()[2]);
     }
 
+    /**
+     * This test verifies that the expected text of an OR test
+     * shows the OR conditions and not the AND conditions.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function testExpectedOrText(): void
+    {
+        $test = new CommandTest(
+            'PHP Test',
+            '',
+            'php -v',
+            '',
+            [],
+            ['7.4', '8.1'],
+            '',
+            '',
+            ''
+        );
+
+        $result = $test->executeTest(new FakeTestRunner('8.1.0'));
+
+        $this->assertEquals('Should contain 1 of these: 7.4, 8.1', $result->getExpected());
+    }
+
 }

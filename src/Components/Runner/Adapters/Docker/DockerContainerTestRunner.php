@@ -4,6 +4,7 @@ namespace SVRUnit\Components\Runner\Adapters\Docker;
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
+use SVRUnit\Services\ShellRunner\ShellRunnerInterface;
 
 
 class DockerContainerTestRunner implements TestRunnerInterface
@@ -13,6 +14,11 @@ class DockerContainerTestRunner implements TestRunnerInterface
      * @var string
      */
     private $containerName;
+
+    /**
+     * @var ShellRunnerInterface
+     */
+    private $shellRunner;
 
     /**
      * @var OutputWriterInterface
@@ -26,11 +32,13 @@ class DockerContainerTestRunner implements TestRunnerInterface
 
     /**
      * @param string $containerName
+     * @param ShellRunnerInterface $shellRunner
      * @param OutputWriterInterface $outWriter
      */
-    public function __construct(string $containerName, OutputWriterInterface $outWriter, bool $debugMode)
+    public function __construct(string $containerName, ShellRunnerInterface $shellRunner, OutputWriterInterface $outWriter, bool $debugMode)
     {
         $this->containerName = $containerName;
+        $this->shellRunner = $shellRunner;
         $this->outWriter = $outWriter;
         $this->debugMode = $debugMode;
     }
@@ -56,13 +64,13 @@ class DockerContainerTestRunner implements TestRunnerInterface
      */
     public function runTest(string $command): string
     {
-        $cmd = "docker exec " . $this->containerName . " bash -c '" . $command . " 2>&1 '";
+        $cmd = "docker exec " . $this->containerName . " bash -c " . escapeshellarg($command . " 2>&1");
 
         if ($this->debugMode) {
             $this->outWriter->debug($cmd);
         }
 
-        return (string)shell_exec($cmd);
+        return $this->shellRunner->execute($cmd);
     }
 
 }

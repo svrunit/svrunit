@@ -82,4 +82,27 @@ class DockerImageRunnerTest extends TestCase
         $this->assertEquals('docker rm -f svrunit_abc', $shell->getUsedCommand());
     }
 
+    /**
+     * This test verifies that single quotes in a test command
+     * are correctly escaped and do not break the bash command.
+     */
+    public function testRunTestEscapesSingleQuotes()
+    {
+        $shell = new FakeShellRunner();
+
+        $runner = new DockerImageRunner(
+            'img/test:latest',
+            array(),
+            '',
+            'svrunit_abc',
+            $shell,
+            new FakeOutputWriter(),
+            false
+        );
+
+        $runner->runTest("grep 'foo' file.txt");
+
+        $this->assertEquals("docker exec svrunit_abc bash -c 'grep '\\''foo'\\'' file.txt 2>&1'", $shell->getUsedCommand());
+    }
+
 }

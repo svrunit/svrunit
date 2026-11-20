@@ -3,16 +3,31 @@
 All notable changes of SVRUnit releases are documented in this file
 using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
-## [unreleased]
+## [1.9.0]
 
 ### Added
 
 - Add new **{{tag}}** placeholder that you can use in your configuration. Just use the **docker-tag** option when running your test to dynamically run any provided tag.
 - Add output of commands if debug mode is enabled
 
+### Changed
+
+- New console output with live results per test, failure details with expected and actual values, and a run summary. Colors are disabled automatically if the output is not a terminal or **NO_COLOR** is set.
+- New design for the HTML report with a run summary, collapsible test suites, failure details, a filter for failed tests and dark mode support.
+
 ### Fixed
 
 - Fixed problem with invalid characters in JUnit Reports.
+- Fixed broken JUnit Reports if test names or outputs contained XML characters like **"**, **<** or **&**.
+- Fixed broken commands in Docker runners if a test command contained single quotes.
+- Fixed **dockerCommandRunner="false"** enabling the Docker command runner instead of disabling it.
+- Fixed wrong expected text for **expected_or** command tests, which showed the AND conditions.
+- Fixed empty expected text in reports of **not_expected** file content tests.
+- Fixed Docker containers left running if a test threw an exception, teardown is now always executed.
+- Fixed report directories not being created if they are nested.
+- Test runs now fail early with a clear error if the configuration uses the **{{tag}}** placeholder without the **docker-tag** option.
+- Fixed setup and teardown commands of Docker images being printed without debug mode.
+- Fixed possible container name collisions by using more secure random names.
 
 ### Removed
 

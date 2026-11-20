@@ -18,7 +18,7 @@ class ListSuitesCommand extends Command
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('list:suites')
@@ -49,7 +49,7 @@ class ListSuitesCommand extends Command
 
         $configAbsolutePath = $this->getAbsolutePath($configFile);
 
-        echo "Configuration: " . $configAbsolutePath . PHP_EOL;
+        $this->showSetting('Configuration', $configAbsolutePath);
         echo PHP_EOL;
 
 

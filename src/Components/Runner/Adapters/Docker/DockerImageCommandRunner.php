@@ -77,7 +77,7 @@ class DockerImageCommandRunner implements TestRunnerInterface
             $envCommands .= ' --env ' . $env . ' ';
         }
         
-        $cmd = "docker run --rm " . $envCommands . " " . $this->dockerImage . " bash -c '" . $command . "'";
+        $cmd = "docker run --rm " . $envCommands . " " . $this->dockerImage . " bash -c " . escapeshellarg($command);
 
         if ($this->debugMode) {
             $this->outWriter->debug($cmd);

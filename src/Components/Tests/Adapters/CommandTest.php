@@ -146,7 +146,7 @@ class CommandTest implements TestInterface
 
         } else if (count($this->expectedOr) > 0) {
 
-            $expectedText = 'Should contain 1 of these: ' . implode(', ', $this->expectedAnd);
+            $expectedText = 'Should contain 1 of these: ' . implode(', ', $this->expectedOr);
 
             # 1 CONDITION needs to be met
             foreach ($this->expectedOr as $condition) {

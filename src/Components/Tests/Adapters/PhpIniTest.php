@@ -247,7 +247,7 @@ class PhpIniTest implements TestInterface
             throw new \Error('Could not detect Apache DocRoot folder. PHP INI web test cannot be executed');
         }
 
-        $phpFile = "svrunit" . $this->generateRandomString(5) . ".php";
+        $phpFile = "svrunit" . bin2hex(random_bytes(5)) . ".php";
         $phpPath = $docRoot . "/" . $phpFile;
 
 
@@ -280,14 +280,7 @@ class PhpIniTest implements TestInterface
 
         if ($this->containsString('SVRUNIT:', $output)) {
 
-            /** @var array<mixed> $parts */
-            $parts = explode('SVRUNIT:', $output);
-
-            if (count($parts) >= 1) {
-                $output = $parts[1];
-            } else {
-                $output = '';
-            }
+            $output = explode('SVRUNIT:', $output)[1];
 
         } else {
             $output = '';
@@ -331,17 +324,6 @@ class PhpIniTest implements TestInterface
         $output = trim($output);
 
         return $output;
-    }
-
-    private function generateRandomString(int $length = 10): string
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
     }
 
 }

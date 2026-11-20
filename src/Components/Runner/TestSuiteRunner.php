@@ -71,9 +71,10 @@ class TestSuiteRunner
 
     /**
      * @param TestRunnerInterface $runner
+     * @param callable $onTestFinished called with every TestResult, right after its test has been run
      * @return void
      */
-    public function runTestSuite(TestRunnerInterface $runner)
+    public function runTestSuite(TestRunnerInterface $runner, callable $onTestFinished)
     {
         # first reset our previous results, if existing
         $this->allResults = [];
@@ -82,42 +83,46 @@ class TestSuiteRunner
         # invoke the setup phase
         $runner->setUp();
 
-        # wait the configured bootup time for our test suite
-        sleep($this->setupTimeSeconds);
+        try {
+            # wait the configured bootup time for our test suite
+            sleep($this->setupTimeSeconds);
 
 
-        /** @var TestInterface $test */
-        foreach ($this->tests as $test) {
+            /** @var TestInterface $test */
+            foreach ($this->tests as $test) {
 
-            # start our stopwatch
-            # before we run that test
-            $this->stopwatch->start();
+                # start our stopwatch
+                # before we run that test
+                $this->stopwatch->start();
 
-            # now execute our anonymize test
-            # ...whatever it is...
-            $result = $test->executeTest($runner);
+                # now execute our anonymize test
+                # ...whatever it is...
+                $result = $test->executeTest($runner);
 
-            # stop our timing, so we now how much
-            # time that test took
-            $this->stopwatch->stop();
+                # stop our timing, so we now how much
+                # time that test took
+                $this->stopwatch->stop();
 
-            # ...and finally set the time
-            # for our test run
-            $seconds = $this->stopwatch->getMilliseconds() / 1000.0;
-            $result->setTimeSeconds($seconds);
+                # ...and finally set the time
+                # for our test run
+                $seconds = $this->stopwatch->getMilliseconds() / 1000.0;
+                $result->setTimeSeconds($seconds);
 
-            $this->allResults[] = $result;
+                $this->allResults[] = $result;
 
-            # if we should stop on errors
-            # then quit our test run now
-            if (!$result->isSuccess() && $this->stopOnErrors) {
-                break;
+                $onTestFinished($result);
+
+                # if we should stop on errors
+                # then quit our test run now
+                if (!$result->isSuccess() && $this->stopOnErrors) {
+                    break;
+                }
             }
+        } finally {
+            # always invoke the teardown function,
+            # even if a test throws, so no container is left running
+            $runner->tearDown();
         }
-
-        # last but not least,
-        # invoke the teardown function
-        $runner->tearDown();
     }
 
 }

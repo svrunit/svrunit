@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<!-- https://docs.phpunit.de/en/11.5/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
          cacheResult="false"
          colors="true"
          executionOrder="random"
@@ -10,29 +9,22 @@
 
     <php>
         <ini name="error_reporting" value="-1"/>
-        <server name="KERNEL_DIR" value="app/"/>
     </php>
 
     <testsuites>
         <testsuite name="SVRUnit">
-            <directory suffix=".php">./tests</directory>
+            <directory suffix="Test.php">./tests</directory>
+            <exclude>./tests/phpunit/Fakes</exclude>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./</directory>
-            <exclude>
-                <directory suffix=".php">./tests</directory>
-                <directory suffix=".php">./src/vendor</directory>
-                <file>./MollieShopware.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
-    <logging>
-        <log type="coverage-clover" target="./.reports/logs/clover.xml"/>
-        <log type="coverage-html" target="./.reports/coverage" lowUpperBound="35" highLowerBound="70"/>
-    </logging>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">./src/vendor</directory>
+        </exclude>
+    </source>
 
 </phpunit>

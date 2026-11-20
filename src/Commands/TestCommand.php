@@ -20,7 +20,7 @@ class TestCommand extends Command
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('test')
@@ -63,34 +63,34 @@ class TestCommand extends Command
         echo PHP_EOL;
 
         if ($group) {
-            echo "Group: " . $group . PHP_EOL;
+            $this->showSetting('Group', $group);
         }
 
         if ($debug) {
-            echo "Debug Mode: active" . PHP_EOL;
+            $this->showSetting('Debug Mode', 'active');
         }
 
         if ($stopOnError) {
-            echo "Stop on Errors: yes" . PHP_EOL;
+            $this->showSetting('Stop on Errors', 'yes');
         }
 
         if ($reportJunit) {
-            $path = $this->getAbsolutePath('./.reports/report.xml');
-            echo "Report: JUnit XML, " . $path . PHP_EOL;
+            $path = $this->getAbsolutePath('.reports/report.xml');
+            $this->showSetting('Report', 'JUnit XML, ' . $path);
 
             $reporters[] = new JUnitReport($path);
         }
 
         if ($reportHtml) {
-            $path = $this->getAbsolutePath('./.reports/index.html');
-            echo "Report: HTML, " . $path . PHP_EOL;
+            $path = $this->getAbsolutePath('.reports/index.html');
+            $this->showSetting('Report', 'HTML, ' . $path);
 
             $reporters[] = new HtmlReport($path);
         }
 
         $configAbsolutePath = $this->getAbsolutePath($configFile);
 
-        echo "Configuration: " . $configAbsolutePath . PHP_EOL;
+        $this->showSetting('Configuration', $configAbsolutePath);
         echo PHP_EOL;
 
 

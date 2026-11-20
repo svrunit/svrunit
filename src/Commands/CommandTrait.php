@@ -2,6 +2,7 @@
 
 namespace SVRUnit\Commands;
 
+use SVRUnit\Services\OutputWriter\ColoredOutputWriter;
 use SVRUnit\SVRUnit;
 
 trait CommandTrait
@@ -12,9 +13,26 @@ trait CommandTrait
      */
     protected function showHeader()
     {
-        echo "SVRUnit Testing Framework, v" . SVRUnit::VERSION . PHP_EOL;
-        echo "Copyright (c) 2022 Christian Dangl" . PHP_EOL;
-        echo "www.svrunit.com" . PHP_EOL;
+        $writer = new ColoredOutputWriter();
+
+        $writer->info('');
+        $writer->section('  ___ __   __ ___  _   _        _  _   ');
+        $writer->section(' / __|\ \ / /| _ \| | | | _ _  (_)| |_ ');
+        $writer->section(' \__ \ \ V / |   /| |_| || \' \ | ||  _|');
+        $writer->section(' |___/  \_/  |_|_\ \___/ |_||_||_| \__|');
+        $writer->info('');
+        $writer->info(' Server Testing Framework v' . SVRUnit::VERSION);
+        $writer->debug(' Copyright (c) 2026 Christian Dangl · www.svrunit.com');
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    protected function showSetting(string $key, string $value)
+    {
+        echo sprintf(' %-15s %s', $key, $value) . PHP_EOL;
     }
 
 }

@@ -1,96 +1,415 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>
-        SVRUnit Test Report
-    </title>
-    <style type="text/css">
-
-        .test-result-table {
-
-            border: 1px solid black;
-            width: 800px;
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SVRUnit Test Report</title>
+    <style>
+        /* Layout: one centered column, run summary on top, one collapsible panel per suite.
+           No web fonts, the report has to work offline and inside CI artifacts. */
+        :root {
+            --bg: #f3f6f7;
+            --surface: #ffffff;
+            --fg: #14232b;
+            --muted: #5d717b;
+            --line: #d9e2e6;
+            --accent: #0e7c86;
+            --pass: #16803c;
+            --pass-soft: #e3f4e8;
+            --fail: #c42b2b;
+            --fail-soft: #fbe6e6;
+            --code-bg: #0f1c22;
+            --code-fg: #d6e4ea;
+            --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            color-scheme: light;
         }
 
-        .test-result-table-header-cell {
-
-            border-bottom: 1px solid black;
-            background-color: silver;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d171c;
+                --surface: #14222a;
+                --fg: #e2ecf0;
+                --muted: #8aa0aa;
+                --line: #24363f;
+                --accent: #3cc3cf;
+                --pass: #4fcf7a;
+                --pass-soft: #163325;
+                --fail: #ff6b6b;
+                --fail-soft: #3a1c1f;
+                --code-bg: #081014;
+                --code-fg: #cfe0e7;
+                color-scheme: dark;
+            }
         }
 
-        .test-result-step-command-cell {
+        * { box-sizing: border-box; }
 
-            border-bottom: 1px solid gray;
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 15px/1.5 var(--font-ui);
         }
 
-        .test-result-step-description-cell {
-
-            border-bottom: 1px solid gray;
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 40px 20px 64px;
+            display: grid;
+            gap: 24px;
         }
 
-        .test-result-step-result-cell-ok {
-
-            border-bottom: 1px solid gray;
-            background-color: green;
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
         }
 
-        .test-result-step-result-cell-failure {
+        .brand {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
 
-            border-bottom: 1px solid gray;
-            background-color: red;
+        h1 {
+            margin: 4px 0 0;
+            font-size: 28px;
+            line-height: 1.2;
+            text-wrap: balance;
+        }
+
+        .meta {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .summary {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 20px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .verdict {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 650;
+        }
+
+        .verdict .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--pass);
+            box-shadow: 0 0 0 4px var(--pass-soft);
+        }
+
+        .verdict.is-failed .dot {
+            background: var(--fail);
+            box-shadow: 0 0 0 4px var(--fail-soft);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-value.pass { color: var(--pass); }
+        .stat-value.fail { color: var(--fail); }
+
+        .bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--line);
+        }
+
+        .bar span { display: block; height: 100%; }
+        .bar .pass { background: var(--pass); }
+        .bar .fail { background: var(--fail); }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .toolbar label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .suites {
+            display: grid;
+            gap: 12px;
+        }
+
+        details.suite {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--pass);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        details.suite.is-failed { border-left-color: var(--fail); }
+
+        summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+            padding: 14px 18px;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+
+        summary::before {
+            content: "▸";
+            color: var(--muted);
+            transition: transform .15s;
+        }
+
+        details[open] > summary::before { transform: rotate(90deg); }
+
+        summary:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: -2px;
+        }
+
+        .suite-name {
+            font-weight: 600;
+            flex: 1 1 200px;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .chip {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .chip.pass { color: var(--pass); background: var(--pass-soft); border-color: transparent; }
+        .chip.fail { color: var(--fail); background: var(--fail-soft); border-color: transparent; }
+
+        .tests {
+            border-top: 1px solid var(--line);
+        }
+
+        .test {
+            display: grid;
+            grid-template-columns: 22px 1fr auto;
+            gap: 4px 12px;
+            align-items: baseline;
+            padding: 10px 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .test:last-child { border-bottom: 0; }
+
+        .test .icon { font-weight: 700; color: var(--pass); }
+        .test.is-failed .icon { color: var(--fail); }
+        .test.is-failed { background: var(--fail-soft); }
+
+        .test-name { min-width: 0; overflow-wrap: anywhere; }
+
+        .test-time {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .diff {
+            grid-column: 2 / -1;
+            display: grid;
+            gap: 6px;
+            margin-top: 6px;
+            min-width: 0;
+        }
+
+        .diff-label {
+            font-size: 11px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        pre {
+            margin: 0;
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: var(--code-bg);
+            color: var(--code-fg);
+            font: 12.5px/1.5 var(--font-mono);
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            max-height: 320px;
+            overflow: auto;
+        }
+
+        body.only-failed .test:not(.is-failed),
+        body.only-failed details.suite:not(.is-failed) { display: none; }
+
+        footer {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        footer a { color: var(--accent); }
+
+        @media (prefers-reduced-motion: reduce) {
+            summary::before { transition: none; }
         }
     </style>
 </head>
 
 <body>
+<div class="page">
 
-<h1 class="test-results-header">
-    SVRUnit Test Report
-</h1>
+    <header>
+        <div>
+            <div class="brand">SVRUnit</div>
+            <h1>Test Report</h1>
+        </div>
+        <div class="meta">
+            {{ generated }}<br>
+            v{{ version }}
+        </div>
+    </header>
 
-{% for suite in testsuites %}
-    <h3>{{ suite.name }}</h3>
-    <div>
-        Time: {{ suite.time }}<br/>
-        Errors: {{ suite.errors }}<br/>
-        <br/>
-    </div>
-    <table class="test-result-table" cellspacing="0">
-        <thead>
-        <tr>
-            <td class="test-result-table-header-cell">
-                Test Case
-            </td>
-            <td class="test-result-table-header-cell">
-                Time
-            </td>
-            <td class="test-result-table-header-cell">
-                Result
-            </td>
-        </tr>
-        </thead>
-        <tbody>
-        {% for test in suite.tests %}
-            <tr class="test-result-step-row test-result-step-row-altone">
-                <td class="test-result-step-command-cell">
-                    {{ test.name }}
-                </td>
-                <td class="test-result-step-description-cell">
-                    {{ test.time }}
-                </td>
-                {% if test.success %}
-                    <td class="test-result-step-result-cell-ok">
-                        PASSED
-                    </td>
-                {% else %}
-                    <td class="test-result-step-result-cell-failure">
-                        FAILED
-                    </td>
-                {% endif %}
-            </tr>
+    {% set passed = total - failed %}
+
+    <section class="summary" aria-label="Summary">
+        <div class="verdict {{ failed > 0 ? 'is-failed' : '' }}">
+            <span class="dot" aria-hidden="true"></span>
+            {% if failed > 0 %}
+                {{ failed }} of {{ total }} tests failed
+            {% else %}
+                All {{ total }} tests passed
+            {% endif %}
+        </div>
+
+        <div class="bar" role="img" aria-label="{{ passed }} passed, {{ failed }} failed">
+            {% if total > 0 %}
+                <span class="pass" style="width: {{ (passed / total * 100)|round(2) }}%"></span>
+                <span class="fail" style="width: {{ (failed / total * 100)|round(2) }}%"></span>
+            {% endif %}
+        </div>
+
+        <div class="stats">
+            <div>
+                <div class="stat-label">Suites</div>
+                <div class="stat-value">{{ testsuites|length }}</div>
+            </div>
+            <div>
+                <div class="stat-label">Tests</div>
+                <div class="stat-value">{{ total }}</div>
+            </div>
+            <div>
+                <div class="stat-label">Passed</div>
+                <div class="stat-value pass">{{ passed }}</div>
+            </div>
+            <div>
+                <div class="stat-label">Failed</div>
+                <div class="stat-value {{ failed > 0 ? 'fail' : '' }}">{{ failed }}</div>
+            </div>
+            <div>
+                <div class="stat-label">Time</div>
+                <div class="stat-value">{{ time|number_format(2) }}s</div>
+            </div>
+        </div>
+    </section>
+
+    {% if failed > 0 %}
+        <div class="toolbar">
+            <label for="only-failed">
+                <input type="checkbox" id="only-failed"
+                       onchange="document.body.classList.toggle('only-failed', this.checked)">
+                Show failed tests only
+            </label>
+        </div>
+    {% endif %}
+
+    <div class="suites">
+        {% for suite in testsuites %}
+            <details class="suite {{ suite.errors > 0 ? 'is-failed' : '' }}" {{ suite.errors > 0 ? 'open' : '' }}>
+                <summary>
+                    <span class="suite-name">{{ suite.name }}</span>
+                    {% if suite.group %}
+                        <span class="chip">{{ suite.group }}</span>
+                    {% endif %}
+                    {% if suite.errors > 0 %}
+                        <span class="chip fail">{{ suite.errors }}/{{ suite.total }} failed</span>
+                    {% else %}
+                        <span class="chip pass">{{ suite.total }}/{{ suite.total }} passed</span>
+                    {% endif %}
+                    <span class="test-time">{{ suite.time|number_format(2) }}s</span>
+                </summary>
+
+                <div class="tests">
+                    {% for test in suite.tests %}
+                        <div class="test {{ test.success ? '' : 'is-failed' }}">
+                            <span class="icon" aria-label="{{ test.success ? 'passed' : 'failed' }}">{{ test.success ? '✔' : '✘' }}</span>
+                            <span class="test-name">{{ test.name }}</span>
+                            <span class="test-time">{{ test.time|number_format(2) }}s</span>
+
+                            {% if not test.success %}
+                                <div class="diff">
+                                    <div class="diff-label">Expected</div>
+                                    <pre>{{ test.expected }}</pre>
+                                    <div class="diff-label">Actual</div>
+                                    <pre>{{ test.actual }}</pre>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </details>
         {% endfor %}
-        </tbody>
-    </table>
-{% endfor %}
+    </div>
 
+    <footer>
+        Generated by SVRUnit · <a href="https://www.svrunit.com">www.svrunit.com</a>
+    </footer>
+
+</div>
 </body>
 </html>

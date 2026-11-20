@@ -5,9 +5,15 @@ namespace SVRUnit\Components\Runner\Adapters\Local;
 
 use SVRUnit\Components\Runner\TestRunnerInterface;
 use SVRUnit\Services\OutputWriter\OutputWriterInterface;
+use SVRUnit\Services\ShellRunner\ShellRunnerInterface;
 
 class LocalTestRunner implements TestRunnerInterface
 {
+
+    /**
+     * @var ShellRunnerInterface
+     */
+    private $shellRunner;
 
     /**
      * @var OutputWriterInterface
@@ -21,10 +27,12 @@ class LocalTestRunner implements TestRunnerInterface
 
 
     /**
+     * @param ShellRunnerInterface $shellRunner
      * @param OutputWriterInterface $outputWriter
      */
-    public function __construct(OutputWriterInterface $outputWriter, bool $debugMode)
+    public function __construct(ShellRunnerInterface $shellRunner, OutputWriterInterface $outputWriter, bool $debugMode)
     {
+        $this->shellRunner = $shellRunner;
         $this->outWriter = $outputWriter;
         $this->debugMode = $debugMode;
     }
@@ -48,13 +56,13 @@ class LocalTestRunner implements TestRunnerInterface
      * @param string $command
      * @return string
      */
-    function runTest(string $command): string
+    public function runTest(string $command): string
     {
         if ($this->debugMode) {
             $this->outWriter->debug($command);
         }
 
-        return (string)shell_exec($command . " 2>&1");
+        return $this->shellRunner->execute($command . " 2>&1");
     }
 
 }

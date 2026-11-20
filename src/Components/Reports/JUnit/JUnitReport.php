@@ -38,17 +38,17 @@ class JUnitReport implements ReportInterface
 
         foreach ($report->getTestSuiteResults() as $suite) {
 
-            $content .= '<testsuite name="' . $suite->getTestSuite()->getName() . '" tests="' . count($suite->getAllTestResults()) . '" time="' . $suite->getTestTime() . '" skipped="0" failures="0" errors="' . count($suite->getFailedTests()) . '">';
+            $content .= '<testsuite name="' . $this->escape($suite->getTestSuite()->getName()) . '" tests="' . count($suite->getAllTestResults()) . '" time="' . $suite->getTestTime() . '" skipped="0" failures="0" errors="' . count($suite->getFailedTests()) . '">';
 
             foreach ($suite->getAllTestResults() as $test) {
 
-                $content .= '<testcase name="' . $test->getTest()->getName() . '" classname="' . $test->getClassName() . '" assertions="' . $test->getAssertions() . '" time="' . $test->getTimeSeconds() . '" errors="' . $test->getErrors() . '">';
+                $content .= '<testcase name="' . $this->escape($test->getTest()->getName()) . '" classname="' . $this->escape($test->getClassName()) . '" assertions="' . $test->getAssertions() . '" time="' . $test->getTimeSeconds() . '" errors="' . $test->getErrors() . '">';
 
                 if (!$test->isSuccess()) {
-                    $content .= '<failure name="' . $test->getTest()->getName() . '" type="SVRunit_AssertionException">';
+                    $content .= '<failure name="' . $this->escape($test->getTest()->getName()) . '" type="SVRunit_AssertionException">';
                     $content .= PHP_EOL;
-                    $content .= 'Expected: ' . $test->getExpected() . PHP_EOL;
-                    $content .= 'Actual: ' . $test->getActual() . PHP_EOL;
+                    $content .= 'Expected: ' . $this->escape($test->getExpected()) . PHP_EOL;
+                    $content .= 'Actual: ' . $this->escape($test->getActual()) . PHP_EOL;
                     $content .= '</failure>';
                 }
 
@@ -63,7 +63,7 @@ class JUnitReport implements ReportInterface
         $path = dirname($this->filename);
 
         if (!is_dir($path)) {
-            mkdir($path);
+            mkdir($path, 0777, true);
         }
 
         $dom = new DOMDocument();
@@ -88,6 +88,11 @@ class JUnitReport implements ReportInterface
         }
     }
 
+
+    private function escape(string $value): string
+    {
+        return htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+    }
 
     private function sanitizeXmlString(string $xml): string
     {

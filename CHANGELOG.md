@@ -14,6 +14,8 @@ using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
 - New console output with live results per test, failure details with expected and actual values, and a run summary. Colors are disabled automatically if the output is not a terminal or **NO_COLOR** is set.
 - New design for the HTML report with a run summary, collapsible test suites, failure details, a filter for failed tests and dark mode support.
+- Removed the dependency to **twig/twig**. The HTML report is now rendered without a template engine. All Twig versions that support PHP 7.4 have known security advisories, so Composer blocked installing SVRUnit in PHP 7.4 projects.
+- SVRUnit can be installed as dev dependency in projects with PHP 7.4 and newer, and works with Symfony Console 5.4 up to 8.x.
 
 ### Fixed
 

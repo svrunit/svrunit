@@ -5,3 +5,4 @@ parameters:
     excludePaths:
         - ./src/vendor/*
         - ./src/index.php
+        - ./src/Components/Reports/Html/Template/*

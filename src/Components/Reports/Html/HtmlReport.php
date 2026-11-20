@@ -5,8 +5,6 @@ namespace SVRUnit\Components\Reports\Html;
 use SVRUnit\Components\Reports\ReportInterface;
 use SVRUnit\Components\Tests\Results\RunResult;
 use SVRUnit\SVRUnit;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 
 class HtmlReport implements ReportInterface
@@ -17,11 +15,6 @@ class HtmlReport implements ReportInterface
      */
     private $filename;
 
-    /**
-     * @var Environment
-     */
-    private $twig;
-
 
     /**
      * @param string $filename
@@ -29,17 +22,11 @@ class HtmlReport implements ReportInterface
     public function __construct(string $filename)
     {
         $this->filename = $filename;
-
-        $loader = new FilesystemLoader(__DIR__ . '/Template');
-        $this->twig = new Environment($loader);
     }
 
 
     /**
      * @param RunResult $result
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      */
     public function generate(RunResult $result): void
     {
@@ -80,7 +67,7 @@ class HtmlReport implements ReportInterface
         }
 
 
-        $html = $this->twig->render('index.html.twig', $params);
+        $html = $this->render($params);
 
         $path = dirname($this->filename);
 
@@ -89,6 +76,26 @@ class HtmlReport implements ReportInterface
         }
 
         file_put_contents($this->filename, $html);
+    }
+
+    /**
+     * Plain PHP template instead of a template engine, so that we don't need
+     * a dependency that would block installations in older PHP projects.
+     *
+     * @param array<mixed> $report
+     * @return string
+     */
+    private function render(array $report): string
+    {
+        $e = function ($value): string {
+            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        };
+
+        ob_start();
+
+        require __DIR__ . '/Template/index.html.php';
+
+        return (string)ob_get_clean();
     }
 
     /**

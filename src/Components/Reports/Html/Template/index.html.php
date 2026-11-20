@@ -302,6 +302,11 @@
 </head>
 
 <body>
+<?php
+/** @var array<mixed> $report */
+/** @var callable $e */
+$passed = $report['total'] - $report['failed'];
+?>
 <div class="page">
 
     <header>
@@ -310,55 +315,53 @@
             <h1>Test Report</h1>
         </div>
         <div class="meta">
-            {{ generated }}<br>
-            v{{ version }}
+            <?= $e($report['generated']) ?><br>
+            v<?= $e($report['version']) ?>
         </div>
     </header>
 
-    {% set passed = total - failed %}
-
     <section class="summary" aria-label="Summary">
-        <div class="verdict {{ failed > 0 ? 'is-failed' : '' }}">
+        <div class="verdict <?= $report['failed'] > 0 ? 'is-failed' : '' ?>">
             <span class="dot" aria-hidden="true"></span>
-            {% if failed > 0 %}
-                {{ failed }} of {{ total }} tests failed
-            {% else %}
-                All {{ total }} tests passed
-            {% endif %}
+            <?php if ($report['failed'] > 0) { ?>
+                <?= $report['failed'] ?> of <?= $report['total'] ?> tests failed
+            <?php } else { ?>
+                All <?= $report['total'] ?> tests passed
+            <?php } ?>
         </div>
 
-        <div class="bar" role="img" aria-label="{{ passed }} passed, {{ failed }} failed">
-            {% if total > 0 %}
-                <span class="pass" style="width: {{ (passed / total * 100)|round(2) }}%"></span>
-                <span class="fail" style="width: {{ (failed / total * 100)|round(2) }}%"></span>
-            {% endif %}
+        <div class="bar" role="img" aria-label="<?= $passed ?> passed, <?= $report['failed'] ?> failed">
+            <?php if ($report['total'] > 0) { ?>
+                <span class="pass" style="width: <?= round($passed / $report['total'] * 100, 2) ?>%"></span>
+                <span class="fail" style="width: <?= round($report['failed'] / $report['total'] * 100, 2) ?>%"></span>
+            <?php } ?>
         </div>
 
         <div class="stats">
             <div>
                 <div class="stat-label">Suites</div>
-                <div class="stat-value">{{ testsuites|length }}</div>
+                <div class="stat-value"><?= count($report['testsuites']) ?></div>
             </div>
             <div>
                 <div class="stat-label">Tests</div>
-                <div class="stat-value">{{ total }}</div>
+                <div class="stat-value"><?= $report['total'] ?></div>
             </div>
             <div>
                 <div class="stat-label">Passed</div>
-                <div class="stat-value pass">{{ passed }}</div>
+                <div class="stat-value pass"><?= $passed ?></div>
             </div>
             <div>
                 <div class="stat-label">Failed</div>
-                <div class="stat-value {{ failed > 0 ? 'fail' : '' }}">{{ failed }}</div>
+                <div class="stat-value <?= $report['failed'] > 0 ? 'fail' : '' ?>"><?= $report['failed'] ?></div>
             </div>
             <div>
                 <div class="stat-label">Time</div>
-                <div class="stat-value">{{ time|number_format(2) }}s</div>
+                <div class="stat-value"><?= number_format($report['time'], 2) ?>s</div>
             </div>
         </div>
     </section>
 
-    {% if failed > 0 %}
+    <?php if ($report['failed'] > 0) { ?>
         <div class="toolbar">
             <label for="only-failed">
                 <input type="checkbox" id="only-failed"
@@ -366,44 +369,44 @@
                 Show failed tests only
             </label>
         </div>
-    {% endif %}
+    <?php } ?>
 
     <div class="suites">
-        {% for suite in testsuites %}
-            <details class="suite {{ suite.errors > 0 ? 'is-failed' : '' }}" {{ suite.errors > 0 ? 'open' : '' }}>
+        <?php foreach ($report['testsuites'] as $suite) { ?>
+            <details class="suite <?= $suite['errors'] > 0 ? 'is-failed' : '' ?>" <?= $suite['errors'] > 0 ? 'open' : '' ?>>
                 <summary>
-                    <span class="suite-name">{{ suite.name }}</span>
-                    {% if suite.group %}
-                        <span class="chip">{{ suite.group }}</span>
-                    {% endif %}
-                    {% if suite.errors > 0 %}
-                        <span class="chip fail">{{ suite.errors }}/{{ suite.total }} failed</span>
-                    {% else %}
-                        <span class="chip pass">{{ suite.total }}/{{ suite.total }} passed</span>
-                    {% endif %}
-                    <span class="test-time">{{ suite.time|number_format(2) }}s</span>
+                    <span class="suite-name"><?= $e($suite['name']) ?></span>
+                    <?php if ($suite['group'] !== '') { ?>
+                        <span class="chip"><?= $e($suite['group']) ?></span>
+                    <?php } ?>
+                    <?php if ($suite['errors'] > 0) { ?>
+                        <span class="chip fail"><?= $suite['errors'] ?>/<?= $suite['total'] ?> failed</span>
+                    <?php } else { ?>
+                        <span class="chip pass"><?= $suite['total'] ?>/<?= $suite['total'] ?> passed</span>
+                    <?php } ?>
+                    <span class="test-time"><?= number_format($suite['time'], 2) ?>s</span>
                 </summary>
 
                 <div class="tests">
-                    {% for test in suite.tests %}
-                        <div class="test {{ test.success ? '' : 'is-failed' }}">
-                            <span class="icon" aria-label="{{ test.success ? 'passed' : 'failed' }}">{{ test.success ? '✔' : '✘' }}</span>
-                            <span class="test-name">{{ test.name }}</span>
-                            <span class="test-time">{{ test.time|number_format(2) }}s</span>
+                    <?php foreach ($suite['tests'] as $test) { ?>
+                        <div class="test <?= $test['success'] ? '' : 'is-failed' ?>">
+                            <span class="icon" aria-label="<?= $test['success'] ? 'passed' : 'failed' ?>"><?= $test['success'] ? '✔' : '✘' ?></span>
+                            <span class="test-name"><?= $e($test['name']) ?></span>
+                            <span class="test-time"><?= number_format($test['time'], 2) ?>s</span>
 
-                            {% if not test.success %}
+                            <?php if (!$test['success']) { ?>
                                 <div class="diff">
                                     <div class="diff-label">Expected</div>
-                                    <pre>{{ test.expected }}</pre>
+                                    <pre><?= $e($test['expected']) ?></pre>
                                     <div class="diff-label">Actual</div>
-                                    <pre>{{ test.actual }}</pre>
+                                    <pre><?= $e($test['actual']) ?></pre>
                                 </div>
-                            {% endif %}
+                            <?php } ?>
                         </div>
-                    {% endfor %}
+                    <?php } ?>
                 </div>
             </details>
-        {% endfor %}
+        <?php } ?>
     </div>
 
     <footer>

@@ -20,9 +20,13 @@ class AppManager
     {
         $application = new Application('SVRUnit', SVRUnit::VERSION);
 
-        $application->addCommand(new ListSuitesCommand());
-        $application->addCommand(new ListGroupsCommand());
-        $application->addCommand(new TestCommand());
+        # addCommands() exists in all Symfony Console versions, unlike add() (removed in 8.0)
+        # and addCommand() (added in 7.4), so PHP 7.4 projects with older versions keep working
+        $application->addCommands([
+            new ListSuitesCommand(),
+            new ListGroupsCommand(),
+            new TestCommand(),
+        ]);
 
         $application->setDefaultCommand('list');
 

@@ -26,7 +26,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.4
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -42,13 +42,15 @@ jobs:
   # ------------------------------------------------------------------------------------------------------------------------
 
   syntax_checks:
-    name: Syntax Checks
+    name: Syntax Checks | PHP 7.4
     needs: install_dev
     runs-on: ubuntu-latest
     steps:
       - name: Clone Code
         uses: actions/checkout@v3
 
+      # SVRUnit has to stay installable as dev dependency in PHP 7.4 projects,
+      # our own composer.lock is only for development and requires a newer PHP version
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -56,6 +58,17 @@ jobs:
 
       - name: PHP Syntax Checks
         run: find . -name '*.php' -not -path "./src/vendor/*" -not -path "./tests/*" | xargs -n 1 -P4 php -l
+
+      # dev tools like PHPUnit 11 need a newer PHP version, so we resolve
+      # only the dependencies that a project installing SVRUnit would get
+      - name: Install Dependencies for PHP 7.4
+        run: |
+          rm composer.lock
+          php -r '$c = json_decode(file_get_contents("composer.json"), true); unset($c["require-dev"]); file_put_contents("composer.json", json_encode($c, JSON_PRETTY_PRINT));'
+          composer update --no-progress
+
+      - name: Run SVRUnit with PHP 7.4
+        run: php bin/svrunit list
 
   unit_tests:
     name: Unit Tests
@@ -111,7 +124,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.4
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -137,7 +150,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.4
           ini-values: phar.readonly=OFF
 
       - name: Mount Cache
@@ -164,7 +177,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.4
 
       - name: Mount Cache
         uses: actions/cache@v3
@@ -190,7 +203,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.4
 
       - name: Mount Cache
         uses: actions/cache@v3
